@@ -68,9 +68,9 @@ public class SnapPagingServiceImplTest {
                 .willReturn("photoURL1")
                 .willReturn("photoURL2")
                 .willReturn("photoURL3");
-        given(tuple1.get(snap.id)).willReturn(1L);
-        given(tuple2.get(snap.id)).willReturn(2L);
-        given(tuple3.get(snap.id)).willReturn(3L);
+        given(tuple1.get(snap.snapId)).willReturn(1L);
+        given(tuple2.get(snap.snapId)).willReturn(2L);
+        given(tuple3.get(snap.snapId)).willReturn(3L);
         given(tuple1.get(user.profilePhoto.profilePhotoId)).willReturn(1L);
         given(tuple2.get(user.profilePhoto.profilePhotoId)).willReturn(2L);
         given(tuple3.get(user.profilePhoto.profilePhotoId)).willReturn(3L);

@@ -35,7 +35,7 @@ public class ProfileRepositoryImpl implements ProfileRepository {
     @Override
     public List<AlbumSnapResDto> findAlbumSnap(User targetUser, Boolean checkPermission) {
         List<Tuple> albums = jpaQueryFactory
-                .select(album.id, album.name).distinct()
+                .select(album.albumId, album.albumName).distinct()
                 .from(user)
                 .join(album).on(user.userId.eq(album.user.userId))
                 .where(user.userId.eq(targetUser.getUserId()))
@@ -44,8 +44,8 @@ public class ProfileRepositoryImpl implements ProfileRepository {
         Map<Long,String> albumMap = new HashMap<>();
 
         albums.forEach(tuple ->{
-            Long albumId = tuple.get(album.id);
-            String albumName = tuple.get(album.name);
+            Long albumId = tuple.get(album.albumId);
+            String albumName = tuple.get(album.albumName);
             albumMap.put(albumId,albumName);
         });
 
@@ -54,9 +54,9 @@ public class ProfileRepositoryImpl implements ProfileRepository {
         //snap이 없어도 album은 존재할 수 있기 때문에 album 수 만큼 반복한다.
         for (Long albumId : albumMap.keySet()) {
             List<Tuple> albumSnapTwo = jpaQueryFactory
-                    .select(album.name, snap.fileName, snap.isPrivate)
+                    .select(album.albumName, snap.fileName, snap.isPrivate)
                     .from(album)
-                    .leftJoin(snap).on(album.id.eq(snap.album.id))
+                    .leftJoin(snap).on(album.albumId.eq(snap.album.albumId))
                     .where(whereBuilder(albumId, checkPermission))
                     .orderBy(snap.createdDate.desc()) // 최근 생성일 기준으로 내림차순 정렬
                     .limit(2) // 최근 생성된 사진 2개만 선택
@@ -91,9 +91,9 @@ public class ProfileRepositoryImpl implements ProfileRepository {
     @Override
     public List<ProfileTagSnapResDto> findTagSnap(User targetUser) {
         List<Tuple> tagSnaps = jpaQueryFactory
-                .select(snap.id,snap.user.loginId, snap.fileName, snap.isPrivate, snap.createdDate).distinct()
+                .select(snap.snapId,snap.user.loginId, snap.fileName, snap.isPrivate, snap.createdDate).distinct()
                 .from(snap)
-                .join(snapTag).on(snapTag.snap.id.eq(snap.id))
+                .join(snapTag).on(snapTag.snap.snapId.eq(snap.snapId))
                 .where(snapTag.tagUser.loginId.eq(targetUser.getLoginId()))
                 .orderBy(snap.createdDate.desc())
                 .fetch();
@@ -101,7 +101,7 @@ public class ProfileRepositoryImpl implements ProfileRepository {
         List<ProfileTagSnapResDto> tagSnapUrls = tagSnaps.stream()
                 .map(tuple -> {
                     return ProfileTagSnapResDto.builder()
-                            .taggedSnapId(tuple.get(snap.id))
+                            .taggedSnapId(tuple.get(snap.snapId))
                             .snapOwnLoginId(tuple.get(snap.user.loginId))
                             .taggedSnapUrl(urlComponent.makePhotoURL(tuple.get(snap.fileName), tuple.get(snap.isPrivate)))
                             .build();
@@ -116,11 +116,11 @@ public class ProfileRepositoryImpl implements ProfileRepository {
         BooleanBuilder builder = new BooleanBuilder();
 
         if(checkPermission){
-            builder.and(album.id.eq(albumId));
+            builder.and(album.albumId.eq(albumId));
             builder.and(snap.fileName.isNotNull());
         }
         else{
-            builder.and(album.id.eq(albumId));
+            builder.and(album.albumId.eq(albumId));
             builder.and(snap.isPrivate.isFalse());
             builder.and(snap.fileName.isNotNull());
         }

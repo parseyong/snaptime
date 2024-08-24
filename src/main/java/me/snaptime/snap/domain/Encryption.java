@@ -13,15 +13,15 @@ import javax.crypto.SecretKey;
 
 @Entity
 @Getter
-@Table(name = "encryption")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Encryption {
+
     @Id
+    @Column(name = "encryption_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long encryptionId;
 
-
-    @Column(nullable = false)
+    @Column(name = "secret_key", nullable = false)
     private SecretKey secretKey;
 
     @OneToOne

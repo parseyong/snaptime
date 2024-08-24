@@ -21,10 +21,10 @@ public record SnapInfoResDto(
         String userName = null;
         if (entity.getUser() != null) {
             userUid = entity.getUser().getLoginId();
-            userName = entity.getUser().getName();
+            userName = entity.getUser().getUsername();
         }
         return SnapInfoResDto.builder()
-                .snapId(entity.getId())
+                .snapId(entity.getSnapId())
                 .oneLineJournal(entity.getOneLineJournal())
                 .snapPhotoURL(snapPhotoURL)
                 .snapCreatedDate(entity.getCreatedDate())

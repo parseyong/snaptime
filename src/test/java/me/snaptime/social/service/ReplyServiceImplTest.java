@@ -61,7 +61,7 @@ public class ReplyServiceImplTest {
     void beforeEach(){
         user = User.builder()
                 .loginId("loginId1")
-                .name("user1")
+                .nickname("user1")
                 .email("email1@google.com")
                 .build();
         snap = Snap.builder()

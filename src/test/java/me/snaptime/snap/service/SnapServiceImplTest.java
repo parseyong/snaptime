@@ -58,7 +58,7 @@ public class SnapServiceImplTest {
                 .email("test@test.com")
                 .birthDay("990303")
                 .password("1234")
-                .name("김원정")
+                .nickname("김원정")
                 .build());
         Snap expectedSnap = spy(Snap.builder()
                 .isPrivate(givenPrivate)

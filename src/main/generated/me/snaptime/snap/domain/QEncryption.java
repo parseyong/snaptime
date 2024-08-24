@@ -22,7 +22,7 @@ public class QEncryption extends EntityPathBase<Encryption> {
 
     public static final QEncryption encryption = new QEncryption("encryption");
 
-    public final NumberPath<Long> id = createNumber("id", Long.class);
+    public final NumberPath<Long> encryptionId = createNumber("encryptionId", Long.class);
 
     public final SimplePath<javax.crypto.SecretKey> secretKey = createSimple("secretKey", javax.crypto.SecretKey.class);
 

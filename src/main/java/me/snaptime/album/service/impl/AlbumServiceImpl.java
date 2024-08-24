@@ -43,11 +43,11 @@ public class AlbumServiceImpl implements AlbumService {
         User foundUser = userRepository.findByLoginId(uid).orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
         List<Album> foundAlbums = albumRepository.findAlbumsByUser(foundUser);
         return foundAlbums.stream().map(album -> {
-            Optional<Snap> firstSnapOptional = album.getSnap().isEmpty() ? Optional.empty() : Optional.of(album.getSnap().get(0));
+            Optional<Snap> firstSnapOptional = album.getSnaps().isEmpty() ? Optional.empty() : Optional.of(album.getSnaps().get(0));
             String photoUrl = firstSnapOptional.map(snap -> urlComponent.makePhotoURL(snap.getFileName(), snap.isPrivate())).orElse(null);
             return FindAllAlbumsResDto.builder()
-                    .id(album.getId())
-                    .name(album.getName())
+                    .id(album.getAlbumId())
+                    .name(album.getAlbumName())
                     .photoUrl(photoUrl)
                     .build();
         }).toList();
@@ -65,10 +65,10 @@ public class AlbumServiceImpl implements AlbumService {
             * 유저가 없거나, 권한이 없으면 공개인 것만 유저에게 반환한다.
             * */
             return FindAlbumResDto.builder()
-                    .id(foundAlbum.getId())
-                    .name(foundAlbum.getName())
-                    .snap(foundAlbum.getSnap().stream()
-                            .sorted(Comparator.comparing(Snap::getId).reversed())
+                    .id(foundAlbum.getAlbumId())
+                    .name(foundAlbum.getAlbumName())
+                    .snap(foundAlbum.getSnaps().stream()
+                            .sorted(Comparator.comparing(Snap::getSnapId).reversed())
                             .filter( snap -> !snap.isPrivate())
                             .map(snap ->
                                     SnapInfoResDto.entityToResDto(
@@ -82,10 +82,10 @@ public class AlbumServiceImpl implements AlbumService {
         }
 
         return FindAlbumResDto.builder()
-                .id(foundAlbum.getId())
-                .name(foundAlbum.getName())
-                .snap(foundAlbum.getSnap().stream()
-                        .sorted(Comparator.comparing(Snap::getId).reversed())
+                .id(foundAlbum.getAlbumId())
+                .name(foundAlbum.getAlbumName())
+                .snap(foundAlbum.getSnaps().stream()
+                        .sorted(Comparator.comparing(Snap::getSnapId).reversed())
                         .map(snap ->
                                 SnapInfoResDto.entityToResDto(
                                         snap,
@@ -107,40 +107,40 @@ public class AlbumServiceImpl implements AlbumService {
     @Override
     public boolean isNonClassificationExist(User user) {
         List<Album> foundAlbums = albumRepository.findAlbumsByUser(user);
-        return foundAlbums.stream().anyMatch(album -> Objects.equals(album.getName(), nonClassificationName));
+        return foundAlbums.stream().anyMatch(album -> Objects.equals(album.getAlbumName(), nonClassificationName));
     }
 
     @Override
     public Long findUserNonClassificationId(User user) {
         List<Album> foundAlbums = albumRepository.findAlbumsByUser(user);
-        return foundAlbums.stream().filter(album -> Objects.equals(album.getName(), nonClassificationName)).findFirst().map(Album::getId).orElseThrow(() -> new CustomException(ExceptionCode.NON_CLASSIFICATION_ALBUM_IS_NOT_EXIST));
+        return foundAlbums.stream().filter(album -> Objects.equals(album.getAlbumName(), nonClassificationName)).findFirst().map(Album::getAlbumId).orElseThrow(() -> new CustomException(ExceptionCode.NON_CLASSIFICATION_ALBUM_IS_NOT_EXIST));
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<GetAllAlbumListResDto> getAlbumListByLoginId(String uid) {
         User foundUser = userRepository.findByLoginId(uid).orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
-        return albumRepository.findAlbumsByUser(foundUser).stream().map(album -> GetAllAlbumListResDto.builder().id(album.getId()).name(album.getName()).build()).toList();
+        return albumRepository.findAlbumsByUser(foundUser).stream().map(album -> GetAllAlbumListResDto.builder().id(album.getAlbumId()).name(album.getAlbumName()).build()).toList();
     }
 
     @Override
     @Transactional
     public void createAlbum(CreateAlbumReqDto createAlbumReqDto, String uid) {
         User foundUser = userRepository.findByLoginId(uid).orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
-        albumRepository.save(Album.builder().name(createAlbumReqDto.name()).user(foundUser).build());
+        albumRepository.save(Album.builder().albumName(createAlbumReqDto.name()).user(foundUser).build());
     }
 
     @Override
     public Long createNonClassificationAlbum(User user) {
-        Album result = albumRepository.save(Album.builder().name(nonClassificationName).user(user).build());
-        return result.getId();
+        Album result = albumRepository.save(Album.builder().albumName(nonClassificationName).user(user).build());
+        return result.getAlbumId();
     }
 
     @Override
     @Transactional
     public void modifyAlbumName(Long album_id, String album_name) {
         Album foundAlbum = albumRepository.findById(album_id).orElseThrow(() -> new CustomException(ExceptionCode.ALBUM_NOT_EXIST));
-        foundAlbum.updateAlbumNameByString(album_name);
+        foundAlbum.updateAlbumName(album_name);
     }
 
     @Override
@@ -156,7 +156,7 @@ public class AlbumServiceImpl implements AlbumService {
         }
         Album nonClassificationAlbum = albumRepository.findById(foundNonClassificationId).orElseThrow(() -> new CustomException(ExceptionCode.NON_CLASSIFICATION_ALBUM_IS_NOT_EXIST));
         // 앨범과 연관관계가 맺어져있는 snap들의 목록을 가져온다
-        List<Snap> snapList = foundAlbum.getSnap();
+        List<Snap> snapList = foundAlbum.getSnaps();
         for (Snap snap: snapList) {
             // non-classification Snap과 앨범을 연관관계 맺어준다.
             snap.associateAlbum(nonClassificationAlbum);

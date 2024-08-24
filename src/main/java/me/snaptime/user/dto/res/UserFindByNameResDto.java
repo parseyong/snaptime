@@ -16,7 +16,7 @@ public record UserFindByNameResDto (
         return UserFindByNameResDto.builder()
                 .foundLoginId(tuple.get(user.loginId))
                 .profilePhotoURL(profilePhotoURL)
-                .foundUserName(tuple.get(user.name))
+                .foundUserName(tuple.get(user.nickname))
                 .build();
     }
 }

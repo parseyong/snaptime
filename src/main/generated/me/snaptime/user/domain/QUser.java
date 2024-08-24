@@ -36,13 +36,13 @@ public class QUser extends EntityPathBase<User> {
 
     public final StringPath loginId = createString("loginId");
 
-    public final StringPath name = createString("name");
+    public final StringPath nickname = createString("nickname");
 
     public final StringPath password = createString("password");
 
     public final me.snaptime.profilePhoto.domain.QProfilePhoto profilePhoto;
 
-    public final ListPath<String, StringPath> roles = this.<String, StringPath>createList("roles", String.class, StringPath.class, PathInits.DIRECT2);
+    public final StringPath roleName = createString("roleName");
 
     public final NumberPath<Long> userId = createNumber("userId", Long.class);
 

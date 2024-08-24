@@ -31,14 +31,14 @@ public record SnapDetailInfoResDto(
                                              List<TagUserFindResDto> tagUserFindResDtos, Long likeCnt, boolean isLikedSnap){
 
         return SnapDetailInfoResDto.builder()
-                .snapId(tuple.get(snap.id))
+                .snapId(tuple.get(snap.snapId))
                 .oneLineJournal(String.valueOf(tuple.get(snap.oneLineJournal)))
                 .snapPhotoURL(snapPhotoURL)
                 .snapCreatedDate(tuple.get(snap.createdDate))
                 .snapModifiedDate(tuple.get(snap.lastModifiedDate))
                 .writerLoginId(tuple.get(user.loginId))
                 .profilePhotoURL(profilePhotoURL)
-                .writerUserName(tuple.get(user.name))
+                .writerUserName(tuple.get(user.nickname))
                 .tagUserFindResDtos(tagUserFindResDtos)
                 .likeCnt(likeCnt)
                 .isLikedSnap(isLikedSnap)
@@ -49,14 +49,14 @@ public record SnapDetailInfoResDto(
                                              List<TagUserFindResDto> tagUserFindResDtos, Long likeCnt, boolean isLikedSnap){
 
         return SnapDetailInfoResDto.builder()
-                .snapId(snap.getId())
+                .snapId(snap.getSnapId())
                 .oneLineJournal(snap.getOneLineJournal())
                 .snapPhotoURL(snapPhotoURL)
                 .snapCreatedDate(snap.getCreatedDate())
                 .snapModifiedDate(snap.getLastModifiedDate())
                 .writerLoginId(snap.getUser().getLoginId())
                 .profilePhotoURL(profilePhotoURL)
-                .writerUserName(snap.getUser().getName())
+                .writerUserName(snap.getUser().getUsername())
                 .tagUserFindResDtos(tagUserFindResDtos)
                 .likeCnt(likeCnt)
                 .isLikedSnap(isLikedSnap)

@@ -10,7 +10,7 @@
         </encoder>
     </appender>
     <!-- 파일로 저장하는 부분 비활성화 -->
-   <!-- <appender name="INFO_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+   <!-- <appender nickname="INFO_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>INFO</level>
         </filter>

@@ -8,8 +8,8 @@ import me.snaptime.profile.service.impl.ProfileServiceImpl;
 import me.snaptime.user.dto.req.UserReqDto;
 import me.snaptime.user.dto.req.UserUpdateReqDto;
 import me.snaptime.user.dto.res.UserFindResDto;
-import me.snaptime.user.service.impl.SignServiceImpl;
 import me.snaptime.user.service.impl.UserServiceImpl;
+import me.snaptime.user.service.impl.UserSignServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +41,7 @@ public class UserControllerTest {
     private UserServiceImpl userService;
 
     @MockBean
-    private SignServiceImpl signService;
+    private UserSignServiceImpl signService;
 
     @MockBean
     private ProfileServiceImpl profileService;
@@ -97,7 +97,7 @@ public class UserControllerTest {
                 .willReturn(UserFindResDto.builder()
                         .userId(1L)
                         .loginId("kang4746")
-                        .name("홍길순")
+                        .nickname("홍길순")
                         .email("strong@gmail.com")
                         .birthDay("1999-10-29")
                         .build());
@@ -134,7 +134,7 @@ public class UserControllerTest {
         given(userService.updateUser(eq("kang4746"),any(UserUpdateReqDto.class)))
                 .willReturn(UserFindResDto.builder()
                         .loginId("kang4746")
-                        .name("홍길순")
+                        .nickname("홍길순")
                         .email("strong@gmail.com")
                         .birthDay("1999-10-29")
                         .build());

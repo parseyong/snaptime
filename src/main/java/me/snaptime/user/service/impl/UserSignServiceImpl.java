@@ -15,21 +15,18 @@ import me.snaptime.user.domain.User;
 import me.snaptime.user.dto.req.SignInReqDto;
 import me.snaptime.user.dto.req.UserReqDto;
 import me.snaptime.user.dto.res.SignInResDto;
-import me.snaptime.user.dto.res.TestSignInResDto;
 import me.snaptime.user.dto.res.UserFindResDto;
 import me.snaptime.user.repository.UserRepository;
-import me.snaptime.user.service.SignService;
+import me.snaptime.user.service.UserSignService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Collections;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
 @Transactional
-public class SignServiceImpl implements SignService {
+public class UserSignServiceImpl implements UserSignService {
 
     private final UserRepository userRepository;
     private final ProfilePhotoRepository profilePhotoRepository;
@@ -58,13 +55,11 @@ public class SignServiceImpl implements SignService {
 
         //새로운 사용자 객체 생성
         User user = User.builder()
-                .name(userReqDto.name())
+                .nickname(userReqDto.name())
                 .loginId(userReqDto.loginId())
                 .password(passwordEncoder.encode(userReqDto.password()))
                 .email(userReqDto.email())
                 .birthDay(userReqDto.birthDay())
-                //단일 권한을 가진 리스트 생성, 하나의 요소를 가진 불변의 리스트 생성
-                .roles(Collections.singletonList("ROLE_USER"))
                 .profilePhoto(profilePhoto)
                 .build();
 
@@ -82,8 +77,8 @@ public class SignServiceImpl implements SignService {
         if (!passwordEncoder.matches(signInReqDto.password(), user.getPassword())) {
             throw new CustomException(ExceptionCode.PASSWORD_NOT_EQUAL);
         }
-        String accessToken = jwtProvider.createAccessToken(user.getUserId(), user.getLoginId(), user.getRoles());
-        String refreshToken = jwtProvider.createRefreshToken(user.getUserId(), user.getLoginId(),user.getRoles());
+        String accessToken = jwtProvider.createAccessToken(user.getUserId(), user.getLoginId());
+        String refreshToken = jwtProvider.createRefreshToken(user.getUserId(), user.getLoginId());
         refreshTokenRepository.save(new RefreshToken(user.getUserId(),refreshToken));
 
         return SignInResDto.builder()
@@ -105,8 +100,8 @@ public class SignServiceImpl implements SignService {
 
         User user = userRepository.findById(userId).orElseThrow(()-> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
-        String newAccessToken = jwtProvider.createAccessToken(userId,user.getLoginId(),user.getRoles());
-        String newRefreshToken = jwtProvider.createRefreshToken(userId,user.getLoginId(),user.getRoles());
+        String newAccessToken = jwtProvider.createAccessToken(userId,user.getLoginId());
+        String newRefreshToken = jwtProvider.createRefreshToken(userId,user.getLoginId());
 
         SignInResDto signInResDto = SignInResDto.builder()
                 .accessToken(newAccessToken)
@@ -118,21 +113,4 @@ public class SignServiceImpl implements SignService {
         return signInResDto;
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public TestSignInResDto testSignIn(SignInReqDto signInReqDto) {
-        User testUser = userRepository.findByLoginId(signInReqDto.loginId()).orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
-
-        if (!passwordEncoder.matches(signInReqDto.password(), testUser.getPassword())) {
-            throw new CustomException(ExceptionCode.PASSWORD_NOT_EQUAL);
-        }
-        String testAccessToken = jwtProvider.testCreateAccessToken(testUser.getUserId(), testUser.getLoginId(), testUser.getRoles());
-        String testRefreshToken = jwtProvider.testCreateRefreshToken(testUser.getUserId(), testUser.getLoginId(),testUser.getRoles());
-        refreshTokenRepository.save(new RefreshToken(testUser.getUserId(),testRefreshToken));
-
-        return TestSignInResDto.builder()
-                .testAccessToken(testAccessToken)
-                .testRefreshToken(testRefreshToken)
-                .build();
-    }
 }

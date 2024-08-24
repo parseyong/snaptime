@@ -14,7 +14,7 @@ public record UserProfileResDto(
     {
         return UserProfileResDto.builder()
                 .userId(user.getUserId())
-                .userName(user.getName())
+                .userName(user.getUsername())
                 .profileURL(profileURL)
                 .isFollow(isFollow)
                 .build();

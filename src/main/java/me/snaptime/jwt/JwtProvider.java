@@ -42,11 +42,10 @@ public class JwtProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String createAccessToken(Long userId, String loginId, List<String> roles){
+    public String createAccessToken(Long userId, String loginId){
         Claims claims = Jwts.claims().setSubject(loginId);
         claims.put("userId",userId);
         claims.put("type","access");
-        claims.put("roles",roles);
         Date now = new Date();
         String token = Jwts.builder()
                 .setClaims(claims)
@@ -58,11 +57,10 @@ public class JwtProvider {
         return token;
     }
 
-    public String createRefreshToken(Long id, String loginId, List<String> roles){
+    public String createRefreshToken(Long id, String loginId){
         Claims claims = Jwts.claims().setSubject(loginId);
         claims.put("userId", id);
         claims.put("type", "refresh");
-        claims.put("roles", roles);
         Date now = new Date();
         String token = Jwts.builder()
                 .setClaims(claims)

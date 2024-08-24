@@ -52,7 +52,7 @@ public class SnapPagingRepositoryImplTest {
     @BeforeEach
     void init(){
         Album album = Album.builder()
-                .name("testAlbum")
+                .albumName("testAlbum")
                 .build();
         albumRepository.save(album);
         ProfilePhoto profilePhoto1 = ProfilePhoto.builder()
@@ -75,7 +75,7 @@ public class SnapPagingRepositoryImplTest {
         reqUser = User.builder()
                 .email("test1@google.com")
                 .loginId("testLoginId1")
-                .name("testName1")
+                .nickname("testName1")
                 .password("1234")
                 .birthDay(String.valueOf(LocalDateTime.now()))
                 .profilePhoto(profilePhoto1)
@@ -83,7 +83,7 @@ public class SnapPagingRepositoryImplTest {
         User user2 = User.builder()
                 .email("test2@google.com")
                 .loginId("testLoginId2")
-                .name("testName2")
+                .nickname("testName2")
                 .password("1234")
                 .birthDay(String.valueOf(LocalDateTime.now()))
                 .profilePhoto(profilePhoto2)
@@ -91,7 +91,7 @@ public class SnapPagingRepositoryImplTest {
         User user3 = User.builder()
                 .email("test3@google.com")
                 .loginId("testLoginId3")
-                .name("testName3")
+                .nickname("testName3")
                 .password("1234")
                 .birthDay(String.valueOf(LocalDateTime.now()))
                 .profilePhoto(profilePhoto3)
@@ -99,7 +99,7 @@ public class SnapPagingRepositoryImplTest {
         User user4 = User.builder()
                 .email("test4@google.com")
                 .loginId("testLoginId4")
-                .name("testName4")
+                .nickname("testName4")
                 .password("1234")
                 .birthDay(String.valueOf(LocalDateTime.now()))
                 .profilePhoto(profilePhoto4)

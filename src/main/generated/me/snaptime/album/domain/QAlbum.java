@@ -24,17 +24,17 @@ public class QAlbum extends EntityPathBase<Album> {
 
     public final me.snaptime.common.QBaseTimeEntity _super = new me.snaptime.common.QBaseTimeEntity(this);
 
+    public final NumberPath<Long> albumId = createNumber("albumId", Long.class);
+
+    public final StringPath albumName = createString("albumName");
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdDate = _super.createdDate;
-
-    public final NumberPath<Long> id = createNumber("id", Long.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> lastModifiedDate = _super.lastModifiedDate;
 
-    public final StringPath name = createString("name");
-
-    public final ListPath<me.snaptime.snap.domain.Snap, me.snaptime.snap.domain.QSnap> snap = this.<me.snaptime.snap.domain.Snap, me.snaptime.snap.domain.QSnap>createList("snap", me.snaptime.snap.domain.Snap.class, me.snaptime.snap.domain.QSnap.class, PathInits.DIRECT2);
+    public final ListPath<me.snaptime.snap.domain.Snap, me.snaptime.snap.domain.QSnap> snaps = this.<me.snaptime.snap.domain.Snap, me.snaptime.snap.domain.QSnap>createList("snaps", me.snaptime.snap.domain.Snap.class, me.snaptime.snap.domain.QSnap.class, PathInits.DIRECT2);
 
     public final me.snaptime.user.domain.QUser user;
 

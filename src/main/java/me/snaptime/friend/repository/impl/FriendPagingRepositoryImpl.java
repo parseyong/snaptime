@@ -33,7 +33,7 @@ public class FriendPagingRepositoryImpl implements FriendPagingRepository {
         Pageable pageable= PageRequest.of((int) (pageNum-1),20);
 
         List<Tuple> tuples =  jpaQueryFactory.select(
-                        user.loginId, user.profilePhoto.profilePhotoId, user.name, friend.friendId
+                        user.loginId, user.profilePhoto.profilePhotoId, user.nickname, friend.friendId
                 )
                 .from(friend)
                 .join(user).on(getJoinBuilder(searchType))
@@ -65,7 +65,7 @@ public class FriendPagingRepositoryImpl implements FriendPagingRepository {
         }
 
         if(searchKeyword !=null){
-            builder.and(user.name.startsWith(searchKeyword).or(user.loginId.startsWith(searchKeyword)));
+            builder.and(user.nickname.startsWith(searchKeyword).or(user.loginId.startsWith(searchKeyword)));
         }
 
         return builder;

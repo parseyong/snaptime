@@ -32,8 +32,8 @@ public class SnapPagingRepositoryImpl implements SnapPagingRepository {
 
         Pageable pageable= PageRequest.of((int) (pageNum-1),10);
         List<Tuple> tuples =  jpaQueryFactory.select(
-                        user.loginId, user.profilePhoto.profilePhotoId, user.name,
-                        snap.id, snap.createdDate, snap.lastModifiedDate, snap.oneLineJournal, snap.fileName
+                        user.loginId, user.profilePhoto.profilePhotoId, user.nickname,
+                        snap.snapId, snap.createdDate, snap.lastModifiedDate, snap.oneLineJournal, snap.fileName
                 ).distinct()
                 .from(friend)
                 .rightJoin(user).on(friend.receiver.userId.eq(user.userId))

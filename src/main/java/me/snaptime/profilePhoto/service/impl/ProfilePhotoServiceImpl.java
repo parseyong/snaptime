@@ -91,7 +91,7 @@ public class ProfilePhotoServiceImpl implements ProfilePhotoService {
             throw new CustomException(ExceptionCode.FILE_NOT_EXIST);
         }
 
-        profilePhoto.updateProfile(updateFileName,updateFilePath);
+        profilePhoto.updateProfilePhoto(updateFileName,updateFilePath);
 
         return ProfilePhotoResDto.toDto(profilePhotoRepository.save(profilePhoto));
     }

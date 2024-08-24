@@ -294,9 +294,9 @@ public class FriendServiceImplTest {
         given(tuple2.get(user.profilePhoto.profilePhotoId)).willReturn(5L);
         given(tuple3.get(user.profilePhoto.profilePhotoId)).willReturn(6L);
 
-        given(tuple1.get(user.name)).willReturn("name1");
-        given(tuple2.get(user.name)).willReturn("name2");
-        given(tuple3.get(user.name)).willReturn("name3");
+        given(tuple1.get(user.nickname)).willReturn("name1");
+        given(tuple2.get(user.nickname)).willReturn("name2");
+        given(tuple3.get(user.nickname)).willReturn("name3");
 
         given(userRepository.findByLoginId(any(String.class))).willReturn(Optional.ofNullable(user1));
         given(friendRepository.findFriendPage(any(User.class),any(FriendSearchType.class),any(Long.class),any(String.class)))

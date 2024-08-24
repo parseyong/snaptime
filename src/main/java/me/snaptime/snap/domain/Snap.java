@@ -13,13 +13,13 @@ import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
-@Table(name = "snap")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Snap extends BaseTimeEntity {
 
     @Id
+    @Column(name = "snap_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long snapId;
 
     private String oneLineJournal;
 
@@ -32,21 +32,21 @@ public class Snap extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Column(name = "is_private", nullable = false)
     private boolean isPrivate;
 
-    @Column(nullable = false)
+    @Column(name = "file_name", nullable = false)
     private String fileName;
 
-    @Column(nullable = false)
+    @Column(name = "file_path", nullable = false)
     private String filePath;
 
-    @Column(nullable = false)
+    @Column(name = "file_type", nullable = false)
     private String fileType;
 
     @Builder
-    protected Snap(Long id, String oneLineJournal, Album album, User user,
+    protected Snap(String oneLineJournal, Album album, User user,
                    String fileName, String filePath, String fileType, boolean isPrivate) {
-        this.id = id;
         this.oneLineJournal = oneLineJournal;
         this.album = album;
         this.user = user;

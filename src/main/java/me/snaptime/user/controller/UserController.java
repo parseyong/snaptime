@@ -12,11 +12,10 @@ import me.snaptime.user.dto.req.SignInReqDto;
 import me.snaptime.user.dto.req.UserReqDto;
 import me.snaptime.user.dto.req.UserUpdateReqDto;
 import me.snaptime.user.dto.res.SignInResDto;
-import me.snaptime.user.dto.res.TestSignInResDto;
 import me.snaptime.user.dto.res.UserFindResDto;
 import me.snaptime.user.dto.res.UserPagingResDto;
-import me.snaptime.user.service.SignService;
 import me.snaptime.user.service.UserService;
+import me.snaptime.user.service.UserSignService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -33,7 +32,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
-    private final SignService signService;
+    private final UserSignService userSignService;
 
     @Operation(summary = "자신의 유저 정보 조회",description = "자신의 유저 정보를 조회합니다. ")
     @GetMapping("/my")
@@ -99,7 +98,7 @@ public class UserController {
             "<br> 이후에 유저의 Token 을 통해 profile 사진을 수정할 수 있습니다.")
     @PostMapping("/sign-up")
     public ResponseEntity<CommonResponseDto<UserFindResDto>> signUp(@Valid @RequestBody UserReqDto userReqDto){
-        UserFindResDto userFindResDto = signService.signUp(userReqDto);
+        UserFindResDto userFindResDto = userSignService.signUp(userReqDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 new CommonResponseDto<>(
@@ -110,7 +109,7 @@ public class UserController {
     @Operation(summary = "로그인", description = "회원 가입 한 유저의 loginId와 password를 입력합니다.")
     @PostMapping("/sign-in")
     public ResponseEntity<CommonResponseDto<SignInResDto>> signIn(@Valid @RequestBody SignInReqDto signInReqDto){
-        SignInResDto signInResDto = signService.signIn(signInReqDto);
+        SignInResDto signInResDto = userSignService.signIn(signInReqDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 new CommonResponseDto<>(
@@ -123,24 +122,12 @@ public class UserController {
     "<br>  AccessToken과 RefreshToken 을 재발급")
     @PostMapping("/reissue")
     public ResponseEntity<CommonResponseDto<SignInResDto>> reissue(HttpServletRequest request){
-        SignInResDto signInResDto = signService.reissueAccessToken(request);
+        SignInResDto signInResDto = userSignService.reissueAccessToken(request);
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 new CommonResponseDto<>(
                         "리프레시 토큰으로 엑세스 토큰 재발급 성공",
                         signInResDto
                 ));
-    }
-
-    @Operation(summary = "테스트 로그인", description = "회원 가입 한 유저의 loginId와 password를 입력합니다."+
-            "<br> refreshToken을 통한 자동 로그인 구현을 위한 테스트 api입니다")
-    @PostMapping("/test/sign-in")
-    public ResponseEntity<CommonResponseDto<TestSignInResDto>> testSignIn(@Valid @RequestBody SignInReqDto signInReqDto){
-        TestSignInResDto testSignInResDto = signService.testSignIn(signInReqDto);
-
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new CommonResponseDto<>(
-                        "테스트 유저 로그인을 성공적으로 완료하였습니다.",
-                        testSignInResDto));
     }
 }

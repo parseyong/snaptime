@@ -57,7 +57,7 @@ public class AlarmServiceImpl implements AlarmService {
         snapAlarm.readAlarm();
         snapAlarmRepository.save(snapAlarm);
 
-        return snapService.findSnap(snapAlarm.getSnap().getId(), reqLoginId);
+        return snapService.findSnap(snapAlarm.getSnap().getSnapId(), reqLoginId);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class AlarmServiceImpl implements AlarmService {
         replyAlarm.readAlarm();
         replyAlarmRepository.save(replyAlarm);
 
-        return replyService.findParentReplyPage(replyAlarm.getSnap().getId(), 1L);
+        return replyService.findParentReplyPage(replyAlarm.getSnap().getSnapId(), 1L);
     }
 
     @Override

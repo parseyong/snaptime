@@ -81,7 +81,7 @@ public class SnapServiceImpl implements SnapService {
             snapTagService.addTagUser(tagUserLoginIds, savedSnap);
         }
 
-        return savedSnap.getId();
+        return savedSnap.getSnapId();
     }
 
     @Override
@@ -96,9 +96,9 @@ public class SnapServiceImpl implements SnapService {
         }
         String snapPhotoUrl = urlComponent.makePhotoURL(foundSnap.getFileName(), foundSnap.isPrivate());
         String profilePhotoUrl = urlComponent.makeProfileURL(foundSnap.getUser().getProfilePhoto().getProfilePhotoId());
-        List<TagUserFindResDto> tagUserFindResDtos = snapTagService.findTagUsers(foundSnap.getId());
-        Long likeCnt = snapLikeService.findSnapLikeCnt(foundSnap.getId());
-        boolean isLikedSnap = snapLikeService.isLikedSnap(foundSnap.getId(), uId);
+        List<TagUserFindResDto> tagUserFindResDtos = snapTagService.findTagUsers(foundSnap.getSnapId());
+        Long likeCnt = snapLikeService.findSnapLikeCnt(foundSnap.getSnapId());
+        boolean isLikedSnap = snapLikeService.isLikedSnap(foundSnap.getSnapId(), uId);
         return SnapDetailInfoResDto.toDto(foundSnap, profilePhotoUrl, snapPhotoUrl, tagUserFindResDtos, likeCnt, isLikedSnap);
     }
 
@@ -152,7 +152,7 @@ public class SnapServiceImpl implements SnapService {
         }
 
         Snap snap = snapRepository.save(foundSnap);
-        return snap.getId();
+        return snap.getSnapId();
     }
 
     @Override

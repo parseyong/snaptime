@@ -32,7 +32,7 @@ public class SwaggerConfig {
                 //스키마의 이름을 설정, "bearer"로 설정
                 .scheme("bearer")
                 //in() 메서드로 토큰의 전송 위치를 설정,  HTTP 요청 헤더에 설정
-                //name 메서드로 토큰의 이름을 설정, "Authorization"으로 설정
+                //nickname 메서드로 토큰의 이름을 설정, "Authorization"으로 설정
                 .in(SecurityScheme.In.HEADER).name("Authorization");
     }
 }

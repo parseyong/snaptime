@@ -7,7 +7,7 @@ import me.snaptime.user.domain.User;
 @Builder
 public record UserFindResDto(
     Long userId,
-    String name,
+    String nickname,
     String loginId,
     String email,
     String birthDay
@@ -15,7 +15,7 @@ public record UserFindResDto(
     public static UserFindResDto toDto(User user){
         return UserFindResDto.builder()
                 .userId(user.getUserId())
-                .name(user.getName())
+                .nickname(user.getNickname())
                 .loginId(user.getLoginId())
                 .email(user.getEmail())
                 .birthDay(user.getBirthDay())

@@ -21,7 +21,7 @@ public record ParentReplyInfoResDto(
         return ParentReplyInfoResDto.builder()
                 .writerLoginId(tuple.get(user.loginId))
                 .writerProfilePhotoURL(profilePhotoURL)
-                .writerUserName(tuple.get(user.name))
+                .writerUserName(tuple.get(user.nickname))
                 .content(tuple.get(parentReply.content))
                 .replyId(tuple.get(parentReply.parentReplyId))
                 .timeAgo(timeAgo)

@@ -46,7 +46,7 @@ public class SnapPagingServiceImpl implements SnapPagingService {
         List<SnapDetailInfoResDto> snapDetailInfoResDtos = tuples.stream().map(tuple ->
         {
 
-            Long snapId = tuple.get(snap.id);
+            Long snapId = tuple.get(snap.snapId);
             String profilePhotoURL = urlComponent.makeProfileURL(tuple.get(user.profilePhoto.profilePhotoId));
             String snapPhotoURL = urlComponent.makePhotoURL(tuple.get(snap.fileName),false);
 

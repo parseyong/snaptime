@@ -9,6 +9,7 @@ import java.net.URL;
 import java.net.URLConnection;
 
 public class ConnectionAction {
+
     public static byte[] getImage(String provider_url, String image_url) {
         try {
             URL imageURL = new URL("http://"+ provider_url + image_url);

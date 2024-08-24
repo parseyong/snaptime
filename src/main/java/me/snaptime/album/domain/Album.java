@@ -15,18 +15,19 @@ import java.util.List;
 
 @Entity
 @Getter
-@Table(name = "album")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Album extends BaseTimeEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @Column(nullable = false)
-    private String name;
+    @Id
+    @Column(name = "album_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long albumId;
+
+    @Column(nullable = false,name = "album_name")
+    private String albumName;
 
     @OneToMany(mappedBy = "album")
-    private List<Snap> snap;
+    private List<Snap> snaps;
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -34,13 +35,12 @@ public class Album extends BaseTimeEntity {
     private User user;
 
     @Builder
-    protected Album(Long id, String name, User user) {
-        this.id = id;
-        this.name = name;
+    protected Album(String albumName, User user) {
+        this.albumName = albumName;
         this.user = user;
     }
 
-    public void updateAlbumNameByString(String name) {
-        this.name = name;
+    public void updateAlbumName(String albumName) {
+        this.albumName = albumName;
     }
 }

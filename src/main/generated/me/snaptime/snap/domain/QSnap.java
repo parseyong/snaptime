@@ -35,14 +35,14 @@ public class QSnap extends EntityPathBase<Snap> {
 
     public final StringPath fileType = createString("fileType");
 
-    public final NumberPath<Long> id = createNumber("id", Long.class);
-
     public final BooleanPath isPrivate = createBoolean("isPrivate");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> lastModifiedDate = _super.lastModifiedDate;
 
     public final StringPath oneLineJournal = createString("oneLineJournal");
+
+    public final NumberPath<Long> snapId = createNumber("snapId", Long.class);
 
     public final me.snaptime.user.domain.QUser user;
 

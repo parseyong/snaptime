@@ -13,8 +13,8 @@ import me.snaptime.user.dto.req.UserUpdateReqDto;
 import me.snaptime.user.dto.res.SignInResDto;
 import me.snaptime.user.dto.res.UserFindResDto;
 import me.snaptime.user.repository.UserRepository;
-import me.snaptime.user.service.impl.SignServiceImpl;
 import me.snaptime.user.service.impl.UserServiceImpl;
+import me.snaptime.user.service.impl.UserSignServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,7 +40,7 @@ class UserServiceTest {
     private UserServiceImpl userService;
 
     @InjectMocks
-    private SignServiceImpl signService;
+    private UserSignServiceImpl signService;
 
     @Mock
     private UserRepository userRepository;
@@ -65,7 +65,7 @@ class UserServiceTest {
     @BeforeEach
     public void setUpTestSet() {
         givenUser = User.builder()
-                .name("홍길순")
+                .nickname("홍길순")
                 .loginId("kang4746")
                 .password("test1234")
                 .email("strong@gmail.com")
@@ -84,7 +84,7 @@ class UserServiceTest {
 
         //then
         Assertions.assertEquals(givenUser.getUserId(), userFindResDto.userId());
-        Assertions.assertEquals(givenUser.getName(), userFindResDto.name());
+        Assertions.assertEquals(givenUser.getNickname(), userFindResDto.nickname());
         Assertions.assertEquals(givenUser.getLoginId(), userFindResDto.loginId());
         Assertions.assertEquals(givenUser.getEmail(), userFindResDto.email());
         Assertions.assertEquals(givenUser.getBirthDay(), userFindResDto.birthDay());
@@ -116,7 +116,7 @@ class UserServiceTest {
         UserFindResDto userFindResDto = signService.signUp(givenRequest);
 
         //then
-        Assertions.assertEquals(givenRequest.name(), userFindResDto.name());
+        Assertions.assertEquals(givenRequest.name(), userFindResDto.nickname());
         Assertions.assertEquals(givenRequest.loginId(), userFindResDto.loginId());
         Assertions.assertEquals(givenRequest.email(), userFindResDto.email());
         Assertions.assertEquals(givenRequest.birthDay(), userFindResDto.birthDay());
@@ -136,9 +136,9 @@ class UserServiceTest {
                 .thenReturn(Optional.of(givenUser));
         Mockito.when(passwordEncoder.matches(signInReqDto.password(), givenUser.getPassword()))
                 .thenReturn(true);
-        Mockito.when(jwtProvider.createAccessToken(givenUser.getUserId(),givenUser.getLoginId(), givenUser.getRoles()))
+        Mockito.when(jwtProvider.createAccessToken(givenUser.getUserId(),givenUser.getLoginId()))
                 .thenReturn("mockAccessToken");
-        Mockito.when(jwtProvider.createRefreshToken(givenUser.getUserId(),givenUser.getLoginId(), givenUser.getRoles()))
+        Mockito.when(jwtProvider.createRefreshToken(givenUser.getUserId(),givenUser.getLoginId()))
                 .thenReturn("mockRefreshToken");
         Mockito.when(refreshTokenRepository.save(any(RefreshToken.class)))
                 .then(returnsFirstArg());
@@ -154,7 +154,7 @@ class UserServiceTest {
 
         verify(userRepository,times(1)).findByLoginId("kang4746");
         verify(passwordEncoder,times(1)).matches(signInReqDto.password(),givenUser.getPassword());
-        verify(jwtProvider,times(1)).createAccessToken(givenUser.getUserId(),givenUser.getLoginId(),givenUser.getRoles());
+        verify(jwtProvider,times(1)).createAccessToken(givenUser.getUserId(),givenUser.getLoginId());
 
     }
 
@@ -197,7 +197,7 @@ class UserServiceTest {
         UserFindResDto userResponseDto = userService.updateUser("kang4746",userUpdateDto);
 
         //then
-        Assertions.assertEquals("홍길순",userResponseDto.name());
+        Assertions.assertEquals("홍길순",userResponseDto.nickname());
         Assertions.assertEquals("kang4746",userResponseDto.loginId());
         Assertions.assertEquals("strong@naver.com",userResponseDto.email());
         Assertions.assertEquals("1999-10-29",userResponseDto.birthDay());
