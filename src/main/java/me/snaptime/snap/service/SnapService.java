@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface SnapService {
 
-    Long createSnap(CreateSnapReqDto createSnapReqDto, String userUid, boolean isPrivate, List<String> tagUserLoginIds, Long album_id);
+    Long createSnap(CreateSnapReqDto createSnapReqDto, String userUid);
     SnapDetailInfoResDto findSnap(Long id, String uId);
     Long modifySnap(Long snapId, ModifySnapReqDto modifySnapReqDto, String userUid, List<String> tagUserLoginIds, boolean isPrivate);
     void changeVisibility(Long snapId, String userUid, boolean isPrivate);

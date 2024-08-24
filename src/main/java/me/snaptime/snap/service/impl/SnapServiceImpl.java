@@ -36,6 +36,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Slf4j
 public class SnapServiceImpl implements SnapService {
+
     private final SnapRepository snapRepository;
     private final UserRepository userRepository;
     private final AlbumRepository albumRepository;
@@ -47,28 +48,30 @@ public class SnapServiceImpl implements SnapService {
     private final SnapLikeService snapLikeService;
 
     @Override
-    public Long createSnap(CreateSnapReqDto createSnapReqDto, String userUid, boolean isPrivate, List<String> tagUserLoginIds, Long album_id) {
+    public Long createSnap(CreateSnapReqDto createSnapReqDto, String userUid) {
         User foundUser = userRepository.findByLoginId(userUid).orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
-        WritePhotoToFileSystemResult writePhotoToFileSystemResult = savePhotoToFileSystem(foundUser, createSnapReqDto.multipartFile(), isPrivate);
-        Snap savedSnap = snapRepository.save(
-                Snap.builder()
-                        .oneLineJournal(createSnapReqDto.oneLineJournal())
-                        .fileName(writePhotoToFileSystemResult.fileName())
-                        .filePath(writePhotoToFileSystemResult.filePath())
-                        .fileType(createSnapReqDto.multipartFile().getContentType())
-                        .user(foundUser)
-                        .isPrivate(isPrivate)
-                        .build()
-        );
+        WritePhotoToFileSystemResult writePhotoToFileSystemResult = savePhotoToFileSystem(foundUser, createSnapReqDto.multipartFile(), createSnapReqDto.isPrivate());
+
+        Snap snap = Snap.builder()
+                .oneLineJournal(createSnapReqDto.oneLineJournal())
+                .fileName(writePhotoToFileSystemResult.fileName())
+                .filePath(writePhotoToFileSystemResult.filePath())
+                .fileType(createSnapReqDto.multipartFile().getContentType())
+                .user(foundUser)
+                .isPrivate(createSnapReqDto.isPrivate())
+                .build();
+
+        Snap savedSnap = snapRepository.save(snap);
 
         // 사용자가 앨범 선택을 하고 요청을 보낼 경우
-        if (album_id != null) {
+        if (createSnapReqDto.album_id() != null) {
+            Long albumId = createSnapReqDto.album_id();
             // 사용자가 보낸 앨범 id가 유효한지 확인한다.
-            if (albumService.isAlbumExistById(album_id)) {
+            if (albumService.isAlbumExistById(albumId)) {
                 // 사용자가 만든 앨범인지 확인 한다.
-                albumService.isUserHavePermission(foundUser, album_id);
+                albumService.isUserHavePermission(foundUser, albumId);
                 // 위 구문을 실행하는데 문제가 없다면 연관관계를 맺어준다.
-                makeRelationSnapAndAlbum(savedSnap, album_id);
+                makeRelationSnapAndAlbum(savedSnap, albumId);
             }
         } else {
             // 사용자가 앨범 선택을 하지 않고 요청을 보낼 경우
@@ -77,8 +80,8 @@ public class SnapServiceImpl implements SnapService {
         }
 
         // tagUserLoginIds가 파라미터로 주어졌을 경우 태그에 추가
-        if (tagUserLoginIds != null) {
-            snapTagService.addTagUser(tagUserLoginIds, savedSnap);
+        if (createSnapReqDto.tagUserLoginIds() != null) {
+            snapTagService.addTagUser(createSnapReqDto.tagUserLoginIds(), savedSnap);
         }
 
         return savedSnap.getSnapId();
