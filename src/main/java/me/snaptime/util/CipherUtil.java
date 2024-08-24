@@ -1,13 +1,24 @@
 package me.snaptime.util;
 
+import me.snaptime.exception.CustomException;
+import me.snaptime.exception.ExceptionCode;
+
 import javax.crypto.*;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
-public class EncryptionUtil {
-    public static SecretKey generateAESKey() throws Exception {
-        KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
-        keyGenerator.init(256);
+public class CipherUtil {
+    public static SecretKey generateAESKey() {
+
+        KeyGenerator keyGenerator = null;
+        try{
+
+            keyGenerator = KeyGenerator.getInstance("AES");
+            keyGenerator.init(256);
+        } catch (NoSuchAlgorithmException e){
+            throw new CustomException(ExceptionCode.ENCRYPTION_CREATION_FAIL);
+        }
+
         return keyGenerator.generateKey();
     }
 

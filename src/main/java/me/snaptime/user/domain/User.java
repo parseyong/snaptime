@@ -12,6 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.crypto.SecretKey;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -39,15 +40,18 @@ public class User extends BaseTimeEntity implements UserDetails{
     @Column(name = "birth_day")
     private String birthDay;
 
+    @Column(name = "role_name", nullable = false)
+    private String roleName;
+
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "profile_photo_id")
     private ProfilePhoto profilePhoto;
 
-    @Column(name = "role_name", nullable = false)
-    private String roleName;
+    @Column(name = "secret_key", nullable = false)
+    private SecretKey secretKey;
 
     @Builder
-    protected User(String nickname, String loginId, String password, String email, String birthDay, ProfilePhoto profilePhoto){
+    protected User(String nickname, String loginId, String password, String email, String birthDay, ProfilePhoto profilePhoto, SecretKey secretKey){
         this.nickname = nickname;
         this.loginId = loginId;
         this.password =password;
@@ -55,6 +59,7 @@ public class User extends BaseTimeEntity implements UserDetails{
         this.birthDay = birthDay;
         this.roleName = "ROLE_USER";
         this.profilePhoto = profilePhoto;
+        this.secretKey = secretKey;
     }
 
     public void updateUserName(String userName) { this.nickname = userName;}

@@ -12,6 +12,7 @@ import me.snaptime.friend.repository.FriendRepository;
 import me.snaptime.profilePhoto.domain.ProfilePhoto;
 import me.snaptime.user.domain.User;
 import me.snaptime.user.repository.UserRepository;
+import me.snaptime.util.CipherUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,6 +55,7 @@ public class FriendPagingRepositoryTest {
                 .password("1234")
                 .profilePhoto(reqProfilePhoto)
                 .birthDay(String.valueOf(LocalDateTime.now()))
+                .secretKey(CipherUtil.generateAESKey())
                 .build();
         userRepository.save(reqUser);
         for(int i=0;i<5;i++){
@@ -125,6 +127,7 @@ public class FriendPagingRepositoryTest {
                 .password("1234")
                 .profilePhoto(profilePhoto)
                 .birthDay(String.valueOf(LocalDateTime.now()))
+                .secretKey(CipherUtil.generateAESKey())
                 .build();
         userRepository.save(user);
         friendRepository.save(

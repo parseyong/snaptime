@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.snaptime.exception.CustomException;
 import me.snaptime.exception.ExceptionCode;
-import me.snaptime.snap.dto.file.WritePhotoToFileSystemResult;
+import me.snaptime.snap.dto.file.PhotoInfo;
 import me.snaptime.util.FileNameGenerator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -18,46 +18,40 @@ import java.nio.file.Paths;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class FileComponentImpl implements FileComponent {
+public class PhotoComponentImpl implements PhotoComponent {
 
     @Value("${fileSystemPath}")
     private String FOLDER_PATH;
 
     @Override
-    public byte[] downloadPhotoFromFileSystem(String fileName) {
+    public byte[] findPhoto(String fileName) {
+
         String filePath = FOLDER_PATH + fileName;
         try {
             return Files.readAllBytes(new File(filePath).toPath());
         } catch (Exception e) {
             log.error(e.getMessage());
-            throw new CustomException(ExceptionCode.FILE_READ_ERROR);
+            throw new CustomException(ExceptionCode.FILE_READ_FAIL);
         }
     }
 
     @Override
     public void deletePhoto(String fileName) {
+
         String filePath = FOLDER_PATH + fileName;
         try {
             Path path = Paths.get(filePath);
             Files.delete(path);
         } catch (Exception e) {
             log.error(e.getMessage());
-            throw new CustomException(ExceptionCode.FILE_DELETE_ERROR);
+            throw new CustomException(ExceptionCode.FILE_DELETE_FAIL);
         }
     }
 
     @Override
-    public byte[] getPhotoByte(String filePath) {
-        try {
-            return Files.readAllBytes(new File(filePath).toPath());
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            throw new CustomException(ExceptionCode.FILE_READ_ERROR);
-        }
-    }
+    public void updatePhoto(String fileName, byte[] fileBytes) {
 
-    @Override
-    public void updateFileSystemPhoto(String filePath, byte[] fileBytes) {
+        String filePath = FOLDER_PATH + fileName;
         try {
             Files.write(Paths.get(filePath), fileBytes);
         } catch (Exception e) {
@@ -67,17 +61,24 @@ public class FileComponentImpl implements FileComponent {
     }
 
     @Override
-    public WritePhotoToFileSystemResult writePhotoToFileSystem(String fileName, String contentType, byte[] fileBytes) {
-        String generatedName = FileNameGenerator.generatorName(fileName);
+    public PhotoInfo addPhoto(String originalFileName, byte[] fileBytes) {
+
+        // UUID를 통한 파일명 생성
+        String generatedName = FileNameGenerator.generatorName(originalFileName);
+
+        // 파일이 저장될 경로 생성
         String filePath = FOLDER_PATH + generatedName;
+
         try {
             Files.write(Paths.get(filePath), fileBytes);
         } catch (Exception e) {
             log.error(e.getMessage());
             throw new CustomException(ExceptionCode.FILE_WRITE_ERROR);
         }
-        return new WritePhotoToFileSystemResult(
-                filePath, generatedName
-        );
+
+        return PhotoInfo.builder()
+                .filePath(filePath)
+                .fileName(generatedName)
+                .build();
     }
 }

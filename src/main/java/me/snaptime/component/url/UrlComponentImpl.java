@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class UrlComponentImpl implements UrlComponent {
+
     private final HttpServletRequest request;
 
     @Override
@@ -16,8 +17,8 @@ public class UrlComponentImpl implements UrlComponent {
     }
 
     @Override
-    public String makeProfileURL(Long id) {
+    public String makeProfileURL(Long profilePhotoId) {
         return request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort() +
-                "/profile-photos/"+id;
+                "/profile-photos/"+profilePhotoId;
     }
 }

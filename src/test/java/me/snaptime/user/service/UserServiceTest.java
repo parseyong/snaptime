@@ -94,7 +94,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("given_when_then 방식으로 signUp 서비스 성공 테스트")
-    public void signUp() {
+    public void signUp() throws Exception {
         //given
         UserReqDto givenRequest = UserReqDto.builder()
                 .name("홍길순")

@@ -31,9 +31,11 @@ public class PhotoController {
     public ResponseEntity<byte[]> findPhoto(
             final @RequestParam("fileName") String fileName,
             final @RequestParam("isEncrypted") boolean isEncrypted,
-            final @AuthenticationPrincipal UserDetails userDetails
-    ) {
-        String uId = userDetails.getUsername();
+            final @AuthenticationPrincipal UserDetails userDetails) {
+        String uId = null;
+        if(userDetails != null)
+            uId = userDetails.getUsername();
+
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_PNG).body(
                 snapService.downloadPhotoFromFileSystem(fileName, uId, isEncrypted)
         );

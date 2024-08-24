@@ -14,6 +14,7 @@ import me.snaptime.profilePhoto.domain.ProfilePhoto;
 import me.snaptime.snap.domain.Snap;
 import me.snaptime.user.domain.User;
 import me.snaptime.user.repository.UserRepository;
+import me.snaptime.util.CipherUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -79,6 +80,7 @@ public class SnapPagingRepositoryImplTest {
                 .password("1234")
                 .birthDay(String.valueOf(LocalDateTime.now()))
                 .profilePhoto(profilePhoto1)
+                .secretKey(CipherUtil.generateAESKey())
                 .build();
         User user2 = User.builder()
                 .email("test2@google.com")
@@ -87,6 +89,7 @@ public class SnapPagingRepositoryImplTest {
                 .password("1234")
                 .birthDay(String.valueOf(LocalDateTime.now()))
                 .profilePhoto(profilePhoto2)
+                .secretKey(CipherUtil.generateAESKey())
                 .build();
         User user3 = User.builder()
                 .email("test3@google.com")
@@ -95,6 +98,7 @@ public class SnapPagingRepositoryImplTest {
                 .password("1234")
                 .birthDay(String.valueOf(LocalDateTime.now()))
                 .profilePhoto(profilePhoto3)
+                .secretKey(CipherUtil.generateAESKey())
                 .build();
         User user4 = User.builder()
                 .email("test4@google.com")
@@ -103,6 +107,7 @@ public class SnapPagingRepositoryImplTest {
                 .password("1234")
                 .birthDay(String.valueOf(LocalDateTime.now()))
                 .profilePhoto(profilePhoto4)
+                .secretKey(CipherUtil.generateAESKey())
                 .build();
 
         userRepository.saveAll(List.of(reqUser,user2,user3,user4));

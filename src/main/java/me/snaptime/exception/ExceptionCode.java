@@ -34,7 +34,8 @@ public enum ExceptionCode {
 
     // Encryption Exception
     ENCRYPTION_NOT_EXIST(HttpStatus.BAD_REQUEST, "암호키를 찾을 수 없습니다."),
-    ENCRYPTION_ERROR(HttpStatus.BAD_REQUEST, "암호화키를 생성하던 도중 문제가 발생했습니다. 관리자에게 문의해주세요"),
+    ENCRYPTION_CREATION_FAIL(HttpStatus.BAD_REQUEST, "암호화키를 생성하던 도중 문제가 발생했습니다. 관리자에게 문의해주세요"),
+    PRIVATE_KEY_ALREADY_EXIST(HttpStatus.INTERNAL_SERVER_ERROR,"이미 개인키가 존재합니다. 관리자에게 문의해주세요."),
 
     // User Exception
     USER_NOT_EXIST(HttpStatus.BAD_REQUEST, "사용자가 존재하지 않습니다."),
@@ -52,8 +53,8 @@ public enum ExceptionCode {
 
     // File Exception
     FILE_WRITE_ERROR(HttpStatus.BAD_REQUEST, "파일을 쓰던 중 문제가 발생했습니다."),
-    FILE_DELETE_ERROR(HttpStatus.BAD_REQUEST, "파일을 시스템에서 삭제하던 중 문제가 발생했습니다."),
-    FILE_READ_ERROR(HttpStatus.BAD_REQUEST, "파일을 시스템에서 읽어오던 중 문제가 발생했습니다."),
+    FILE_DELETE_FAIL(HttpStatus.BAD_REQUEST, "파일을 시스템에서 삭제하던 중 문제가 발생했습니다."),
+    FILE_READ_FAIL(HttpStatus.BAD_REQUEST, "파일을 시스템에서 읽어오던 중 문제가 발생했습니다."),
 
     // Change Snap Visibility
     CHANGE_SNAP_VISIBILITY_ERROR(HttpStatus.BAD_REQUEST, "이미 설정되어 있습니다"),

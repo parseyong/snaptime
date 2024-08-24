@@ -5,14 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import me.snaptime.album.domain.Album;
 import me.snaptime.album.repository.AlbumRepository;
 import me.snaptime.album.service.AlbumService;
-import me.snaptime.component.encryption.EncryptionComponent;
-import me.snaptime.component.file.FileComponent;
+import me.snaptime.component.encryption.CipherComponent;
+import me.snaptime.component.file.PhotoComponent;
 import me.snaptime.component.url.UrlComponent;
 import me.snaptime.exception.CustomException;
 import me.snaptime.exception.ExceptionCode;
-import me.snaptime.snap.domain.Encryption;
 import me.snaptime.snap.domain.Snap;
-import me.snaptime.snap.dto.file.WritePhotoToFileSystemResult;
+import me.snaptime.snap.dto.file.PhotoInfo;
 import me.snaptime.snap.dto.req.CreateSnapReqDto;
 import me.snaptime.snap.dto.req.ModifySnapReqDto;
 import me.snaptime.snap.dto.res.SnapDetailInfoResDto;
@@ -23,7 +22,7 @@ import me.snaptime.snapTag.dto.res.TagUserFindResDto;
 import me.snaptime.snapTag.service.SnapTagService;
 import me.snaptime.user.domain.User;
 import me.snaptime.user.repository.UserRepository;
-import me.snaptime.util.EncryptionUtil;
+import me.snaptime.util.CipherUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,8 +39,8 @@ public class SnapServiceImpl implements SnapService {
     private final SnapRepository snapRepository;
     private final UserRepository userRepository;
     private final AlbumRepository albumRepository;
-    private final FileComponent fileComponent;
-    private final EncryptionComponent encryptionComponent;
+    private final PhotoComponent photoComponent;
+    private final CipherComponent cipherComponent;
     private final UrlComponent urlComponent;
     private final SnapTagService snapTagService;
     private final AlbumService albumService;
@@ -49,15 +48,18 @@ public class SnapServiceImpl implements SnapService {
 
     @Override
     public Long createSnap(CreateSnapReqDto createSnapReqDto, String userUid) {
-        User foundUser = userRepository.findByLoginId(userUid).orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
-        WritePhotoToFileSystemResult writePhotoToFileSystemResult = savePhotoToFileSystem(foundUser, createSnapReqDto.multipartFile(), createSnapReqDto.isPrivate());
+
+        User user = userRepository.findByLoginId(userUid)
+                .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
+
+        PhotoInfo photoInfo = savePhotoToFileSystem(user, createSnapReqDto.multipartFile(), createSnapReqDto.isPrivate());
 
         Snap snap = Snap.builder()
                 .oneLineJournal(createSnapReqDto.oneLineJournal())
-                .fileName(writePhotoToFileSystemResult.fileName())
-                .filePath(writePhotoToFileSystemResult.filePath())
+                .fileName(photoInfo.fileName())
+                .filePath(photoInfo.filePath())
                 .fileType(createSnapReqDto.multipartFile().getContentType())
-                .user(foundUser)
+                .user(user)
                 .isPrivate(createSnapReqDto.isPrivate())
                 .build();
 
@@ -69,14 +71,14 @@ public class SnapServiceImpl implements SnapService {
             // 사용자가 보낸 앨범 id가 유효한지 확인한다.
             if (albumService.isAlbumExistById(albumId)) {
                 // 사용자가 만든 앨범인지 확인 한다.
-                albumService.isUserHavePermission(foundUser, albumId);
+                albumService.isUserHavePermission(user, albumId);
                 // 위 구문을 실행하는데 문제가 없다면 연관관계를 맺어준다.
                 makeRelationSnapAndAlbum(savedSnap, albumId);
             }
         } else {
             // 사용자가 앨범 선택을 하지 않고 요청을 보낼 경우
             // non-classification 앨범에 스냅을 추가함
-            processSnapForNonClassification(savedSnap, foundUser);
+            processSnapForNonClassification(savedSnap, user);
         }
 
         // tagUserLoginIds가 파라미터로 주어졌을 경우 태그에 추가
@@ -107,8 +109,11 @@ public class SnapServiceImpl implements SnapService {
 
     @Override
     public Long modifySnap(Long snapId, ModifySnapReqDto modifySnapReqDto, String userUid, List<String> tagUserLoginIds, boolean isPrivate) {
-        Snap foundSnap = snapRepository.findById(snapId).orElseThrow(() -> new CustomException(ExceptionCode.SNAP_NOT_EXIST));
-        User foundUser = userRepository.findByLoginId(userUid).orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
+        Snap foundSnap = snapRepository.findById(snapId)
+                .orElseThrow(() -> new CustomException(ExceptionCode.SNAP_NOT_EXIST));
+
+        User foundUser = userRepository.findByLoginId(userUid)
+                .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
         // 수정하려는 유저와 수정되려는 스냅의 저자가 일치하는지 확인한다.
         if (!foundSnap.getUser().getUserId().equals(foundUser.getUserId())) {
@@ -122,18 +127,11 @@ public class SnapServiceImpl implements SnapService {
                 if (isPrivate) {
                     // 사용자가 이미지 수정까지 요구했고, 암호화까지 원한다면
                     // getEncryption을 통해 사용자의 암호화키를 가져온다. (없으면 null이다.)
-                    Encryption encryption = encryptionComponent.getEncryption(foundUser);
-                    // 사용자의 암호화키가 존재하는지 확인한다.
-                    if (encryption != null) {
-                        // 기존 암호화키가 존재할 경우 기존의 암호화키로 데이터를 암호화한 후 저장소에 쓰기 한다.
-                        byte[] encryptedByte = encryptionComponent.encryptData(encryption, foundPhotoByte);
-                        fileComponent.updateFileSystemPhoto(foundSnap.getFilePath(), encryptedByte);
-                    } else {
-                        // 암호화키가 존재하지 않을 경우 새로운 암호화키를 생성 한 뒤에 저장소에 쓰기 한다.
-                        Encryption newEncryption = encryptionComponent.setEncryption(foundUser);
-                        byte[] encryptedByte = encryptionComponent.encryptData(newEncryption, foundPhotoByte);
-                        fileComponent.updateFileSystemPhoto(foundSnap.getFilePath(), encryptedByte);
-                    }
+                    SecretKey secretKey = foundUser.getSecretKey();
+
+                    byte[] encryptedByte = cipherComponent.encryptData(secretKey, foundPhotoByte);
+                    photoComponent.updatePhoto(foundSnap.getFilePath(), encryptedByte);
+
                     // Snap의 암호화 상태를 활성으로 변경한다.
                     foundSnap.updateIsPrivate(true);
                     // 태그 목록을 삭제한다.
@@ -141,7 +139,7 @@ public class SnapServiceImpl implements SnapService {
                 } else {
                     // 사용자가 이미지 수정을 요구하였으나, 암호화를 원하지 않는다면
                     // fileComponent를 통해 원래 경로에 사진을 저장한다.
-                    fileComponent.updateFileSystemPhoto(foundSnap.getFilePath(), foundPhotoByte);
+                    photoComponent.updatePhoto(foundSnap.getFilePath(), foundPhotoByte);
                     // Snap의 암호화 상태를 비활성화로 변경한다.
                     foundSnap.updateIsPrivate(false);
 
@@ -170,20 +168,19 @@ public class SnapServiceImpl implements SnapService {
         }
 
         // 저장된 filePath 경로로 부터 파일을 가져온다.
-        byte[] foundPhotoByte = fileComponent.getPhotoByte(foundSnap.getFilePath());
+        byte[] foundPhotoByte = photoComponent.findPhoto(foundSnap.getFileName());
         if(isPrivate) {
             // public -> private (암호화)
-            Encryption encryption = encryptionComponent.setEncryption(foundUser);
-            byte[] encryptedByte = encryptionComponent.encryptData(encryption, foundPhotoByte);
-            fileComponent.updateFileSystemPhoto(foundSnap.getFilePath(), encryptedByte);
+            SecretKey secretKey = foundUser.getSecretKey();
+            byte[] encryptedByte = cipherComponent.encryptData(secretKey, foundPhotoByte);
+            photoComponent.updatePhoto(foundSnap.getFilePath(), encryptedByte);
             // 태그 목록을 삭제한다.
             snapTagService.deleteAllTagUser(foundSnap);
         } else {
             // private -> public (복호화)
-            Encryption encryption = encryptionComponent.getEncryption(foundUser);
-            byte[] decryptedByte = encryptionComponent.decryptData(encryption, foundPhotoByte);
-            encryptionComponent.deleteEncryption(encryption);
-            fileComponent.updateFileSystemPhoto(foundSnap.getFilePath(), decryptedByte);
+            SecretKey secretKey = foundUser.getSecretKey();
+            byte[] decryptedByte = cipherComponent.decryptData(secretKey, foundPhotoByte);
+            photoComponent.updatePhoto(foundSnap.getFilePath(), decryptedByte);
         }
         foundSnap.updateIsPrivate(isPrivate);
 
@@ -203,21 +200,24 @@ public class SnapServiceImpl implements SnapService {
         }
         String fileName = foundSnap.getFileName();
         // 저장소에 보관되어있는 사진을 삭제한다.
-        fileComponent.deletePhoto(fileName);
+        photoComponent.deletePhoto(fileName);
         // DB에서 스냅을 삭제한다.
         snapRepository.delete(foundSnap);
     }
 
     @Override
     public byte[] downloadPhotoFromFileSystem(String fileName, String uId, boolean isEncrypted) {
-        byte[] photoData = fileComponent.downloadPhotoFromFileSystem(fileName);
+
+        byte[] photoData = photoComponent.findPhoto(fileName);
+
         if (isEncrypted) {
+            User user = userRepository.findByLoginId(uId)
+                    .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
             try {
-                SecretKey secretKey = encryptionComponent.getSecretKey(uId);
-                return EncryptionUtil.decryptData(photoData, secretKey);
+                return CipherUtil.decryptData(photoData, user.getSecretKey());
             } catch (Exception e) {
                 log.error(e.getMessage());
-                throw new CustomException(ExceptionCode.ENCRYPTION_ERROR);
+                throw new CustomException(ExceptionCode.ENCRYPTION_CREATION_FAIL);
             }
         }
         return photoData;
@@ -238,18 +238,18 @@ public class SnapServiceImpl implements SnapService {
         }
     }
 
-    private WritePhotoToFileSystemResult savePhotoToFileSystem(User user, MultipartFile multipartFile, boolean isPrivate) {
+    private PhotoInfo savePhotoToFileSystem(User user, MultipartFile multipartFile, boolean isPrivate) {
         try {
             if (isPrivate) {
-                Encryption encryption = encryptionComponent.setEncryption(user);
-                byte[] encryptedData = encryptionComponent.encryptData(encryption, multipartFile.getInputStream().readAllBytes());
-                return fileComponent.writePhotoToFileSystem(multipartFile.getOriginalFilename(), multipartFile.getContentType(), encryptedData);
+                SecretKey secretKey = user.getSecretKey();
+                byte[] encryptedData = cipherComponent.encryptData(secretKey, multipartFile.getInputStream().readAllBytes());
+                return photoComponent.addPhoto(multipartFile.getOriginalFilename(), encryptedData);
             } else {
-                return fileComponent.writePhotoToFileSystem(multipartFile.getOriginalFilename(), multipartFile.getContentType(), multipartFile.getInputStream().readAllBytes());
+                return photoComponent.addPhoto(multipartFile.getOriginalFilename(), multipartFile.getInputStream().readAllBytes());
         }
         } catch (Exception e) {
             log.error(e.getMessage());
-            throw new CustomException(ExceptionCode.FILE_READ_ERROR);
+            throw new CustomException(ExceptionCode.FILE_READ_FAIL);
         }
     }
 

@@ -1,6 +1,9 @@
 package me.snaptime.snap.dto.file;
 
-public record WritePhotoToFileSystemResult(
+import lombok.Builder;
+
+@Builder
+public record PhotoInfo(
         String filePath,
         String fileName
 ) {

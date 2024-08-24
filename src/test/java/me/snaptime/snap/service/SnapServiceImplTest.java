@@ -1,8 +1,8 @@
 package me.snaptime.snap.service;
 
 import me.snaptime.album.repository.AlbumRepository;
-import me.snaptime.component.encryption.EncryptionComponent;
-import me.snaptime.component.file.FileComponent;
+import me.snaptime.component.encryption.CipherComponent;
+import me.snaptime.component.file.PhotoComponent;
 import me.snaptime.component.url.UrlComponent;
 import me.snaptime.snap.repository.SnapRepository;
 import me.snaptime.snap.service.impl.SnapServiceImpl;
@@ -16,7 +16,7 @@ import org.springframework.core.io.ClassPathResource;
 @ExtendWith(MockitoExtension.class)
 public class SnapServiceImplTest {
     @Mock
-    private FileComponent fileComponent;
+    private PhotoComponent photoComponent;
 
     @Mock
     private SnapRepository snapRepository;
@@ -25,7 +25,7 @@ public class SnapServiceImplTest {
     private AlbumRepository albumRepository;
 
     @Mock
-    private EncryptionComponent encryptionComponent;
+    private CipherComponent cipherComponent;
 
     @Mock
     private UserRepository userRepository;
