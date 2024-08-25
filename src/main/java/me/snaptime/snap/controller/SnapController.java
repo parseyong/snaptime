@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.snaptime.common.CommonResponseDto;
 import me.snaptime.snap.dto.req.CreateSnapReqDto;
 import me.snaptime.snap.dto.req.ModifySnapReqDto;
+import me.snaptime.snap.dto.res.SnapFindAllInAlbumResDto;
 import me.snaptime.snap.dto.res.SnapFindDetailResDto;
 import me.snaptime.snap.service.SnapService;
 import org.springframework.http.HttpStatus;
@@ -21,20 +22,20 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/snap")
 @RequiredArgsConstructor
 @Tag(name = "[Snap] Snap API")
 @Slf4j
 public class SnapController {
+
     private final SnapService snapService;
 
     @Operation(summary = "Snap 생성", description = "Empty Value를 보내지마세요")
-    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/snap", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<CommonResponseDto<Long>> createSnap(
             final @ModelAttribute CreateSnapReqDto createSnapReqDto,
-            final @AuthenticationPrincipal UserDetails userDetails) {
-        String uId = userDetails.getUsername();
-        Long snapId = snapService.createSnap(createSnapReqDto,uId);
+            final @AuthenticationPrincipal String reqLoginId) {
+
+        Long snapId = snapService.createSnap(createSnapReqDto,reqLoginId);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new CommonResponseDto<>(
@@ -43,9 +44,19 @@ public class SnapController {
         ));
     }
 
+    @GetMapping("/albums/{albumId}/snaps")
+    @Operation(summary = "Album에 포함된 snap조회", description = "Album에 포함된 snap을 모두 조회합니다.")
+    public ResponseEntity<CommonResponseDto<SnapFindAllInAlbumResDto>> findAllSnapInAlbum(
+            final @PathVariable("albumId") Long albumId,
+            final @AuthenticationPrincipal String reqLoginId) {
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(CommonResponseDto.of("앨범 내 snap조회 성공", snapService.findAllSnapInAlbum(reqLoginId, albumId)));
+    }
+
     @Operation(summary = "Snap 찾기", description = "Snap 한 개 가져오기")
-    @Parameter(name = "id", description = "찾을 Snap의 id")
-    @GetMapping("/{id}")
+    @Parameter(name = "id", description = "찾을 Snap의 albumId")
+    @GetMapping(value = "/snaps/{id}")
     public ResponseEntity<CommonResponseDto<SnapFindDetailResDto>> findSnap(
             final @PathVariable("id") Long id,
             final @AuthenticationPrincipal UserDetails userDetails
@@ -65,7 +76,7 @@ public class SnapController {
             @Parameter(name = "snapId", description = "변경 할 Snap의 ID"),
             @Parameter(name = "tagUserLoginIds", description = "변경 할 TagID")
     })
-    @PutMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PutMapping(value = "/snap", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<CommonResponseDto<Long>> modifySnap(
             final @ModelAttribute ModifySnapReqDto modifySnapReqDto,
             final @RequestParam boolean isPrivate,
@@ -83,9 +94,9 @@ public class SnapController {
     }
 
     @Operation(summary = "Snap 공개상태 변경", description = "Snap 공개 상태를 변경합니다.")
-    @PostMapping("/visibility")
+    @PostMapping("/snaps/visibility")
     @Parameters({
-            @Parameter(name = "snapId", description = "변경할 Snap id"),
+            @Parameter(name = "snapId", description = "변경할 Snap albumId"),
             @Parameter(name = "isPrivate", description = "변경할 상태")
     })
     public ResponseEntity<CommonResponseDto<Void>> changeVisibility(
@@ -104,7 +115,7 @@ public class SnapController {
     }
 
     @Operation(summary = "Snap 앨범 위치 변경", description = "Snap의 앨범 위치를 변경합니다.")
-    @PostMapping("/album")
+    @PostMapping("/snaps/album")
     @Parameters({
             @Parameter(name = "snapId", description = "위치를 변경할 Snap Id"),
             @Parameter(name = "albumId", description = "이동할 Album Id")
@@ -125,7 +136,7 @@ public class SnapController {
     }
 
     @Operation(summary = "Snap 삭제", description = "스냅을 삭제합니다.")
-    @DeleteMapping
+    @DeleteMapping(value = "/snap")
     @Parameter(name = "snapId", description = "삭제할 Snap ID")
     ResponseEntity<CommonResponseDto<Void>> deleteSnap(
             final @RequestParam Long snapId,

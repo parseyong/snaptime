@@ -36,8 +36,8 @@ public class ProfileController {
     private final ProfileService profileService;
 
     @Operation(summary = "유저 앨범, 스냅 조회", description = "유저의 앨범들과, 각 앨범의 스냅들을 조회합니다." +
-            "<br> 자신의 프로필 조회 -> 앨범 당 private, public 관계 없이 최근 snap 2개 리턴" +
-            "<br> 다른 사람의 프로필 조회 -> snap이 전부 private이거나 없는 경우 앨범 리턴 x 그리고 private 인 snap 리턴 x")
+            "<br> 자신의 프로필 조회 -> 앨범 당 private, public 관계 없이 최근 snapFindResDtos 2개 리턴" +
+            "<br> 다른 사람의 프로필 조회 -> snap이 전부 private이거나 없는 경우 앨범 리턴 x 그리고 private 인 snapFindResDtos 리턴 x")
     @Parameter(name = "targetLoginId", description = "앨범과 사진들을 가져오기 위한 loginId", required = true)
     @GetMapping("/album-snap")
     public ResponseEntity<CommonResponseDto<List<AlbumSnapResDto>>> getAlbumSnap(@AuthenticationPrincipal UserDetails userDetails,
@@ -69,7 +69,7 @@ public class ProfileController {
                 ));
     }
 
-    @Operation(summary = "유저의 Snap 수, Follower 수,  Following 수 조회", description = "유저의 loginId로 유저의 snap 수, 팔로워 수, 팔로잉 수를 조회합니다.")
+    @Operation(summary = "유저의 Snap 수, Follower 수,  Following 수 조회", description = "유저의 loginId로 유저의 snapFindResDtos 수, 팔로워 수, 팔로잉 수를 조회합니다.")
     @Parameter(name = "loginId", description = "팔로워와 팔로잉 수를 가져오기 위한 loginId", required = true)
     @GetMapping("/count")
     public ResponseEntity<CommonResponseDto<ProfileCntResDto>> getProfileCnt(@RequestParam("loginId")
@@ -82,8 +82,8 @@ public class ProfileController {
                 ));
     }
 
-    @Operation(summary = "유저의 태그된 snap 들 조회", description = "유저의 loginId로 유저가 태그된 snap 들을 조회합니다" +
-            "<br> snap id 기준 내림차순으로 조회합니다.(최근 snap 이 제일 먼저 조회)")
+    @Operation(summary = "유저의 태그된 snapFindResDtos 들 조회", description = "유저의 loginId로 유저가 태그된 snapFindResDtos 들을 조회합니다" +
+            "<br> snapFindResDtos albumId 기준 내림차순으로 조회합니다.(최근 snapFindResDtos 이 제일 먼저 조회)")
     @Parameter(name = "loginId", description = "팔로워와 팔로잉 수를 가져오기 위한 loginId", required = true)
     @GetMapping("/tag-snap")
     public ResponseEntity<CommonResponseDto<List<ProfileTagSnapResDto>>> getTagSnap(@RequestParam("loginId")

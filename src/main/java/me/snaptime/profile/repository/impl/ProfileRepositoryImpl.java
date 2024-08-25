@@ -31,7 +31,7 @@ public class ProfileRepositoryImpl implements ProfileRepository {
 
     //유저 앨범들과 앨범에 해당하는 스냅들 가져오는 메서드.
     //앨범에 snap이 존재하지 않아도 return 할 list에 album만 추가하고 나머지 null처리
-    //snap에 isPrivate이 존재한다, 내가 조회 -> 전부 리턴 | 남이 조회 -> isPrivate= True 인 snap 제외
+    //snap에 isPrivate이 존재한다, 내가 조회 -> 전부 리턴 | 남이 조회 -> isPrivate= True 인 snapFindResDtos 제외
     @Override
     public List<AlbumSnapResDto> findAlbumSnap(User targetUser, Boolean checkPermission) {
         List<Tuple> albums = jpaQueryFactory

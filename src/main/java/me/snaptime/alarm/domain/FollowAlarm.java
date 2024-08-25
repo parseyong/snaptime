@@ -21,12 +21,12 @@ public class FollowAlarm extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long followAlarmId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     // 행위(팔로우 요청)을 통해 receiver에게 알림을 보내는 유저
     private User sender;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     // 알림을 받는 유저
     private User receiver;

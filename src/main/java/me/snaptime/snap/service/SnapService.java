@@ -2,6 +2,7 @@ package me.snaptime.snap.service;
 
 import me.snaptime.snap.dto.req.CreateSnapReqDto;
 import me.snaptime.snap.dto.req.ModifySnapReqDto;
+import me.snaptime.snap.dto.res.SnapFindAllInAlbumResDto;
 import me.snaptime.snap.dto.res.SnapFindDetailResDto;
 
 import java.util.List;
@@ -15,4 +16,5 @@ public interface SnapService {
     void deleteSnap(Long id, String Uid);
     byte[] downloadPhotoFromFileSystem(String fileName, String uId, boolean isEncrypted);
     void relocateSnap(Long snapId, Long albumId, String uId);
+    SnapFindAllInAlbumResDto findAllSnapInAlbum(String uId, Long album_id);
 }

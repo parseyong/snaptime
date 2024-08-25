@@ -114,7 +114,7 @@ public class ReplyControllerTest {
 
     @Test
     @WithMockUser
-    @DisplayName("댓글 등록 테스트 -> 실패(존재하지 않는 snap)")
+    @DisplayName("댓글 등록 테스트 -> 실패(존재하지 않는 snapFindResDtos)")
     public void addParentReplyTest4() throws Exception {
         //given
         Gson gson = new Gson();

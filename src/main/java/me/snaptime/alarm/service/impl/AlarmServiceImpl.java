@@ -155,9 +155,9 @@ public class AlarmServiceImpl implements AlarmService {
 
         List<AlarmFindResDto> alarmFindResDtos = new ArrayList<>();
 
-        List<FollowAlarm> followAlarms = followAlarmRepository.findByReceiverAndIsRead(reqUser,isRead);
-        List<ReplyAlarm> replyAlarms = replyAlarmRepository.findByReceiverAndIsRead(reqUser,isRead);
-        List<SnapAlarm> snapAlarms = snapAlarmRepository.findByReceiverAndIsRead(reqUser,isRead);
+        List<FollowAlarm> followAlarms = followAlarmRepository.findAllByReceiverAndIsRead(reqUser,isRead);
+        List<ReplyAlarm> replyAlarms = replyAlarmRepository.findAllByReceiverAndIsRead(reqUser,isRead);
+        List<SnapAlarm> snapAlarms = snapAlarmRepository.findAllByReceiverAndIsRead(reqUser,isRead);
 
         followAlarms.forEach(followAlarm -> {
 

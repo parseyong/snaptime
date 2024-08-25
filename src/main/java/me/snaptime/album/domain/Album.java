@@ -26,10 +26,10 @@ public class Album extends BaseTimeEntity {
     @Column(nullable = false,name = "album_name")
     private String albumName;
 
-    @OneToMany(mappedBy = "album")
+    @OneToMany(mappedBy = "album", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Snap> snaps;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id")
     private User user;
@@ -42,5 +42,10 @@ public class Album extends BaseTimeEntity {
 
     public void updateAlbumName(String albumName) {
         this.albumName = albumName;
+    }
+
+    public void resetSnapsForDelete(){
+        // null로 설정 시 JPA가 상태추적을 하지 않기때문에 clear()로 해줘야합니다.
+        this.snaps.clear();
     }
 }

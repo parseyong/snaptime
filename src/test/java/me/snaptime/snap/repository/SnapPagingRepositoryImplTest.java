@@ -135,7 +135,7 @@ public class SnapPagingRepositoryImplTest {
     }
 
     @Test
-    @DisplayName("snap 페이징 조회 테스트 : 성공")
+    @DisplayName("snapFindResDtos 페이징 조회 테스트 : 성공")
     public void findSnapPagingTest1(){
         // given
 
@@ -147,7 +147,7 @@ public class SnapPagingRepositoryImplTest {
     }
 
     @Test
-    @DisplayName("snap 페이징 조회 테스트 : 실패(존재하지 않는 페이지)")
+    @DisplayName("snapFindResDtos 페이징 조회 테스트 : 실패(존재하지 않는 페이지)")
     public void findSnapPagingTest2(){
         // given
 

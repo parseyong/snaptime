@@ -66,7 +66,7 @@ public class UserSignServiceImpl implements UserSignService {
                 .build();
 
         // NonClassification 앨범 생성
-        albumService.createNonClassificationAlbum(user);
+        albumService.addBasicAlbum(user);
 
         return UserFindResDto.toDto(userRepository.save(user));
     }

@@ -6,8 +6,10 @@ import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import me.snaptime.album.domain.Album;
 import me.snaptime.exception.CustomException;
 import me.snaptime.exception.ExceptionCode;
+import me.snaptime.snap.domain.Snap;
 import me.snaptime.snap.repository.SnapPagingRepository;
 import me.snaptime.user.domain.User;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import static me.snaptime.friend.domain.QFriend.friend;
 import static me.snaptime.snap.domain.QSnap.snap;
@@ -48,6 +51,18 @@ public class SnapPagingRepositoryImpl implements SnapPagingRepository {
             throw new CustomException(ExceptionCode.PAGE_NOT_FOUND);
 
         return tuples;
+    }
+
+    @Override
+    public Optional<Snap> findThumnailSnap(Album album) {
+
+        Optional<Snap> thumnailSnapOptional = Optional.ofNullable(jpaQueryFactory.select(snap)
+                .from(snap)
+                .where(snap.isPrivate.isFalse().and(snap.album.albumId.eq(album.getAlbumId())))
+                .orderBy(snap.createdDate.desc())
+                .fetchFirst());
+
+        return thumnailSnapOptional;
     }
 
     // 정렬 조건을 동적으로 생성하는 메소드

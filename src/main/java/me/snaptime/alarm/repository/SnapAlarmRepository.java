@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface SnapAlarmRepository extends JpaRepository<SnapAlarm,Long> {
 
-    List<SnapAlarm> findByReceiverAndIsRead(User user, boolean isRead);
+    List<SnapAlarm> findAllByReceiverAndIsRead(User user, boolean isRead);
 
     Long countByReceiverAndIsRead(User user, boolean isRead);
 }

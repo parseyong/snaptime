@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface FollowAlarmRepository extends JpaRepository<FollowAlarm,Long> {
 
-    List<FollowAlarm> findByReceiverAndIsRead(User user, boolean isRead);
+    List<FollowAlarm> findAllByReceiverAndIsRead(User user, boolean isRead);
 
     Long countByReceiverAndIsRead(User user, boolean isRead);
 }

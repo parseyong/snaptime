@@ -87,7 +87,7 @@ public class ReplyServiceImplTest {
     }
 
     @Test
-    @DisplayName("댓글 등록 테스트 -> 실패(존재하지 않는 snap)")
+    @DisplayName("댓글 등록 테스트 -> 실패(존재하지 않는 snapFindResDtos)")
     public void addParentReplyTest2(){
         //given
         given(userRepository.findByLoginId(any(String.class))).willReturn(Optional.ofNullable(user));

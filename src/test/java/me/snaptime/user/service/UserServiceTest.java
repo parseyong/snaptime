@@ -111,7 +111,7 @@ class UserServiceTest {
                 .then(returnsFirstArg());
         Mockito.when(profilePhotoRepository.save(any(ProfilePhoto.class)))
                 .then(returnsFirstArg());
-        given(albumService.createNonClassificationAlbum(any(User.class))).willReturn(1L);
+
         //when
         UserFindResDto userFindResDto = signService.signUp(givenRequest);
 

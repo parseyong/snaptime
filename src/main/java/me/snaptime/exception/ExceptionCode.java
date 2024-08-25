@@ -61,10 +61,10 @@ public enum ExceptionCode {
 
     // Album Exception
     ALBUM_NOT_EXIST(HttpStatus.BAD_REQUEST, "앨범이 존재하지 않습니다."),
+    BASIC_ALBUM_NOT_EXIST(HttpStatus.BAD_REQUEST, "기본앨범이 존재하지 않습니다. 관리자에게 문의하세요."),
     ALBUM_ID_IS_NOT_GIVEN(HttpStatus.BAD_REQUEST, "앨범 id가 주어지지 않았습니다."),
     ALBUM_USER_NOT_MATCH(HttpStatus.BAD_REQUEST, "앨범을 만든 사용자와 일치하지 않습니다."),
-    NON_CLASSIFICATION_ALBUM_IS_NOT_EXIST(HttpStatus.BAD_REQUEST, "모든 스냅 앨범이 존재하지 않습니다."),
-    NOT_DELETE_NON_CLASSIFICATION_ALBUM(HttpStatus.BAD_REQUEST, "모든 스냅 앨범은 삭제할 수 없습니다."),
+    BASIC_ALBUM_CANNOT_BE_MODIFIED_OR_DELETED(HttpStatus.BAD_REQUEST, "기본앨범은 수정,삭제할 수 없습니다."),
 
     // Jwt Exception
     ACCESS_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED,  "AccessToken 이 만료되었습니다."),

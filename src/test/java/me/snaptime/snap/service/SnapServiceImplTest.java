@@ -93,13 +93,13 @@ public class SnapServiceImplTest {
         // given
         Long givenId = 1L;
         Snap expectedSnap = Snap.builder()
-                .id(1L)
+                .albumId(1L)
                 .oneLineJournal("한줄일기")
                 .user(null)
                 .album(null)
                 .build();
         FindSnapResDto expectedDto = FindSnapResDto.builder()
-                .id(1L)
+                .albumId(1L)
                 .oneLineJournal("한줄일기")
                 .userUid(null)
                 .albumName(null)
@@ -109,7 +109,7 @@ public class SnapServiceImplTest {
         // when
         FindSnapResDto result = snapServiceImpl.findSnap(1L);
         // then
-        assertEquals(expectedDto.id(), result.id());
+        assertEquals(expectedDto.albumId(), result.albumId());
         assertEquals(expectedDto.albumName(), result.albumName());
         assertEquals(expectedDto.userUid(), result.userUid());
         assertEquals(expectedDto.oneLineJournal(), result.oneLineJournal());

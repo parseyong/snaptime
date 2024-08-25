@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ReplyAlarmRepository extends JpaRepository<ReplyAlarm,Long> {
 
-    List<ReplyAlarm> findByReceiverAndIsRead(User user, boolean isRead);
+    List<ReplyAlarm> findAllByReceiverAndIsRead(User user, boolean isRead);
 
     Long countByReceiverAndIsRead(User user, boolean isRead);
 }
