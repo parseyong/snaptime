@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.snaptime.common.CommonResponseDto;
 import me.snaptime.snap.dto.req.CreateSnapReqDto;
 import me.snaptime.snap.dto.req.ModifySnapReqDto;
-import me.snaptime.snap.dto.res.SnapDetailInfoResDto;
+import me.snaptime.snap.dto.res.SnapFindDetailResDto;
 import me.snaptime.snap.service.SnapService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -46,7 +46,7 @@ public class SnapController {
     @Operation(summary = "Snap 찾기", description = "Snap 한 개 가져오기")
     @Parameter(name = "id", description = "찾을 Snap의 id")
     @GetMapping("/{id}")
-    public ResponseEntity<CommonResponseDto<SnapDetailInfoResDto>> findSnap(
+    public ResponseEntity<CommonResponseDto<SnapFindDetailResDto>> findSnap(
             final @PathVariable("id") Long id,
             final @AuthenticationPrincipal UserDetails userDetails
     ) {

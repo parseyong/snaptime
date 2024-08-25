@@ -7,16 +7,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.snaptime.exception.CustomException;
 import me.snaptime.exception.ExceptionCode;
+import me.snaptime.user.domain.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Date;
-import java.util.List;
 
 @Component
 @Slf4j
@@ -71,37 +70,6 @@ public class JwtProvider {
         return token;
     }
 
-    public String testCreateAccessToken(Long userId, String loginId, List<String> roles){
-        Claims claims = Jwts.claims().setSubject(loginId);
-        claims.put("userId",userId);
-        claims.put("type","testAccess");
-        claims.put("roles",roles);
-        Date now = new Date();
-        String token = Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + testAccessTokenValidTime))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
-
-        return token;
-    }
-
-    public String testCreateRefreshToken(Long id, String loginId, List<String> roles){
-        Claims claims = Jwts.claims().setSubject(loginId);
-        claims.put("userId", id);
-        claims.put("type", "testRefresh");
-        claims.put("roles", roles);
-        Date now = new Date();
-        String token = Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + testRefreshTokenValidTime))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
-        return token;
-    }
-
     public Long getUserId(String token) {
         Long userId = Long.valueOf(Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("userId").toString());
         log.info("[getUserId] 토큰 기반 회원 구별 정보 추출 완료, userId : {}", userId);
@@ -111,10 +79,8 @@ public class JwtProvider {
     // 필터에서 인증 성공 후, SecurityContextHolder 에 저장할 Authentication 을 생성
     //UsernamePasswordAuthenticationToken 클래스를 사용
     public Authentication getAuthentication(String token){
-        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUsername(token));
-        log.info("[getAuthentication] 토큰 인증 정보 조회 완료, UserDetails loginId : {}",userDetails.getUsername());
-
-        return new UsernamePasswordAuthenticationToken(userDetails,"",userDetails.getAuthorities());
+        User user = userDetailsService.loadUserByUsername(this.getUsername(token));
+        return new UsernamePasswordAuthenticationToken(user.getLoginId(),"",user.getAuthorities());
     }
 
     //토큰 클래스를 사용하기 위해 초기화를 위한 UserDetails가 필요하다.

@@ -6,7 +6,7 @@ import me.snaptime.snap.domain.Snap;
 import java.time.LocalDateTime;
 
 @Builder
-public record SnapInfoResDto(
+public record SnapFindResDto(
         Long snapId,
         String oneLineJournal,
         String snapPhotoURL,
@@ -16,14 +16,14 @@ public record SnapInfoResDto(
         String profilePhotoURL,
         String userName
 ) {
-    public static SnapInfoResDto entityToResDto(Snap entity, String snapPhotoURL, String profilePhotoURL) {
+    public static SnapFindResDto entityToResDto(Snap entity, String snapPhotoURL, String profilePhotoURL) {
         String userUid = null;
         String userName = null;
         if (entity.getUser() != null) {
             userUid = entity.getUser().getLoginId();
             userName = entity.getUser().getUsername();
         }
-        return SnapInfoResDto.builder()
+        return SnapFindResDto.builder()
                 .snapId(entity.getSnapId())
                 .oneLineJournal(entity.getOneLineJournal())
                 .snapPhotoURL(snapPhotoURL)

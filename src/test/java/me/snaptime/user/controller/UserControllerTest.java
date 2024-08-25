@@ -70,7 +70,7 @@ public class UserControllerTest {
         mockMvc.perform(get("/users/my"))
                 .andExpect(status().isOk())
                 //json response 형식을 잘 봅시다.
-                .andExpect(jsonPath("$.msg").exists())
+                .andExpect(jsonPath("$.message").exists())
                 .andExpect(jsonPath("$.result.loginId").exists())
                 .andExpect(jsonPath("$.result.email").exists())
                 .andExpect(jsonPath("$.result.birthDay").exists())
@@ -108,7 +108,7 @@ public class UserControllerTest {
         //when
         mockMvc.perform(post("/users/sign-up").content(content).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.msg").exists())
+                .andExpect(jsonPath("$.message").exists())
                 .andExpect(jsonPath("$.result.userId").exists())
                 .andExpect(jsonPath("$.result.loginId").exists())
                 .andExpect(jsonPath("$.result.email").exists())
@@ -145,7 +145,7 @@ public class UserControllerTest {
         //when
         mockMvc.perform(patch("/users")
                         .content(content).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.msg").exists())
+                .andExpect(jsonPath("$.message").exists())
                 .andExpect(jsonPath("$.result.loginId").exists())
                 .andExpect(jsonPath("$.result.email").exists())
                 .andExpect(jsonPath("$.result.birthDay").exists())

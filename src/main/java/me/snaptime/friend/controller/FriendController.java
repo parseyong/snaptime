@@ -32,10 +32,10 @@ public class FriendController {
                                     "sender의 팔로잉 +1, receiver의 팔로워 +1")
     @Parameter(name = "receiverLoginId", description = "팔로우할 유저의 loginId를 입력해주세요", required = true, example = "seyong")
     public ResponseEntity<CommonResponseDto<Void>> sendFollowReq(
-            @AuthenticationPrincipal UserDetails userDetails,
+            @AuthenticationPrincipal String loginId,
             @RequestParam(name = "receiverLoginId") @NotBlank(message = "팔로우요청을 보낼 유저의 이름을 입력해주세요.")String receiverLoginId) {
 
-        friendService.sendFollow(userDetails.getUsername(), receiverLoginId);
+        friendService.sendFollow(loginId, receiverLoginId);
         return ResponseEntity.status(HttpStatus.CREATED).body(new CommonResponseDto("팔로우가 완료되었습니다.", null));
     }
 
@@ -44,10 +44,10 @@ public class FriendController {
                                             "deletor(언팔하는 유저)의 팔로잉 -1, deletedUser(언팔당하는 유저)의 팔로워 -1")
     @Parameter(name = "deletedUserLoginId", description = "팔로우 삭제할 친구의 loginId를 입력해주세요.", required = true, example = "seyong")
     public ResponseEntity<CommonResponseDto<Void>> unFollow(
-            @AuthenticationPrincipal UserDetails userDetails,
+            @AuthenticationPrincipal String loginId,
             @RequestParam @NotBlank(message = "언팔로우할 유저의 loginId를 입력해주세요.")final String deletedUserLoginId) {
 
-        friendService.unFollow(userDetails.getUsername(), deletedUserLoginId);
+        friendService.unFollow(loginId, deletedUserLoginId);
         return ResponseEntity.status(HttpStatus.OK).body(new CommonResponseDto("팔로우삭제가 완료되었습니다.", null));
     }
 
@@ -63,14 +63,14 @@ public class FriendController {
             @Parameter(name = "pageNum", description = "친구조회 페이지번호", required = true, example = "1")
     })
     public ResponseEntity<CommonResponseDto<FriendPagingResDto>> findFriendPage(
-            @AuthenticationPrincipal UserDetails userDetails,
-            @RequestParam(name = "targetLoginId") @NotBlank(message = "친구목록을 조회할 유저의 loginId를 입력해주세요.") String loginId,
+            @AuthenticationPrincipal String reqLoginId,
+            @RequestParam(name = "targetLoginId") @NotBlank(message = "친구목록을 조회할 유저의 loginId를 입력해주세요.") String targetLoginId,
             @RequestParam(name = "friendSearchType") @NotNull(message = "팔로우,팔로잉중 하나를 입력해주세요.") FriendSearchType friendSearchType,
             @RequestParam(name = "searchKeyword",required = false) String searchKeyword,
             @PathVariable(name = "pageNum") final Long pageNum){
 
         return ResponseEntity.status(HttpStatus.OK).body(new CommonResponseDto("친구조회가 완료되었습니다.",
-                friendService.findFriendPage(userDetails.getUsername(), loginId,pageNum,friendSearchType,searchKeyword)));
+                friendService.findFriendPage(reqLoginId, targetLoginId,pageNum,friendSearchType,searchKeyword)));
     }
 
 }

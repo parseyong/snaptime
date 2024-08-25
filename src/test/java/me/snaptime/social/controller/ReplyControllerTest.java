@@ -59,7 +59,7 @@ public class ReplyControllerTest {
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.msg").value("댓글등록이 성공했습니다."))
+                .andExpect(jsonPath("$.message").value("댓글등록이 성공했습니다."))
                 .andDo(print());
 
         verify(replyService,times(1))
@@ -81,7 +81,7 @@ public class ReplyControllerTest {
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.msg").value("올바르지 않은 입력값입니다"))
+                .andExpect(jsonPath("$.message").value("올바르지 않은 입력값입니다"))
                 .andExpect(jsonPath("$.result.replyMessage").value("내용을 입력해주세요"))
                 .andDo(print());
 
@@ -104,7 +104,7 @@ public class ReplyControllerTest {
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.msg").value("올바르지 않은 입력값입니다"))
+                .andExpect(jsonPath("$.message").value("올바르지 않은 입력값입니다"))
                 .andExpect(jsonPath("$.result.snapId").value("snapId를 입력해주세요."))
                 .andDo(print());
 
@@ -130,7 +130,7 @@ public class ReplyControllerTest {
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.msg").value("스냅이 존재하지 않습니다."))
+                .andExpect(jsonPath("$.message").value("스냅이 존재하지 않습니다."))
                 .andDo(print());
 
         verify(replyService,times(1))
@@ -152,7 +152,7 @@ public class ReplyControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.msg").value("대댓글등록이 성공했습니다."))
+                .andExpect(jsonPath("$.message").value("대댓글등록이 성공했습니다."))
                 .andDo(print());
 
         verify(replyService,times(1))
@@ -174,7 +174,7 @@ public class ReplyControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.msg").value("올바르지 않은 입력값입니다"))
+                .andExpect(jsonPath("$.message").value("올바르지 않은 입력값입니다"))
                 .andExpect(jsonPath("$.result.parentReplyId").value("parentReplyId를 입력해주세요."))
                 .andExpect(jsonPath("$.result.replyMessage").value("내용을 입력해주세요"))
                 .andDo(print());
@@ -201,7 +201,7 @@ public class ReplyControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.msg").value("사용자가 존재하지 않습니다."))
+                .andExpect(jsonPath("$.message").value("사용자가 존재하지 않습니다."))
                 .andDo(print());
 
         verify(replyService,times(1))
@@ -226,7 +226,7 @@ public class ReplyControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.msg").value("존재하지 않는 댓글입니다."))
+                .andExpect(jsonPath("$.message").value("존재하지 않는 댓글입니다."))
                 .andDo(print());
 
         verify(replyService,times(1))

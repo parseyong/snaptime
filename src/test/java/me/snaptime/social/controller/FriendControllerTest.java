@@ -54,7 +54,7 @@ public class FriendControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("receiverLoginId","followName"))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.msg").value("팔로우가 완료되었습니다."))
+                .andExpect(jsonPath("$.message").value("팔로우가 완료되었습니다."))
                 .andDo(print());
 
         verify(friendService,times(1)).sendFollow(any(String.class),any(String.class));
@@ -72,7 +72,7 @@ public class FriendControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("receiverLoginId","followName"))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.msg").value("사용자가 존재하지 않습니다."))
+                .andExpect(jsonPath("$.message").value("사용자가 존재하지 않습니다."))
                 .andDo(print());
 
         verify(friendService,times(1)).sendFollow(any(String.class),any(String.class));
@@ -90,7 +90,7 @@ public class FriendControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("receiverLoginId","followName"))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.msg").value("이미 팔로우관계입니다."))
+                .andExpect(jsonPath("$.message").value("이미 팔로우관계입니다."))
                 .andDo(print());
 
         verify(friendService,times(1)).sendFollow(any(String.class),any(String.class));
@@ -108,7 +108,7 @@ public class FriendControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("receiverLoginId","followName"))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.msg").value("팔로우요청이 거절되었습니다."))
+                .andExpect(jsonPath("$.message").value("팔로우요청이 거절되었습니다."))
                 .andDo(print());
 
         verify(friendService,times(1)).sendFollow(any(String.class),any(String.class));
@@ -126,7 +126,7 @@ public class FriendControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("receiverLoginId","followName"))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.msg").value("자신에게 친구추가 요청을 보낼 수 없습니다."))
+                .andExpect(jsonPath("$.message").value("자신에게 친구추가 요청을 보낼 수 없습니다."))
                 .andDo(print());
 
         verify(friendService,times(1)).sendFollow(any(String.class),any(String.class));
@@ -143,7 +143,7 @@ public class FriendControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("receiverLoginId",""))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.msg").value("팔로우요청을 보낼 유저의 이름을 입력해주세요."))
+                .andExpect(jsonPath("$.message").value("팔로우요청을 보낼 유저의 이름을 입력해주세요."))
                 .andDo(print());
 
         verify(friendService,times(0)).sendFollow(any(String.class),any(String.class));
@@ -160,7 +160,7 @@ public class FriendControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("deletedUserLoginId","testLoginId"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.msg").value("팔로우삭제가 완료되었습니다."))
+                .andExpect(jsonPath("$.message").value("팔로우삭제가 완료되었습니다."))
                 .andDo(print());
 
         verify(friendService,times(1)).unFollow(any(String.class),any(String.class));
@@ -177,7 +177,7 @@ public class FriendControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("deletedUserLoginId",""))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.msg").value("언팔로우할 유저의 loginId를 입력해주세요."))
+                .andExpect(jsonPath("$.message").value("언팔로우할 유저의 loginId를 입력해주세요."))
                 .andDo(print());
 
         verify(friendService,times(0)).unFollow(any(String.class),any(String.class));
@@ -196,7 +196,7 @@ public class FriendControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("deletedUserLoginId","testLoginId"))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.msg").value("존재하지 않는 친구입니다."))
+                .andExpect(jsonPath("$.message").value("존재하지 않는 친구입니다."))
                 .andDo(print());
 
         verify(friendService,times(1)).unFollow(any(String.class),any(String.class));
@@ -215,7 +215,7 @@ public class FriendControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("deletedUserLoginId","testLoginId"))
                 .andExpect(status().isForbidden())
-                .andExpect(jsonPath("$.msg").value("해당 친구에 대한 권한이 없습니다."))
+                .andExpect(jsonPath("$.message").value("해당 친구에 대한 권한이 없습니다."))
                 .andDo(print());
 
         verify(friendService,times(1)).unFollow(any(String.class),any(String.class));
@@ -233,7 +233,7 @@ public class FriendControllerTest {
                         .param("targetLoginId","tempLoginId")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.msg").value("친구조회가 완료되었습니다."))
+                .andExpect(jsonPath("$.message").value("친구조회가 완료되었습니다."))
                 .andDo(print());
 
         verify(friendService,times(1))
@@ -252,7 +252,7 @@ public class FriendControllerTest {
                         .param("targetLoginId","tempLoginId")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.msg").value("친구조회가 완료되었습니다."))
+                .andExpect(jsonPath("$.message").value("친구조회가 완료되었습니다."))
                 .andDo(print());
 
         verify(friendService,times(1))
@@ -272,7 +272,7 @@ public class FriendControllerTest {
                         .param("searchKeyword","박")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.msg").value("친구조회가 완료되었습니다."))
+                .andExpect(jsonPath("$.message").value("친구조회가 완료되었습니다."))
                 .andDo(print());
 
         verify(friendService,times(1))
@@ -292,7 +292,7 @@ public class FriendControllerTest {
                         .param("searchKeyword","박")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.msg").value("friendSearchType이 FriendSearchType타입이여야 합니다."))
+                .andExpect(jsonPath("$.message").value("friendSearchType이 FriendSearchType타입이여야 합니다."))
                 .andDo(print());
 
         verify(friendService,times(0))
@@ -312,7 +312,7 @@ public class FriendControllerTest {
                         .param("searchKeyword","박")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.msg").value("pageNum이 Long타입이여야 합니다."))
+                .andExpect(jsonPath("$.message").value("pageNum이 Long타입이여야 합니다."))
                 .andDo(print());
 
         verify(friendService,times(0))
@@ -332,7 +332,7 @@ public class FriendControllerTest {
                         .param("searchKeyword","박")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.msg").value("friendSearchType:팔로잉과 팔로워중 어느 친구목록을 조회할 지 입력해주세요."))
+                .andExpect(jsonPath("$.message").value("friendSearchType:팔로잉과 팔로워중 어느 친구목록을 조회할 지 입력해주세요."))
                 .andDo(print());
 
         verify(friendService,times(0))
@@ -355,7 +355,7 @@ public class FriendControllerTest {
                         .param("searchKeyword","박")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.msg").value("존재하지 않는 페이지입니다."))
+                .andExpect(jsonPath("$.message").value("존재하지 않는 페이지입니다."))
                 .andDo(print());
 
         verify(friendService,times(1))

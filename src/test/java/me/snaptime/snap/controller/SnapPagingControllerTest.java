@@ -51,7 +51,7 @@ public class SnapPagingControllerTest {
         this.mockMvc.perform(get("/community/snaps/{pageNum}",1L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.msg").value("스냅 페이징조회가 완료되었습니다."))
+                .andExpect(jsonPath("$.message").value("스냅 페이징조회가 완료되었습니다."))
                 .andDo(print());
 
         verify(snapPagingService,times(1)).findSnapPage(any(String.class),any(Long.class));
@@ -67,7 +67,7 @@ public class SnapPagingControllerTest {
         this.mockMvc.perform(get("/community/snaps/{pageNum}","test")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.msg").value("pageNum이 Long타입이여야 합니다."))
+                .andExpect(jsonPath("$.message").value("pageNum이 Long타입이여야 합니다."))
                 .andDo(print());
 
         verify(snapPagingService,times(0)).findSnapPage(any(String.class),any(Long.class));
@@ -85,7 +85,7 @@ public class SnapPagingControllerTest {
         this.mockMvc.perform(get("/community/snaps/{pageNum}",1L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.msg").value("존재하지 않는 페이지입니다."))
+                .andExpect(jsonPath("$.message").value("존재하지 않는 페이지입니다."))
                 .andDo(print());
 
         verify(snapPagingService,times(1)).findSnapPage(any(String.class),any(Long.class));

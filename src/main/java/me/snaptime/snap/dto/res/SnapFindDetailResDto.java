@@ -13,7 +13,7 @@ import static me.snaptime.user.domain.QUser.user;
 
 
 @Builder
-public record SnapDetailInfoResDto(
+public record SnapFindDetailResDto(
 
         Long snapId,
         String oneLineJournal,
@@ -27,10 +27,10 @@ public record SnapDetailInfoResDto(
         Long likeCnt,
         boolean isLikedSnap
 ) {
-    public static SnapDetailInfoResDto toDto(Tuple tuple, String profilePhotoURL, String snapPhotoURL,
+    public static SnapFindDetailResDto toDto(Tuple tuple, String profilePhotoURL, String snapPhotoURL,
                                              List<TagUserFindResDto> tagUserFindResDtos, Long likeCnt, boolean isLikedSnap){
 
-        return SnapDetailInfoResDto.builder()
+        return SnapFindDetailResDto.builder()
                 .snapId(tuple.get(snap.snapId))
                 .oneLineJournal(String.valueOf(tuple.get(snap.oneLineJournal)))
                 .snapPhotoURL(snapPhotoURL)
@@ -45,10 +45,10 @@ public record SnapDetailInfoResDto(
                 .build();
     }
 
-    public static SnapDetailInfoResDto toDto(Snap snap, String profilePhotoURL, String snapPhotoURL,
+    public static SnapFindDetailResDto toDto(Snap snap, String profilePhotoURL, String snapPhotoURL,
                                              List<TagUserFindResDto> tagUserFindResDtos, Long likeCnt, boolean isLikedSnap){
 
-        return SnapDetailInfoResDto.builder()
+        return SnapFindDetailResDto.builder()
                 .snapId(snap.getSnapId())
                 .oneLineJournal(snap.getOneLineJournal())
                 .snapPhotoURL(snapPhotoURL)

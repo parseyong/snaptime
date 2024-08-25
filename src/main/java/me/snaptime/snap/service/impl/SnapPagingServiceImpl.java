@@ -5,8 +5,8 @@ import lombok.RequiredArgsConstructor;
 import me.snaptime.component.url.UrlComponent;
 import me.snaptime.exception.CustomException;
 import me.snaptime.exception.ExceptionCode;
-import me.snaptime.snap.dto.res.SnapDetailInfoResDto;
-import me.snaptime.snap.dto.res.SnapPagingResDto;
+import me.snaptime.snap.dto.res.SnapFindDetailResDto;
+import me.snaptime.snap.dto.res.SnapFindPagingResDto;
 import me.snaptime.snap.repository.SnapRepository;
 import me.snaptime.snap.service.SnapPagingService;
 import me.snaptime.snapLike.service.SnapLikeService;
@@ -35,7 +35,7 @@ public class SnapPagingServiceImpl implements SnapPagingService {
     private final SnapTagService snapTagService;
     private final SnapLikeService snapLikeService;
 
-    public SnapPagingResDto findSnapPage(String reqLoginId, Long pageNum){
+    public SnapFindPagingResDto findSnapPage(String reqLoginId, Long pageNum){
 
         User reqUser = userRepository.findByLoginId(reqLoginId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
@@ -43,20 +43,20 @@ public class SnapPagingServiceImpl implements SnapPagingService {
         List<Tuple> tuples = snapRepository.findSnapPage(pageNum,reqUser);
         boolean hasNextPage = NextPageChecker.hasNextPage(tuples,10L);
 
-        List<SnapDetailInfoResDto> snapDetailInfoResDtos = tuples.stream().map(tuple ->
+        List<SnapFindDetailResDto> snapFindDetailResDtos = tuples.stream().map(tuple ->
         {
 
             Long snapId = tuple.get(snap.snapId);
             String profilePhotoURL = urlComponent.makeProfileURL(tuple.get(user.profilePhoto.profilePhotoId));
             String snapPhotoURL = urlComponent.makePhotoURL(tuple.get(snap.fileName),false);
 
-            return SnapDetailInfoResDto.toDto(tuple,profilePhotoURL,snapPhotoURL,
+            return SnapFindDetailResDto.toDto(tuple,profilePhotoURL,snapPhotoURL,
                     snapTagService.findTagUsers(snapId),
                     snapLikeService.findSnapLikeCnt(snapId),
                     snapLikeService.isLikedSnap(snapId, reqLoginId));
         }).collect(Collectors.toList());
 
-        return SnapPagingResDto.toDto(snapDetailInfoResDtos,hasNextPage);
+        return SnapFindPagingResDto.toDto(snapFindDetailResDtos,hasNextPage);
     }
 
 }

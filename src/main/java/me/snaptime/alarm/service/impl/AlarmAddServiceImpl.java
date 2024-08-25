@@ -8,23 +8,23 @@ import me.snaptime.alarm.domain.SnapAlarm;
 import me.snaptime.alarm.repository.FollowAlarmRepository;
 import me.snaptime.alarm.repository.ReplyAlarmRepository;
 import me.snaptime.alarm.repository.SnapAlarmRepository;
-import me.snaptime.alarm.service.CreateAlarmService;
+import me.snaptime.alarm.service.AlarmAddService;
 import me.snaptime.snap.domain.Snap;
 import me.snaptime.user.domain.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
-public class CreateAlarmServiceImpl implements CreateAlarmService {
+public class AlarmAddServiceImpl implements AlarmAddService {
 
     private final SnapAlarmRepository snapAlarmRepository;
     private final FollowAlarmRepository followAlarmRepository;
     private final ReplyAlarmRepository replyAlarmRepository;
 
     @Override
-    @Transactional
-    public void createSnapAlarm(User sender, User receiver, Snap snap, AlarmType alarmType) {
+    public void addSnapAlarm(User sender, User receiver, Snap snap, AlarmType alarmType) {
         SnapAlarm snapAlarm = SnapAlarm.builder()
                 .sender(sender)
                 .receiver(receiver)
@@ -36,8 +36,7 @@ public class CreateAlarmServiceImpl implements CreateAlarmService {
     }
 
     @Override
-    @Transactional
-    public void createFollowAlarm(User sender, User receiver) {
+    public void addFollowAlarm(User sender, User receiver) {
         FollowAlarm followAlarm = FollowAlarm.builder()
                 .sender(sender)
                 .receiver(receiver)
@@ -48,8 +47,7 @@ public class CreateAlarmServiceImpl implements CreateAlarmService {
     }
 
     @Override
-    @Transactional
-    public void createReplyAlarm(User sender, User receiver, Snap snap, String replyMessage) {
+    public void addReplyAlarm(User sender, User receiver, Snap snap, String replyMessage) {
         ReplyAlarm replyAlarm = ReplyAlarm.builder()
                 .sender(sender)
                 .receiver(receiver)

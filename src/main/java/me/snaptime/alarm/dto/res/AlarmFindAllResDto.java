@@ -7,15 +7,15 @@ import java.util.List;
 @Builder
 public record AlarmFindAllResDto(
 
-        List<AlarmInfoResDto> notReadAlarmInfoResDtos,
-        List<AlarmInfoResDto> readAlarmInfoResDtos
+        List<AlarmFindResDto> notReadAlarmFindResDtos,
+        List<AlarmFindResDto> readAlarmFindResDtos
 
 ) {
-    public static AlarmFindAllResDto toDto(List<AlarmInfoResDto> notReadAlarmInfoResDtos, List<AlarmInfoResDto> readAlarmInfoResDtos){
+    public static AlarmFindAllResDto toDto(List<AlarmFindResDto> notReadAlarmFindResDtos, List<AlarmFindResDto> readAlarmFindResDtos){
 
         return AlarmFindAllResDto.builder()
-                .notReadAlarmInfoResDtos(notReadAlarmInfoResDtos)
-                .readAlarmInfoResDtos(readAlarmInfoResDtos)
+                .notReadAlarmFindResDtos(notReadAlarmFindResDtos)
+                .readAlarmFindResDtos(readAlarmFindResDtos)
                 .build();
     }
 
