@@ -9,16 +9,17 @@ import me.snaptime.crawling.service.CrawlingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/crawler")
+@Validated
+@RequestMapping("/crawling")
 @RequiredArgsConstructor
 @Tag(name = "[Crawling] Crawling API")
-@Slf4j
 public class CrawlingController {
     private final CrawlingService crawlingService;
 
@@ -26,6 +27,7 @@ public class CrawlingController {
     @Parameter(name = "url", description = "QR Code의 URL")
     @GetMapping("/harufilm")
     public ResponseEntity<?> harufilm(final @RequestParam("url") String url) {
+
         byte[] image = crawlingService.getImage("harufilm", url);
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_PNG).body(image);
     }

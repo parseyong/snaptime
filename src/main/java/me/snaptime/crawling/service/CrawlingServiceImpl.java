@@ -20,7 +20,6 @@ public class CrawlingServiceImpl implements CrawlingService {
                 .collect(Collectors.toMap(provider -> provider.getClass().getSimpleName().toLowerCase(), Function.identity()));
     }
 
-
     @Override
     public byte[] getImage(String providerName, String page_url) {
         PhotoProvider provider = providers.get(providerName.toLowerCase());

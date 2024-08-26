@@ -154,10 +154,18 @@ public class AlarmServiceImpl implements AlarmService {
     private List<AlarmFindResDto> findSortedAlarms(User reqUser, boolean isRead){
 
         List<AlarmFindResDto> alarmFindResDtos = new ArrayList<>();
+        findFollowAlarms(reqUser, isRead, alarmFindResDtos);
+        findReplyAlarms(reqUser, isRead, alarmFindResDtos);
+        findSnapAlarms(reqUser, isRead, alarmFindResDtos);
+
+        // 최신순으로 정렬
+        alarmFindResDtos.sort(Comparator.comparing(AlarmFindResDto::getCreatedDate).reversed());
+        return alarmFindResDtos;
+    }
+
+    private void findFollowAlarms(User reqUser, boolean isRead, List<AlarmFindResDto> alarmFindResDtos){
 
         List<FollowAlarm> followAlarms = followAlarmRepository.findAllByReceiverAndIsRead(reqUser,isRead);
-        List<ReplyAlarm> replyAlarms = replyAlarmRepository.findAllByReceiverAndIsRead(reqUser,isRead);
-        List<SnapAlarm> snapAlarms = snapAlarmRepository.findAllByReceiverAndIsRead(reqUser,isRead);
 
         followAlarms.forEach(followAlarm -> {
 
@@ -168,17 +176,11 @@ public class AlarmServiceImpl implements AlarmService {
             AlarmFindResDto alarmFindResDto = AlarmFindResDto.toFollowAlarmDto(senderProfilePhotoURL, timeAgo, followAlarm);
             alarmFindResDtos.add(alarmFindResDto);
         });
+    }
 
-        replyAlarms.forEach(replyAlarm -> {
+    private void findSnapAlarms(User reqUser, boolean isRead, List<AlarmFindResDto> alarmFindResDtos){
 
-            User sender = replyAlarm.getSender();
-            String senderProfilePhotoURL = urlComponent.makeProfileURL(sender.getProfilePhoto().getProfilePhotoId());
-            String snapPhotoURL = urlComponent.makePhotoURL(replyAlarm.getSnap().getFileName(),false);
-            String timeAgo = TimeAgoCalculator.findTimeAgo(replyAlarm.getCreatedDate());
-
-            AlarmFindResDto alarmFindResDto = AlarmFindResDto.toReplyAlarmDto(senderProfilePhotoURL, snapPhotoURL, timeAgo, replyAlarm);
-            alarmFindResDtos.add(alarmFindResDto);
-        });
+        List<SnapAlarm> snapAlarms = snapAlarmRepository.findAllByReceiverAndIsRead(reqUser,isRead);
 
         snapAlarms.forEach(snapAlarm -> {
 
@@ -190,9 +192,21 @@ public class AlarmServiceImpl implements AlarmService {
             AlarmFindResDto alarmFindResDto = AlarmFindResDto.toSnapAlarmDto(senderProfilePhotoURL, snapPhotoURL, timeAgo, snapAlarm);
             alarmFindResDtos.add(alarmFindResDto);
         });
-
-        alarmFindResDtos.sort(Comparator.comparing(AlarmFindResDto::getCreatedDate).reversed());
-        return alarmFindResDtos;
     }
 
+    private void findReplyAlarms(User reqUser, boolean isRead, List<AlarmFindResDto> alarmFindResDtos){
+
+        List<ReplyAlarm> replyAlarms = replyAlarmRepository.findAllByReceiverAndIsRead(reqUser,isRead);
+
+        replyAlarms.forEach(replyAlarm -> {
+
+            User sender = replyAlarm.getSender();
+            String senderProfilePhotoURL = urlComponent.makeProfileURL(sender.getProfilePhoto().getProfilePhotoId());
+            String snapPhotoURL = urlComponent.makePhotoURL(replyAlarm.getSnap().getFileName(),false);
+            String timeAgo = TimeAgoCalculator.findTimeAgo(replyAlarm.getCreatedDate());
+
+            AlarmFindResDto alarmFindResDto = AlarmFindResDto.toReplyAlarmDto(senderProfilePhotoURL, snapPhotoURL, timeAgo, replyAlarm);
+            alarmFindResDtos.add(alarmFindResDto);
+        });
+    }
 }
