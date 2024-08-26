@@ -1,7 +1,7 @@
 package me.snaptime.social.repository;
 
 import com.querydsl.core.Tuple;
-import me.snaptime.component.url.UrlComponentImpl;
+import me.snaptime.component.url.impl.UrlComponentImpl;
 import me.snaptime.config.JpaAuditingConfig;
 import me.snaptime.config.QueryDslConfig;
 import me.snaptime.exception.CustomException;
@@ -109,7 +109,7 @@ public class FriendPagingRepositoryTest {
             friendRepository.findFriendPage(reqUser, FriendSearchType.FOLLOWER,10L,"20");
             fail("예외가 발생하지 않음");
         }catch (CustomException ex){
-            assertThat(ex.getExceptionCode()).isEqualTo(ExceptionCode.PAGE_NOT_FOUND);
+            assertThat(ex.getExceptionCode()).isEqualTo(ExceptionCode.PAGE_NOT_EXIST);
         }
 
     }

@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.snaptime.album.domain.Album;
 import me.snaptime.album.repository.AlbumRepository;
 import me.snaptime.album.service.AlbumService;
-import me.snaptime.component.encryption.CipherComponent;
+import me.snaptime.component.cipher.CipherComponent;
 import me.snaptime.component.file.PhotoComponent;
 import me.snaptime.component.url.UrlComponent;
 import me.snaptime.exception.CustomException;
@@ -102,7 +102,7 @@ public class SnapServiceImpl implements SnapService {
             User foundUser = userRepository.findByLoginId(uId).orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
             // Snap이 비공개라면, 요청한 유저와 스냅의 ID가 일치하는지 확인한다.
             if (!Objects.equals(foundUser.getUserId(), foundSnap.getUser().getUserId())) {
-                throw new CustomException(ExceptionCode.SNAP_IS_PRIVATE);
+                throw new CustomException(ExceptionCode.ACCESS_FAIL_SNAP);
             }
         }
         String snapPhotoUrl = urlComponent.makePhotoURL(foundSnap.getFileName(), foundSnap.isPrivate());
@@ -123,7 +123,7 @@ public class SnapServiceImpl implements SnapService {
 
         // 수정하려는 유저와 수정되려는 스냅의 저자가 일치하는지 확인한다.
         if (!foundSnap.getUser().getUserId().equals(foundUser.getUserId())) {
-            throw new CustomException(ExceptionCode.SNAP_USER_IS_NOT_THE_SAME);
+            throw new CustomException(ExceptionCode.ACCESS_FAIL_SNAP);
         }
 
         // 이미지 수정
@@ -154,7 +154,7 @@ public class SnapServiceImpl implements SnapService {
                     }
                 }
             } catch (IOException e) {
-                throw new CustomException(ExceptionCode.SNAP_MODIFY_ERROR);
+                log.info(e.toString());
             }
         }
 
@@ -170,7 +170,7 @@ public class SnapServiceImpl implements SnapService {
         // 설정되어 있는 값하고 똑같다면
         if (foundSnap.isPrivate() == isPrivate) {
             // 예외를 발생시킨다.
-            throw new CustomException(ExceptionCode.CHANGE_SNAP_VISIBILITY_ERROR);
+            throw new CustomException(ExceptionCode.ALREADY_SNAP_VISIBILITY);
         }
 
         // 저장된 filePath 경로로 부터 파일을 가져온다.
@@ -202,7 +202,7 @@ public class SnapServiceImpl implements SnapService {
         // 삭제를 요청한 사용자가 Snap를 만든 사용자인지 확인한다.
         if (!Objects.equals(foundSnap.getUser().getUserId(), foundUser.getUserId())) {
             // 다르다면 에러를 던진다.
-            throw new CustomException(ExceptionCode.SNAP_USER_IS_NOT_THE_SAME);
+            throw new CustomException(ExceptionCode.ACCESS_FAIL_SNAP);
         }
         String fileName = foundSnap.getFileName();
         // 저장소에 보관되어있는 사진을 삭제한다.
@@ -223,7 +223,7 @@ public class SnapServiceImpl implements SnapService {
                 return CipherUtil.decryptData(photoData, user.getSecretKey());
             } catch (Exception e) {
                 log.error(e.getMessage());
-                throw new CustomException(ExceptionCode.ENCRYPTION_CREATION_FAIL);
+                throw new CustomException(ExceptionCode.DECRYPT_FAIL);
             }
         }
         return photoData;
@@ -240,7 +240,7 @@ public class SnapServiceImpl implements SnapService {
             foundSnap.updateAlbum(foundAlbum);
             snapRepository.save(foundSnap);
         } else {
-            throw new CustomException(ExceptionCode.ALBUM_USER_NOT_MATCH);
+            throw new CustomException(ExceptionCode.ACCESS_FAIL_ALBUM);
         }
     }
 
@@ -255,7 +255,7 @@ public class SnapServiceImpl implements SnapService {
         }
         } catch (Exception e) {
             log.error(e.getMessage());
-            throw new CustomException(ExceptionCode.FILE_READ_FAIL);
+            throw new CustomException(ExceptionCode.FILE_FIND_FAIL);
         }
     }
 

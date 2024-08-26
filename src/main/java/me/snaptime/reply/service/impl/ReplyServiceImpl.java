@@ -70,7 +70,7 @@ public class ReplyServiceImpl implements ReplyService {
         User reqUser = findUserByLoginId(reqLoginId);
 
         ParentReply parentReply = parentReplyRepository.findById(childReplyAddReqDto.parentReplyId())
-                .orElseThrow(() -> new CustomException(ExceptionCode.REPLY_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ExceptionCode.REPLY_NOT_EXIST));
 
         // 태그유저가 없는 댓글 등록이면
         if( childReplyAddReqDto.tagLoginId() == "" || childReplyAddReqDto.tagLoginId() == null){
@@ -133,7 +133,7 @@ public class ReplyServiceImpl implements ReplyService {
     @Transactional
     public void updateParentReply(String reqLoginId ,Long parentReplyId, String newContent){
         ParentReply parentReply = parentReplyRepository.findById(parentReplyId)
-                .orElseThrow(() -> new CustomException(ExceptionCode.REPLY_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ExceptionCode.REPLY_NOT_EXIST));
 
         isMyReply(reqLoginId,parentReply.getUser().getLoginId());
         parentReply.updateReply(newContent);
@@ -143,7 +143,7 @@ public class ReplyServiceImpl implements ReplyService {
     @Transactional
     public void updateChildReply(String reqLoginId, Long childReplyId, String newContent){
         ChildReply childReply = childReplyRepository.findById(childReplyId)
-                .orElseThrow(() -> new CustomException(ExceptionCode.REPLY_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ExceptionCode.REPLY_NOT_EXIST));
 
         isMyReply(reqLoginId,childReply.getUser().getLoginId());
         childReply.updateReply(newContent);
@@ -153,7 +153,7 @@ public class ReplyServiceImpl implements ReplyService {
     @Transactional
     public void deleteParentReply(String reqLoginId, Long parentReplyId){
         ParentReply parentReply = parentReplyRepository.findById(parentReplyId)
-                .orElseThrow(() -> new CustomException(ExceptionCode.REPLY_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ExceptionCode.REPLY_NOT_EXIST));
 
         isMyReply(reqLoginId,parentReply.getUser().getLoginId());
         parentReplyRepository.delete(parentReply);
@@ -162,7 +162,7 @@ public class ReplyServiceImpl implements ReplyService {
     @Transactional
     public void deleteChildReply(String reqLoginId, Long childReplyId){
         ChildReply childReply = childReplyRepository.findById(childReplyId)
-                .orElseThrow(() -> new CustomException(ExceptionCode.REPLY_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ExceptionCode.REPLY_NOT_EXIST));
 
         isMyReply(reqLoginId,childReply.getUser().getLoginId());
         childReplyRepository.delete(childReply);

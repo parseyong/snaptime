@@ -16,7 +16,7 @@ public class CipherUtil {
             keyGenerator = KeyGenerator.getInstance("AES");
             keyGenerator.init(256);
         } catch (NoSuchAlgorithmException e){
-            throw new CustomException(ExceptionCode.ENCRYPTION_CREATION_FAIL);
+            throw new CustomException(ExceptionCode.ADD_SECRET_KEY_FAIL);
         }
 
         return keyGenerator.generateKey();

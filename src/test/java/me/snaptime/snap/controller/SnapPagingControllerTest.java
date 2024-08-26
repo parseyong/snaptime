@@ -79,7 +79,7 @@ public class SnapPagingControllerTest {
     public void findSnapPagingTest3() throws Exception{
         //given
         given(snapPagingService.findSnapPage(any(String.class),any(Long.class)))
-                .willThrow(new CustomException(ExceptionCode.PAGE_NOT_FOUND));
+                .willThrow(new CustomException(ExceptionCode.PAGE_NOT_EXIST));
 
         //when, then
         this.mockMvc.perform(get("/community/snaps/{pageNum}",1L)

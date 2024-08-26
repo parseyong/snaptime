@@ -218,7 +218,7 @@ public class ReplyControllerTest {
                 new ChildReplyAddReqDto("댓글내용",1L,"태그유저loginId");
         String requestBody = gson.toJson(childReplyAddReqDto);
 
-        doThrow(new CustomException(ExceptionCode.REPLY_NOT_FOUND))
+        doThrow(new CustomException(ExceptionCode.REPLY_NOT_EXIST))
                 .when(replyService).addChildReply(any(String.class),any(ChildReplyAddReqDto.class));
 
         //when, then

@@ -86,7 +86,7 @@ public class AlbumServiceImpl implements AlbumService {
 
         // 수정하려는 앨범이 기본앨범이면 예외반환
         if(basicAlbum.getAlbumId().equals(albumId)) {
-            throw new CustomException(ExceptionCode.BASIC_ALBUM_CANNOT_BE_MODIFIED_OR_DELETED);
+            throw new CustomException(ExceptionCode.CAN_NOT_BE_MODIFIED_OR_DELETED_BASIC_ALBUM);
         }
 
         album.updateAlbumName(newAlbumName);
@@ -107,7 +107,7 @@ public class AlbumServiceImpl implements AlbumService {
 
         // 삭제하려는 앨범이 기본앨범이면 예외반환
         if(basicAlbum.getAlbumId().equals(albumId)) {
-            throw new CustomException(ExceptionCode.BASIC_ALBUM_CANNOT_BE_MODIFIED_OR_DELETED);
+            throw new CustomException(ExceptionCode.CAN_NOT_BE_MODIFIED_OR_DELETED_BASIC_ALBUM);
         }
 
         // 삭제될 앨범안에 있는 스냅을 기본앨범으로 이동
@@ -147,7 +147,7 @@ public class AlbumServiceImpl implements AlbumService {
     public void isMyAlbum(User user, Album album) {
 
         if( album.getUser().getUserId() != user.getUserId() ){
-            throw new CustomException(ExceptionCode.ALBUM_USER_NOT_MATCH);
+            throw new CustomException(ExceptionCode.ACCESS_FAIL_ALBUM);
         }
     }
 

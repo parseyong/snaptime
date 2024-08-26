@@ -41,7 +41,7 @@ public class UserSignServiceImpl implements UserSignService {
 
         //로그인 id가 이미 존재하는지 확인
         if(userRepository.findByLoginId(userReqDto.loginId()).isPresent()){
-            throw new CustomException(ExceptionCode.LOGIN_ID_ALREADY_EXIST);
+            throw new CustomException(ExceptionCode.DUPLICATED_LOGIN_ID);
         }
 
         String fileName = "default.png";
@@ -77,7 +77,7 @@ public class UserSignServiceImpl implements UserSignService {
         User user = userRepository.findByLoginId(signInReqDto.loginId()).orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
         if (!passwordEncoder.matches(signInReqDto.password(), user.getPassword())) {
-            throw new CustomException(ExceptionCode.PASSWORD_NOT_EQUAL);
+            throw new CustomException(ExceptionCode.LOGIN_FAIL);
         }
         String accessToken = jwtProvider.createAccessToken(user.getUserId(), user.getLoginId());
         String refreshToken = jwtProvider.createRefreshToken(user.getUserId(), user.getLoginId());

@@ -36,7 +36,7 @@ public class ProfilePhotoServiceImpl implements ProfilePhotoService {
     @Override
     @Transactional(readOnly = true)
     public byte[] downloadPhotoFromFileSystem(Long profilePhotoId){
-        ProfilePhoto profilePhoto = profilePhotoRepository.findById(profilePhotoId).orElseThrow(()->new CustomException(ExceptionCode.PROFILE_PHOTO_NOT_FOUND));
+        ProfilePhoto profilePhoto = profilePhotoRepository.findById(profilePhotoId).orElseThrow(()->new CustomException(ExceptionCode.PROFILE_PHOTO_NOT_EXIST));
         String filePath = profilePhoto.getProfilePhotoPath();
 
         //jar파일에서 resource 폴더 경로가 달라지는 경우를 위한 로직
@@ -63,7 +63,7 @@ public class ProfilePhotoServiceImpl implements ProfilePhotoService {
                 return Files.readAllBytes(path);
             }catch (IOException e){
                 log.error(e.getMessage());
-                throw new CustomException(ExceptionCode.FILE_NOT_EXIST);
+                throw new CustomException(ExceptionCode.FILE_FIND_FAIL);
             }
         }
     }
@@ -74,7 +74,7 @@ public class ProfilePhotoServiceImpl implements ProfilePhotoService {
     @Transactional
     public ProfilePhotoResDto updatePhotoFromFileSystem(String loginId, MultipartFile updateFile) throws Exception{
         User updateUser = userRepository.findByLoginId(loginId).orElseThrow(()-> new CustomException(ExceptionCode.USER_NOT_EXIST));
-        ProfilePhoto profilePhoto = profilePhotoRepository.findById(updateUser.getProfilePhoto().getProfilePhotoId()).orElseThrow(()-> new CustomException(ExceptionCode.PROFILE_PHOTO_NOT_FOUND));
+        ProfilePhoto profilePhoto = profilePhotoRepository.findById(updateUser.getProfilePhoto().getProfilePhotoId()).orElseThrow(()-> new CustomException(ExceptionCode.PROFILE_PHOTO_NOT_EXIST));
 
         String updateFileName = ProfilePhotoNameGenerator.generatorProfilePhotoName(updateFile.getOriginalFilename());
         String updateFilePath = FOLDER_PATH + updateFileName;
@@ -88,7 +88,7 @@ public class ProfilePhotoServiceImpl implements ProfilePhotoService {
             updateFile.transferTo(new File(updateFilePath));
         }catch (IOException e){
             log.error(e.getMessage());
-            throw new CustomException(ExceptionCode.FILE_NOT_EXIST);
+            throw new CustomException(ExceptionCode.FILE_FIND_FAIL);
         }
 
         profilePhoto.updateProfilePhoto(updateFileName,updateFilePath);

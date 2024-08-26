@@ -1,7 +1,8 @@
-package me.snaptime.component.encryption;
+package me.snaptime.component.cipher.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.snaptime.component.cipher.CipherComponent;
 import me.snaptime.exception.CustomException;
 import me.snaptime.exception.ExceptionCode;
 import me.snaptime.util.CipherUtil;
@@ -20,7 +21,7 @@ public class CipherComponentImpl implements CipherComponent {
             return CipherUtil.encryptData(fileBytes, secretKey);
         } catch (Exception e) {
             log.error(e.getMessage());
-            throw new CustomException(ExceptionCode.ENCRYPTION_CREATION_FAIL);
+            throw new CustomException(ExceptionCode.ENCRYPT_FAIL);
         }
     }
 
@@ -30,7 +31,7 @@ public class CipherComponentImpl implements CipherComponent {
             return CipherUtil.decryptData(fileBytes, secretKey);
         } catch (Exception e) {
             log.error(e.getMessage());
-            throw new CustomException(ExceptionCode.ENCRYPTION_CREATION_FAIL);
+            throw new CustomException(ExceptionCode.DECRYPT_FAIL);
         }
     }
 }

@@ -81,7 +81,7 @@ public class UserServiceImpl implements UserService {
 
         User user = userRepository.findByLoginId(loginId).orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new CustomException(ExceptionCode.PASSWORD_NOT_EQUAL);
+            throw new CustomException(ExceptionCode.PASSWORD_AUTH_FAIL);
         }
         userRepository.deleteById(user.getUserId());
     }
@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService {
             user.updateUserPassword(passwordEncoder.encode(password));
         }
         else{
-            throw new CustomException(ExceptionCode.PASSWORD_DUPLICATE);
+            throw new CustomException(ExceptionCode.CAN_NOT_UPDATE_SAME_PASSWORD);
         }
     }
 }

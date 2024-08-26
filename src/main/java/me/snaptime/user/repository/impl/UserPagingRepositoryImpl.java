@@ -37,7 +37,7 @@ public class UserPagingRepositoryImpl implements UserPagingRepository {
                 .fetch();
 
         if(tuples.size() == 0)
-            throw new CustomException(ExceptionCode.PAGE_NOT_FOUND);
+            throw new CustomException(ExceptionCode.PAGE_NOT_EXIST);
 
         return  tuples;
     }

@@ -1,6 +1,6 @@
 package me.snaptime.user.repository;
 
-import me.snaptime.component.url.UrlComponentImpl;
+import me.snaptime.component.url.impl.UrlComponentImpl;
 import me.snaptime.config.JpaAuditingConfig;
 import me.snaptime.config.QueryDslConfig;
 import me.snaptime.profilePhoto.repository.ProfilePhotoRepository;

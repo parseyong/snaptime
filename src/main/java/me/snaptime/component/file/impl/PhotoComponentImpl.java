@@ -1,8 +1,9 @@
-package me.snaptime.component.file;
+package me.snaptime.component.file.impl;
 
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.snaptime.component.file.PhotoComponent;
 import me.snaptime.exception.CustomException;
 import me.snaptime.exception.ExceptionCode;
 import me.snaptime.snap.dto.file.PhotoInfo;
@@ -31,7 +32,7 @@ public class PhotoComponentImpl implements PhotoComponent {
             return Files.readAllBytes(new File(filePath).toPath());
         } catch (Exception e) {
             log.error(e.getMessage());
-            throw new CustomException(ExceptionCode.FILE_READ_FAIL);
+            throw new CustomException(ExceptionCode.FILE_FIND_FAIL);
         }
     }
 
@@ -56,7 +57,7 @@ public class PhotoComponentImpl implements PhotoComponent {
             Files.write(Paths.get(filePath), fileBytes);
         } catch (Exception e) {
             log.error(e.getMessage());
-            throw new CustomException(ExceptionCode.FILE_WRITE_ERROR);
+            throw new CustomException(ExceptionCode.FILE_ADD_FAILE);
         }
     }
 
@@ -73,7 +74,7 @@ public class PhotoComponentImpl implements PhotoComponent {
             Files.write(Paths.get(filePath), fileBytes);
         } catch (Exception e) {
             log.error(e.getMessage());
-            throw new CustomException(ExceptionCode.FILE_WRITE_ERROR);
+            throw new CustomException(ExceptionCode.FILE_ADD_FAILE);
         }
 
         return PhotoInfo.builder()

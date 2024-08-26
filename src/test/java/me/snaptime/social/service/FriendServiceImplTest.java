@@ -156,7 +156,7 @@ public class FriendServiceImplTest {
             fail("예외가 발생하지 않음");
         }catch (CustomException ex){
             //then
-            assertThat(ex.getExceptionCode()).isEqualTo(ExceptionCode.SELF_FRIEND_REQ);
+            assertThat(ex.getExceptionCode()).isEqualTo(ExceptionCode.CAN_NOT_SELF_FOLLOW);
             verify(userRepository,times(2)).findByLoginId(any(String.class));
             verify(friendRepository,times(1)).findBySenderAndReceiver(any(User.class),any(User.class));
             verify(friendRepository,times(0)).save(any(Friend.class));
@@ -207,7 +207,7 @@ public class FriendServiceImplTest {
             fail("예외가 발생하지 않음");
         }catch (CustomException ex){
             //then
-            assertThat(ex.getExceptionCode()).isEqualTo(ExceptionCode.FRIEND_REQ_NOT_FOUND);
+            assertThat(ex.getExceptionCode()).isEqualTo(ExceptionCode.FRIEND_REQ_NOT_EXIST);
             verify(friendRepository,times(0)).save(any(Friend.class));
             verify(friendRepository,times(0)).delete(any(Friend.class));
             verify(friendRepository,times(1)).findBySenderAndReceiver(any(User.class),any(User.class));

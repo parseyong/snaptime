@@ -1,7 +1,8 @@
-package me.snaptime.component.url;
+package me.snaptime.component.url.impl;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import me.snaptime.component.url.UrlComponent;
 import org.springframework.stereotype.Component;
 
 @Component

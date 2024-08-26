@@ -51,7 +51,7 @@ public class FriendServiceImpl implements FriendService {
 
         // 자기자신에게 팔로우요청을 했다면
         if (receiver.getUserId() == sender.getUserId())
-            throw new CustomException(ExceptionCode.SELF_FRIEND_REQ);
+            throw new CustomException(ExceptionCode.CAN_NOT_SELF_FOLLOW);
 
         friendRepository.save(Friend.builder()
                         .sender(sender)
@@ -68,7 +68,7 @@ public class FriendServiceImpl implements FriendService {
         // sender가 receiver에게 친구요청을 보낸게 맞는지 체크
         Optional<Friend> friendOptional = friendRepository.findBySenderAndReceiver(sender,receiver);
         if(friendOptional.isEmpty())
-            throw new CustomException(ExceptionCode.FRIEND_REQ_NOT_FOUND);
+            throw new CustomException(ExceptionCode.FRIEND_REQ_NOT_EXIST);
 
         if(isAccept){
             Friend friend = Friend.builder()

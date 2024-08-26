@@ -156,7 +156,7 @@ public class SnapPagingRepositoryImplTest {
             snapRepository.findSnapPage(10L,reqUser);
             fail("예외가 발생하지 않음");
         }catch (CustomException ex){
-            assertThat(ex.getExceptionCode()).isEqualTo(ExceptionCode.PAGE_NOT_FOUND);
+            assertThat(ex.getExceptionCode()).isEqualTo(ExceptionCode.PAGE_NOT_EXIST);
         }
     }
 

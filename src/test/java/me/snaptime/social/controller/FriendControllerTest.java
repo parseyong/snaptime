@@ -109,30 +109,11 @@ public class FriendControllerTest {
 
     @Test
     @WithMockUser
-    @DisplayName("팔로우 요청테스트 -> (실패 : 전에 팔로우요청이 거절됨)")
-    public void sendFollowReq4() throws Exception {
-        //given
-        makeAuthentication();
-        doThrow(new CustomException(ExceptionCode.REJECT_FRIEND_REQ)).when(friendService).sendFollow(any(String.class),any(String.class));
-
-        //when, then
-        this.mockMvc.perform(post("/friends")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .param("receiverLoginId","followName"))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("팔로우요청이 거절되었습니다."))
-                .andDo(print());
-
-        verify(friendService,times(1)).sendFollow(any(String.class),any(String.class));
-    }
-
-    @Test
-    @WithMockUser
     @DisplayName("팔로우 요청테스트 -> (실패 : 자기 자신에게 팔로우요청을 보냄)")
     public void sendFollowReq5() throws Exception {
         //given
         makeAuthentication();
-        doThrow(new CustomException(ExceptionCode.SELF_FRIEND_REQ)).when(friendService).sendFollow(any(String.class),any(String.class));
+        doThrow(new CustomException(ExceptionCode.CAN_NOT_SELF_FOLLOW)).when(friendService).sendFollow(any(String.class),any(String.class));
 
         //when, then
         this.mockMvc.perform(post("/friends")
@@ -214,26 +195,6 @@ public class FriendControllerTest {
                         .param("deletedUserLoginId","testLoginId"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("존재하지 않는 친구입니다."))
-                .andDo(print());
-
-        verify(friendService,times(1)).unFollow(any(String.class),any(String.class));
-    }
-
-    @Test
-    @WithMockUser
-    @DisplayName("팔로우 삭제테스트 -> 실패(팔로우 삭제권한 없음)")
-    public void deleteFollowTest4() throws Exception {
-        //given
-        makeAuthentication();
-        doThrow(new CustomException(ExceptionCode.ACCESS_FAIL_FRIENDSHIP))
-                .when(friendService).unFollow(any(String.class),any(String.class));
-
-        //when, then
-        this.mockMvc.perform(delete("/friends")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .param("deletedUserLoginId","testLoginId"))
-                .andExpect(status().isForbidden())
-                .andExpect(jsonPath("$.message").value("해당 친구에 대한 권한이 없습니다."))
                 .andDo(print());
 
         verify(friendService,times(1)).unFollow(any(String.class),any(String.class));
@@ -369,7 +330,7 @@ public class FriendControllerTest {
     public void findFriendListTest7() throws Exception {
         //given
         makeAuthentication();
-        doThrow(new CustomException(ExceptionCode.PAGE_NOT_FOUND))
+        doThrow(new CustomException(ExceptionCode.PAGE_NOT_EXIST))
                 .when(friendService).findFriendPage(any(String.class),any(String.class),any(Long.class),
                                                         any(FriendSearchType.class),eq("박"));
 

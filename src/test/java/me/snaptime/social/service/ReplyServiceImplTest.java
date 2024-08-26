@@ -160,7 +160,7 @@ public class ReplyServiceImplTest {
             fail("예외가 발생하지 않음");
         }catch (CustomException ex){
             //then
-            assertThat(ex.getExceptionCode()).isEqualTo(ExceptionCode.REPLY_NOT_FOUND);
+            assertThat(ex.getExceptionCode()).isEqualTo(ExceptionCode.REPLY_NOT_EXIST);
             verify(parentReplyRepository,times(1)).findById(any(Long.class));
             verify(userRepository,times(1)).findByLoginId(any(String.class));
             verify(childReplyRepository,times(0)).save(any(ChildReply.class));

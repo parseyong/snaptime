@@ -1,4 +1,4 @@
-package me.snaptime.component.encryption;
+package me.snaptime.component.cipher;
 
 import javax.crypto.SecretKey;
 

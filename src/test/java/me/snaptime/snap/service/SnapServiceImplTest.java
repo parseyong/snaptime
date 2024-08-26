@@ -1,7 +1,7 @@
 package me.snaptime.snap.service;
 
 import me.snaptime.album.repository.AlbumRepository;
-import me.snaptime.component.encryption.CipherComponent;
+import me.snaptime.component.cipher.CipherComponent;
 import me.snaptime.component.file.PhotoComponent;
 import me.snaptime.component.url.UrlComponent;
 import me.snaptime.snap.repository.SnapRepository;
