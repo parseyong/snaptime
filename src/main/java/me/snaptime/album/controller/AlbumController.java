@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import me.snaptime.album.dto.res.AlbumFindResDto;
 import me.snaptime.album.service.AlbumService;
@@ -12,11 +12,13 @@ import me.snaptime.common.CommonResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@Validated
 @RequiredArgsConstructor
 @Tag(name = "[Album] Album API")
 public class AlbumController {
@@ -47,7 +49,7 @@ public class AlbumController {
     @Parameter(name = "albumName", description = "생성할 앨범의 이름을 입력해주세요.")
     public ResponseEntity<CommonResponseDto<Void>> addAlbum(
             final @AuthenticationPrincipal String reqLoginId,
-            final @RequestParam @NotNull(message = "앨범이름을 보내주세요") String albumName) {
+            final @RequestParam @NotBlank(message = "앨범이름을 보내주세요") String albumName) {
 
         albumService.addAlbum(reqLoginId, albumName);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -62,7 +64,7 @@ public class AlbumController {
     })
     public ResponseEntity<CommonResponseDto<Void>> updateAlbumName(
             final @AuthenticationPrincipal String reqLoginId,
-            final @RequestParam("newAlbumName") @NotNull(message = "새 앨범이름을 보내주세요") String newAlbumName,
+            final @RequestParam("newAlbumName") @NotBlank(message = "새 앨범이름을 보내주세요") String newAlbumName,
             final @PathVariable Long albumId) {
 
         albumService.updateAlbumName(reqLoginId, albumId, newAlbumName);

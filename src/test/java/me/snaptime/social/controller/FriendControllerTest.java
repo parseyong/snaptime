@@ -317,7 +317,7 @@ public class FriendControllerTest {
                         .param("searchKeyword","박")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("friendSearchType:팔로잉과 팔로워중 어느 친구목록을 조회할 지 입력해주세요."))
+                .andExpect(jsonPath("$.message").value("올바르지 않은 입력값입니다. friendSearchType을 입력해주세요."))
                 .andDo(print());
 
         verify(friendService,times(0))

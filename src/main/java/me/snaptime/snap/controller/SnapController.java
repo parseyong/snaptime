@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.snaptime.common.CommonResponseDto;
@@ -17,12 +18,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Validated
 @Tag(name = "[Snap] Snap API")
 @Slf4j
 public class SnapController {
@@ -32,7 +35,7 @@ public class SnapController {
     @Operation(summary = "Snap 생성", description = "Empty Value를 보내지마세요")
     @PostMapping(value = "/snap", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<CommonResponseDto<Long>> createSnap(
-            final @ModelAttribute CreateSnapReqDto createSnapReqDto,
+            final @ModelAttribute @Valid CreateSnapReqDto createSnapReqDto,
             final @AuthenticationPrincipal String reqLoginId) {
 
         Long snapId = snapService.createSnap(createSnapReqDto,reqLoginId);

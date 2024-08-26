@@ -1,12 +1,10 @@
 package me.snaptime.exception.handler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import me.snaptime.common.CommonResponseDto;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
@@ -19,21 +17,15 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
-        log.info("[handle] 해당 리소스에 엑세스 할 권한이 없습니다.");
+        response.setContentType("application/json");
+        response.setCharacterEncoding("utf-8");
+        response.setStatus(403);
+        Gson gson = new Gson();
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        //HTTP 응답 헤더의 Content-Type을 JSON으로 설정합니다.
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        //HTTP 응답 상태 코드를  403(FORBIDDEN)으로 설정합니다.
-        response.setStatus(HttpStatus.FORBIDDEN.value());
-        response.setCharacterEncoding("UTF-8");
+        log.info("권한이 없는 페이지입니다.");
+        CommonResponseDto commonResponseDto = CommonResponseDto.of("권한이 없습니다",null);
 
-        CommonResponseDto commonResponse = new CommonResponseDto("해당 리소스에 접근할 권한이 없습니다.", null);
-        try {
-            response.getWriter().write(objectMapper.writeValueAsString(commonResponse));
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+        response.getWriter().write(gson.toJson(commonResponseDto));
 
     }
 }

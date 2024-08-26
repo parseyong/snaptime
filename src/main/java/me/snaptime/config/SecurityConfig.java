@@ -3,7 +3,6 @@ package me.snaptime.config;
 import lombok.RequiredArgsConstructor;
 import me.snaptime.exception.handler.CustomAccessDeniedHandler;
 import me.snaptime.exception.handler.CustomAuthenticationEntryPoint;
-import me.snaptime.exception.handler.JwtExceptionHandlerFilter;
 import me.snaptime.jwt.JwtAuthFilter;
 import me.snaptime.jwt.JwtProvider;
 import org.springframework.context.annotation.Bean;
@@ -40,8 +39,6 @@ public class SecurityConfig {
                                 .requestMatchers("/**").authenticated()
                                 .anyRequest().hasRole("USER")
                 )
-                .addFilterBefore(new JwtExceptionHandlerFilter(),
-                        UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtAuthFilter(jwtProvider),
                         UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exceptionHandling ->
