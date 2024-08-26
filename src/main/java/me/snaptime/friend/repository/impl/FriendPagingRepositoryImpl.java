@@ -8,7 +8,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import me.snaptime.exception.CustomException;
 import me.snaptime.exception.ExceptionCode;
-import me.snaptime.friend.common.FriendSearchType;
+import me.snaptime.friend.enums.FriendSearchType;
 import me.snaptime.friend.repository.FriendPagingRepository;
 import me.snaptime.user.domain.User;
 import org.springframework.data.domain.PageRequest;

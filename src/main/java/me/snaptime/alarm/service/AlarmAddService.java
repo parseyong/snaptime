@@ -1,6 +1,6 @@
 package me.snaptime.alarm.service;
 
-import me.snaptime.alarm.common.AlarmType;
+import me.snaptime.alarm.enums.AlarmType;
 import me.snaptime.snap.domain.Snap;
 import me.snaptime.user.domain.User;
 

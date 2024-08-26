@@ -1,7 +1,7 @@
 package me.snaptime.friend.repository;
 
 import com.querydsl.core.Tuple;
-import me.snaptime.friend.common.FriendSearchType;
+import me.snaptime.friend.enums.FriendSearchType;
 import me.snaptime.user.domain.User;
 
 import java.util.List;

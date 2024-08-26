@@ -2,10 +2,10 @@ package me.snaptime.alarm.dto.res;
 
 import lombok.Builder;
 import lombok.Getter;
-import me.snaptime.alarm.common.AlarmType;
 import me.snaptime.alarm.domain.FollowAlarm;
 import me.snaptime.alarm.domain.ReplyAlarm;
 import me.snaptime.alarm.domain.SnapAlarm;
+import me.snaptime.alarm.enums.AlarmType;
 
 import java.time.LocalDateTime;
 

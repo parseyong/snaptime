@@ -1,7 +1,7 @@
 package me.snaptime.snapLike.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import me.snaptime.alarm.common.AlarmType;
+import me.snaptime.alarm.enums.AlarmType;
 import me.snaptime.alarm.service.AlarmAddService;
 import me.snaptime.exception.CustomException;
 import me.snaptime.exception.ExceptionCode;

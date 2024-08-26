@@ -3,8 +3,10 @@ package me.snaptime.crawling.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import me.snaptime.common.CommonResponseDto;
+import me.snaptime.crawling.enums.ProviderBrand;
 import me.snaptime.crawling.service.CrawlingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,37 +25,48 @@ import org.springframework.web.bind.annotation.RestController;
 public class CrawlingController {
     private final CrawlingService crawlingService;
 
-    @Operation(summary = "하루필름 크롤링 API", description = "하루필름 크롤링 API입니다.")
-    @Parameter(name = "url", description = "QR Code의 URL")
     @GetMapping("/harufilm")
-    public ResponseEntity<?> harufilm(final @RequestParam("url") String url) {
+    @Operation(summary = "하루필름 크롤링 API", description = "하루필름 크롤링 API입니다.")
+    @Parameter(name = "crawlingURL", description = "QR Code의 URL")
+    public ResponseEntity<CommonResponseDto<byte[]>> harufilmCrawling(
+            final @RequestParam("crawlingURL") @NotBlank(message = "크롤링할 하루필름 사진URL값을 입력해주세요.") String crawlingURL) {
 
-        byte[] image = crawlingService.getImage("harufilm", url);
-        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_PNG).body(image);
+        byte[] photoBytes = crawlingService.findPhotoByCrawling(ProviderBrand.HARU, crawlingURL);
+        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_PNG)
+                .body(CommonResponseDto.of("하루필름 크롤링 성공",photoBytes));
     }
 
-    @Operation(summary = "1Percent 크롤링 API", description = "1Percent 크롤링 API입니다.")
-    @Parameter(name = "url", description = "QR Code의 URL")
     @GetMapping("/onepercent")
-    ResponseEntity<?> onePercent(final @RequestParam String url) {
-        byte[] image = crawlingService.getImage("onepercent", url);
-        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_PNG).body(image);
+    @Operation(summary = "1Percent 크롤링 API", description = "1Percent 크롤링 API입니다.")
+    @Parameter(name = "crawlingURL", description = "QR Code의 URL")
+    ResponseEntity<CommonResponseDto<byte[]>> onePercentCrawling(
+            final @RequestParam("crawlingURL") @NotBlank(message = "크롤링할 onepercent 사진URL값을 입력해주세요.") String crawlingURL) {
+
+        byte[] photoBytes = crawlingService.findPhotoByCrawling(ProviderBrand.ONE_PERCENT, crawlingURL);
+        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_PNG)
+                .body(CommonResponseDto.of("onepercent 크롤링 성공",photoBytes));
     }
 
     @Operation(summary = "Studio808 크롤링 API", description = "Studio808 크롤링 API입니다.")
-    @Parameter(name = "url", description = "QR Code의 URL")
+    @Parameter(name = "crawlingURL", description = "QR Code의 URL")
     @GetMapping("/studio808")
-    ResponseEntity<?> studio808(final @RequestParam String url) {
-        byte[] image = crawlingService.getImage("studio808", url);
-        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_PNG).body(image);
+    ResponseEntity<CommonResponseDto<byte[]>> studio808Crawling(
+            final @RequestParam("crawlingURL") @NotBlank(message = "크롤링할 Studio8080 사진URL값을 입력해주세요.") String crawlingURL) {
+
+        byte[] photoBytes = crawlingService.findPhotoByCrawling(ProviderBrand.STUDIO_808, crawlingURL);
+        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_PNG)
+                .body(CommonResponseDto.of("Studio8080 크롤링 성공",photoBytes));
     }
 
     @Operation(summary = "PhotoSignature 크롤링 API", description = "PhotoSignature 크롤링 API입니다.")
-    @Parameter(name = "url", description = "QR Code의 URL")
+    @Parameter(name = "crawlingURL", description = "QR Code의 URL")
     @GetMapping("/photosignature")
-    ResponseEntity<?> photosignature(final @RequestParam String url) {
-        byte[] image = crawlingService.getImage("photosignature", url);
-        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_PNG).body(image);
+    ResponseEntity<CommonResponseDto<byte[]>> photoSignatureCrawling(
+            final @RequestParam("crawlingURL") @NotBlank(message = "크롤링할 PhotoSignature 사진URL값을 입력해주세요.") String crawlingURL) {
+
+        byte[] photoBytes = crawlingService.findPhotoByCrawling(ProviderBrand.PHOTO_SIGNATURE, crawlingURL);
+        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_PNG)
+                .body(CommonResponseDto.of("PhotoSignature 크롤링 성공",photoBytes));
     }
 
 

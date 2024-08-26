@@ -5,7 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import me.snaptime.alarm.common.AlarmType;
+import me.snaptime.alarm.enums.AlarmType;
 import me.snaptime.common.BaseTimeEntity;
 import me.snaptime.snap.domain.Snap;
 import me.snaptime.user.domain.User;

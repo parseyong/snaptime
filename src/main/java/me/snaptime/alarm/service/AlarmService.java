@@ -1,7 +1,7 @@
 package me.snaptime.alarm.service;
 
-import me.snaptime.alarm.common.AlarmType;
 import me.snaptime.alarm.dto.res.AlarmFindAllResDto;
+import me.snaptime.alarm.enums.AlarmType;
 import me.snaptime.reply.dto.res.ParentReplyPagingResDto;
 import me.snaptime.snap.dto.res.SnapFindDetailResDto;
 

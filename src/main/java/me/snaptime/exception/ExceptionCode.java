@@ -63,7 +63,7 @@ public enum ExceptionCode {
     SNAPTAG_NOT_EXIST(HttpStatus.BAD_REQUEST,"존재하지 않는 태그유저입니다."),
 
     // Jsoup Action
-    URL_HAVING_PROBLEM(HttpStatus.BAD_REQUEST, "문제가 있는 URL입니다.");
+    CRAWLING_FAIL(HttpStatus.BAD_REQUEST, "크롤링에 실패하였습니다.");
 
     private final HttpStatus status;
     private final String message;

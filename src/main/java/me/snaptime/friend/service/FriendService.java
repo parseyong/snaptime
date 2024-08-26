@@ -1,8 +1,8 @@
 package me.snaptime.friend.service;
 
-import me.snaptime.friend.common.FriendSearchType;
 import me.snaptime.friend.dto.res.FriendCntResDto;
 import me.snaptime.friend.dto.res.FriendPagingResDto;
+import me.snaptime.friend.enums.FriendSearchType;
 import me.snaptime.user.domain.User;
 
 public interface FriendService {

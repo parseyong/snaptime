@@ -1,12 +1,12 @@
 package me.snaptime.alarm.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import me.snaptime.alarm.common.AlarmType;
 import me.snaptime.alarm.domain.FollowAlarm;
 import me.snaptime.alarm.domain.ReplyAlarm;
 import me.snaptime.alarm.domain.SnapAlarm;
 import me.snaptime.alarm.dto.res.AlarmFindAllResDto;
 import me.snaptime.alarm.dto.res.AlarmFindResDto;
+import me.snaptime.alarm.enums.AlarmType;
 import me.snaptime.alarm.repository.FollowAlarmRepository;
 import me.snaptime.alarm.repository.ReplyAlarmRepository;
 import me.snaptime.alarm.repository.SnapAlarmRepository;

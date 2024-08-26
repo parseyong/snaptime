@@ -1,4 +1,4 @@
-package me.snaptime.alarm.common;
+package me.snaptime.alarm.enums;
 
 public enum AlarmType {
 

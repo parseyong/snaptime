@@ -1,4 +1,4 @@
-package me.snaptime.friend.common;
+package me.snaptime.friend.enums;
 
 public enum FriendSearchType {
 

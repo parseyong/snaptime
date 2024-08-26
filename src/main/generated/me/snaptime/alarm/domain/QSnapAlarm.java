@@ -24,7 +24,7 @@ public class QSnapAlarm extends EntityPathBase<SnapAlarm> {
 
     public final me.snaptime.common.QBaseTimeEntity _super = new me.snaptime.common.QBaseTimeEntity(this);
 
-    public final EnumPath<me.snaptime.alarm.common.AlarmType> alarmType = createEnum("alarmType", me.snaptime.alarm.common.AlarmType.class);
+    public final EnumPath<me.snaptime.alarm.enums.AlarmType> alarmType = createEnum("alarmType", me.snaptime.alarm.enums.AlarmType.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdDate = _super.createdDate;
