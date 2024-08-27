@@ -9,7 +9,6 @@ import me.snaptime.exception.ExceptionCode;
 import me.snaptime.friend.domain.Friend;
 import me.snaptime.friend.enums.FriendSearchType;
 import me.snaptime.friend.repository.FriendRepository;
-import me.snaptime.profilePhoto.domain.ProfilePhoto;
 import me.snaptime.user.domain.User;
 import me.snaptime.user.repository.UserRepository;
 import me.snaptime.util.CipherUtil;
@@ -44,16 +43,13 @@ public class FriendPagingRepositoryTest {
 
     @BeforeEach
     void init(){
-        ProfilePhoto reqProfilePhoto = ProfilePhoto.builder()
-                .profilePhotoPath("testPath")
-                .profilePhotoName("testProfileName1")
-                .build();
         reqUser = User.builder()
                 .email("test@google.com")
                 .loginId("testLoginId")
                 .nickname("testName")
                 .password("1234")
-                .profilePhoto(reqProfilePhoto)
+                .profilePhotoName("testProfileName1")
+                .profilePhotoPath("testPath")
                 .birthDay(String.valueOf(LocalDateTime.now()))
                 .secretKey(CipherUtil.generateAESKey())
                 .build();
@@ -115,17 +111,14 @@ public class FriendPagingRepositoryTest {
     }
 
     private void createFriend(User reqUser, Long i){
-        ProfilePhoto profilePhoto = ProfilePhoto.builder()
-                .profilePhotoPath("testPath")
-                .profilePhotoName("testProfileName1")
-                .build();
 
         User user = User.builder()
                 .email("test"+i+"@google.com")
                 .loginId("test"+i+"LoginId")
                 .nickname("testName"+i)
                 .password("1234")
-                .profilePhoto(profilePhoto)
+                .profilePhotoName("testProfileName1")
+                .profilePhotoPath("testPath")
                 .birthDay(String.valueOf(LocalDateTime.now()))
                 .secretKey(CipherUtil.generateAESKey())
                 .build();

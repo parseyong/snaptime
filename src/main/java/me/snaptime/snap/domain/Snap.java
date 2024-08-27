@@ -21,16 +21,8 @@ public class Snap extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long snapId;
 
+    @Column(name = "one_line_journal", nullable = false)
     private String oneLineJournal;
-
-    @ManyToOne
-    @JoinColumn(name = "album_id")
-    private Album album;
-
-    @ManyToOne
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "user_id")
-    private User user;
 
     @Column(name = "is_private", nullable = false)
     private boolean isPrivate;
@@ -44,9 +36,19 @@ public class Snap extends BaseTimeEntity {
     @Column(name = "file_type", nullable = false)
     private String fileType;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "album_id")
+    private Album album;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Builder
-    protected Snap(String oneLineJournal, Album album, User user,
-                   String fileName, String filePath, String fileType, boolean isPrivate) {
+    protected Snap(String oneLineJournal, Album album, User user, String fileName,
+                   String filePath, String fileType, boolean isPrivate) {
         this.oneLineJournal = oneLineJournal;
         this.album = album;
         this.user = user;
@@ -56,8 +58,8 @@ public class Snap extends BaseTimeEntity {
         this.isPrivate = isPrivate;
     }
 
-    public void updateIsPrivate(boolean state) {
-        this.isPrivate = state;
+    public void updateIsPrivate(boolean isPrivate) {
+        this.isPrivate = isPrivate;
     }
 
     public void updateAlbum(Album album) {

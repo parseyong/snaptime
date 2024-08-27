@@ -47,7 +47,7 @@ public class QSnapTag extends EntityPathBase<SnapTag> {
     public QSnapTag(Class<? extends SnapTag> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.snap = inits.isInitialized("snap") ? new me.snaptime.snap.domain.QSnap(forProperty("snap"), inits.get("snap")) : null;
-        this.tagUser = inits.isInitialized("tagUser") ? new me.snaptime.user.domain.QUser(forProperty("tagUser"), inits.get("tagUser")) : null;
+        this.tagUser = inits.isInitialized("tagUser") ? new me.snaptime.user.domain.QUser(forProperty("tagUser")) : null;
     }
 
 }

@@ -7,7 +7,6 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
-import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -17,8 +16,6 @@ import com.querydsl.core.types.dsl.PathInits;
 public class QUser extends EntityPathBase<User> {
 
     private static final long serialVersionUID = -1636126765L;
-
-    private static final PathInits INITS = PathInits.DIRECT2;
 
     public static final QUser user = new QUser("user");
 
@@ -40,7 +37,9 @@ public class QUser extends EntityPathBase<User> {
 
     public final StringPath password = createString("password");
 
-    public final me.snaptime.profilePhoto.domain.QProfilePhoto profilePhoto;
+    public final StringPath profilePhotoName = createString("profilePhotoName");
+
+    public final StringPath profilePhotoPath = createString("profilePhotoPath");
 
     public final StringPath roleName = createString("roleName");
 
@@ -49,24 +48,15 @@ public class QUser extends EntityPathBase<User> {
     public final NumberPath<Long> userId = createNumber("userId", Long.class);
 
     public QUser(String variable) {
-        this(User.class, forVariable(variable), INITS);
+        super(User.class, forVariable(variable));
     }
 
     public QUser(Path<? extends User> path) {
-        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
+        super(path.getType(), path.getMetadata());
     }
 
     public QUser(PathMetadata metadata) {
-        this(metadata, PathInits.getFor(metadata, INITS));
-    }
-
-    public QUser(PathMetadata metadata, PathInits inits) {
-        this(User.class, metadata, inits);
-    }
-
-    public QUser(Class<? extends User> type, PathMetadata metadata, PathInits inits) {
-        super(type, metadata, inits);
-        this.profilePhoto = inits.isInitialized("profilePhoto") ? new me.snaptime.profilePhoto.domain.QProfilePhoto(forProperty("profilePhoto"), inits.get("profilePhoto")) : null;
+        super(User.class, metadata);
     }
 
 }

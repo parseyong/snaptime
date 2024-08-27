@@ -10,7 +10,6 @@ import me.snaptime.exception.CustomException;
 import me.snaptime.exception.ExceptionCode;
 import me.snaptime.friend.domain.Friend;
 import me.snaptime.friend.repository.FriendRepository;
-import me.snaptime.profilePhoto.domain.ProfilePhoto;
 import me.snaptime.snap.domain.Snap;
 import me.snaptime.user.domain.User;
 import me.snaptime.user.repository.UserRepository;
@@ -35,7 +34,7 @@ import static org.springframework.test.util.AssertionErrors.fail;
 @Import({QueryDslConfig.class, JpaAuditingConfig.class})
 @TestPropertySource(locations = "classpath:application-test.yml")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class SnapPagingRepositoryImplTest {
+public class SnapQdslRepositoryImplTest {
 
     @Autowired
     private SnapRepository snapRepository;
@@ -56,22 +55,6 @@ public class SnapPagingRepositoryImplTest {
                 .albumName("testAlbum")
                 .build();
         albumRepository.save(album);
-        ProfilePhoto profilePhoto1 = ProfilePhoto.builder()
-                .profilePhotoPath("testPath")
-                .profilePhotoName("testProfileName1")
-                .build();
-        ProfilePhoto profilePhoto2 = ProfilePhoto.builder()
-                .profilePhotoPath("testPath")
-                .profilePhotoName("testProfileName2")
-                .build();
-        ProfilePhoto profilePhoto3 = ProfilePhoto.builder()
-                .profilePhotoPath("testPath")
-                .profilePhotoName("testProfileName3")
-                .build();
-        ProfilePhoto profilePhoto4 = ProfilePhoto.builder()
-                .profilePhotoPath("testPath")
-                .profilePhotoName("testProfileName4")
-                .build();
 
         reqUser = User.builder()
                 .email("test1@google.com")
@@ -79,7 +62,8 @@ public class SnapPagingRepositoryImplTest {
                 .nickname("testName1")
                 .password("1234")
                 .birthDay(String.valueOf(LocalDateTime.now()))
-                .profilePhoto(profilePhoto1)
+                .profilePhotoName("testProfileName1")
+                .profilePhotoPath("testPath")
                 .secretKey(CipherUtil.generateAESKey())
                 .build();
         User user2 = User.builder()
@@ -88,7 +72,8 @@ public class SnapPagingRepositoryImplTest {
                 .nickname("testName2")
                 .password("1234")
                 .birthDay(String.valueOf(LocalDateTime.now()))
-                .profilePhoto(profilePhoto2)
+                .profilePhotoName("testProfileName2")
+                .profilePhotoPath("testPath")
                 .secretKey(CipherUtil.generateAESKey())
                 .build();
         User user3 = User.builder()
@@ -97,7 +82,8 @@ public class SnapPagingRepositoryImplTest {
                 .nickname("testName3")
                 .password("1234")
                 .birthDay(String.valueOf(LocalDateTime.now()))
-                .profilePhoto(profilePhoto3)
+                .profilePhotoName("testProfileName3")
+                .profilePhotoPath("testPath")
                 .secretKey(CipherUtil.generateAESKey())
                 .build();
         User user4 = User.builder()
@@ -106,7 +92,8 @@ public class SnapPagingRepositoryImplTest {
                 .nickname("testName4")
                 .password("1234")
                 .birthDay(String.valueOf(LocalDateTime.now()))
-                .profilePhoto(profilePhoto4)
+                .profilePhotoName("testProfileName4")
+                .profilePhotoPath("testPath")
                 .secretKey(CipherUtil.generateAESKey())
                 .build();
 

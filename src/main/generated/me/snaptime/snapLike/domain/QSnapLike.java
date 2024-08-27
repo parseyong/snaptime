@@ -47,7 +47,7 @@ public class QSnapLike extends EntityPathBase<SnapLike> {
     public QSnapLike(Class<? extends SnapLike> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.snap = inits.isInitialized("snap") ? new me.snaptime.snap.domain.QSnap(forProperty("snap"), inits.get("snap")) : null;
-        this.user = inits.isInitialized("user") ? new me.snaptime.user.domain.QUser(forProperty("user"), inits.get("user")) : null;
+        this.user = inits.isInitialized("user") ? new me.snaptime.user.domain.QUser(forProperty("user")) : null;
     }
 
 }

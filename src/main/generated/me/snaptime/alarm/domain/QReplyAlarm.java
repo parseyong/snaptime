@@ -62,8 +62,8 @@ public class QReplyAlarm extends EntityPathBase<ReplyAlarm> {
 
     public QReplyAlarm(Class<? extends ReplyAlarm> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.receiver = inits.isInitialized("receiver") ? new me.snaptime.user.domain.QUser(forProperty("receiver"), inits.get("receiver")) : null;
-        this.sender = inits.isInitialized("sender") ? new me.snaptime.user.domain.QUser(forProperty("sender"), inits.get("sender")) : null;
+        this.receiver = inits.isInitialized("receiver") ? new me.snaptime.user.domain.QUser(forProperty("receiver")) : null;
+        this.sender = inits.isInitialized("sender") ? new me.snaptime.user.domain.QUser(forProperty("sender")) : null;
         this.snap = inits.isInitialized("snap") ? new me.snaptime.snap.domain.QSnap(forProperty("snap"), inits.get("snap")) : null;
     }
 

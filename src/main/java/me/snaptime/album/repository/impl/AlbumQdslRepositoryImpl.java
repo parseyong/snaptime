@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 import static me.snaptime.album.domain.QAlbum.album;
+import static me.snaptime.user.domain.QUser.user;
 
 @Repository
 @RequiredArgsConstructor
@@ -22,11 +23,11 @@ public class AlbumQdslRepositoryImpl implements AlbumQdslRepository {
     private String basicAlbumName;
 
     @Override
-    public Optional<Album> findBasicAlbumByUser(User user) {
+    public Optional<Album> findBasicAlbumByUser(User reqUser) {
 
         return Optional.ofNullable(jpaQueryFactory.select(album)
                 .from(album)
-                .join(album).on(album.user.userId.eq(user.getUserId()))
+                .join(user).on(album.user.userId.eq(reqUser.getUserId()))
                 .where(album.albumName.eq(basicAlbumName))
                 .orderBy(album.createdDate.asc())
                 .fetchFirst());

@@ -27,7 +27,7 @@ public class UserPagingRepositoryImpl implements UserPagingRepository {
         Pageable pageable= PageRequest.of((int) (pageNum-1),20);
 
         List<Tuple> tuples =  jpaQueryFactory.select(
-                        user.loginId, user.profilePhoto.profilePhotoId, user.nickname
+                        user.loginId, user.profilePhotoName, user.nickname
                 )
                 .from(user)
                 .where(user.nickname.startsWith(searchKeyword).or(user.loginId.startsWith(searchKeyword)))

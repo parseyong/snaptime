@@ -1,9 +1,9 @@
-package me.snaptime.snap.dto.file;
+package me.snaptime.snap.dto.res;
 
 import lombok.Builder;
 
 @Builder
-public record PhotoInfo(
+public record PhotoPathResDto(
         String filePath,
         String fileName
 ) {

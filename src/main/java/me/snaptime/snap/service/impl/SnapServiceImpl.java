@@ -11,9 +11,9 @@ import me.snaptime.component.url.UrlComponent;
 import me.snaptime.exception.CustomException;
 import me.snaptime.exception.ExceptionCode;
 import me.snaptime.snap.domain.Snap;
-import me.snaptime.snap.dto.file.PhotoInfo;
-import me.snaptime.snap.dto.req.CreateSnapReqDto;
-import me.snaptime.snap.dto.req.ModifySnapReqDto;
+import me.snaptime.snap.dto.req.SnapAddReqDto;
+import me.snaptime.snap.dto.req.SnapUpdateReqDto;
+import me.snaptime.snap.dto.res.PhotoPathResDto;
 import me.snaptime.snap.dto.res.SnapFindAllInAlbumResDto;
 import me.snaptime.snap.dto.res.SnapFindDetailResDto;
 import me.snaptime.snap.dto.res.SnapFindResDto;
@@ -52,47 +52,29 @@ public class SnapServiceImpl implements SnapService {
     private final SnapLikeService snapLikeService;
 
     @Override
-    public Long createSnap(CreateSnapReqDto createSnapReqDto, String userUid) {
+    public void addSnap(String reqLoginId, SnapAddReqDto snapAddReqDto) {
 
-        User user = userRepository.findByLoginId(userUid)
+        User reqUser = userRepository.findByLoginId(reqLoginId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
-        PhotoInfo photoInfo = savePhotoToFileSystem(user, createSnapReqDto.multipartFile(), createSnapReqDto.isPrivate());
+        PhotoPathResDto photoPathResDto = addPhoto(reqUser, snapAddReqDto.multipartFile(), snapAddReqDto.isPrivate());
 
         Snap snap = Snap.builder()
-                .oneLineJournal(createSnapReqDto.oneLineJournal())
-                .fileName(photoInfo.fileName())
-                .filePath(photoInfo.filePath())
-                .fileType(createSnapReqDto.multipartFile().getContentType())
-                .user(user)
-                .isPrivate(createSnapReqDto.isPrivate())
+                .user(reqUser)
+                .isPrivate(snapAddReqDto.isPrivate())
+                .oneLineJournal(snapAddReqDto.oneLineJournal())
+                .fileName(photoPathResDto.fileName())
+                .filePath(photoPathResDto.filePath())
+                .fileType(snapAddReqDto.multipartFile().getContentType())
+                .album(albumService.findAlbumForSnapAdd(reqUser,snapAddReqDto.albumId()))
                 .build();
 
-        Snap savedSnap = snapRepository.save(snap);
-
-        // 사용자가 앨범 선택을 하고 요청을 보낼 경우
-        if (createSnapReqDto.album_id() != null) {
-            Long albumId = createSnapReqDto.album_id();
-            Album album = albumRepository.findById(albumId)
-                    .orElseThrow(() -> new CustomException(ExceptionCode.ALBUM_NOT_EXIST));
-
-            // 사용자가 만든 앨범인지 확인 한다.
-            albumService.isMyAlbum(user, album);
-            // 위 구문을 실행하는데 문제가 없다면 연관관계를 맺어준다.
-            makeRelationSnapAndAlbum(savedSnap, albumId);
-
-        } else {
-            // 사용자가 앨범 선택을 하지 않고 요청을 보낼 경우
-            // non-classification 앨범에 스냅을 추가함
-            processSnapForNonClassification(savedSnap, user);
-        }
-
         // tagUserLoginIds가 파라미터로 주어졌을 경우 태그에 추가
-        if (createSnapReqDto.tagUserLoginIds() != null) {
-            snapTagService.addTagUser(createSnapReqDto.tagUserLoginIds(), savedSnap);
+        if (snapAddReqDto.tagUserLoginIds() != null) {
+            snapTagService.addTagUser(snapAddReqDto.tagUserLoginIds(), snap);
         }
 
-        return savedSnap.getSnapId();
+        snapRepository.save(snap);
     }
 
     @Override
@@ -106,7 +88,7 @@ public class SnapServiceImpl implements SnapService {
             }
         }
         String snapPhotoUrl = urlComponent.makePhotoURL(foundSnap.getFileName(), foundSnap.isPrivate());
-        String profilePhotoUrl = urlComponent.makeProfileURL(foundSnap.getUser().getProfilePhoto().getProfilePhotoId());
+        String profilePhotoUrl = urlComponent.makePhotoURL(foundSnap.getFileName(),false);
         List<TagUserFindResDto> tagUserFindResDtos = snapTagService.findTagUsers(foundSnap.getSnapId());
         Long likeCnt = snapLikeService.findSnapLikeCnt(foundSnap.getSnapId());
         boolean isLikedSnap = snapLikeService.isLikedSnap(foundSnap.getSnapId(), uId);
@@ -114,7 +96,7 @@ public class SnapServiceImpl implements SnapService {
     }
 
     @Override
-    public Long modifySnap(Long snapId, ModifySnapReqDto modifySnapReqDto, String userUid, List<String> tagUserLoginIds, boolean isPrivate) {
+    public Long modifySnap(Long snapId, SnapUpdateReqDto snapUpdateReqDto, String userUid, List<String> tagUserLoginIds, boolean isPrivate) {
         Snap foundSnap = snapRepository.findById(snapId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.SNAP_NOT_EXIST));
 
@@ -127,9 +109,9 @@ public class SnapServiceImpl implements SnapService {
         }
 
         // 이미지 수정
-        if (null != modifySnapReqDto.multipartFile()) {
+        if (null != snapUpdateReqDto.multipartFile()) {
             try {
-                byte[] foundPhotoByte = modifySnapReqDto.multipartFile().getInputStream().readAllBytes();
+                byte[] foundPhotoByte = snapUpdateReqDto.multipartFile().getInputStream().readAllBytes();
                 if (isPrivate) {
                     // 사용자가 이미지 수정까지 요구했고, 암호화까지 원한다면
                     // getEncryption을 통해 사용자의 암호화키를 가져온다. (없으면 null이다.)
@@ -244,23 +226,33 @@ public class SnapServiceImpl implements SnapService {
         }
     }
 
-    private PhotoInfo savePhotoToFileSystem(User user, MultipartFile multipartFile, boolean isPrivate) {
+    private PhotoPathResDto addPhoto(User reqUser, MultipartFile multipartFile, boolean isPrivate) {
         try {
             if (isPrivate) {
-                SecretKey secretKey = user.getSecretKey();
-                byte[] encryptedData = cipherComponent.encryptData(secretKey, multipartFile.getInputStream().readAllBytes());
-                return photoComponent.addPhoto(multipartFile.getOriginalFilename(), encryptedData);
-            } else {
+                SecretKey secretKey = reqUser.getSecretKey();
+                byte[] encryptedFile = cipherComponent.encryptData(secretKey, multipartFile.getInputStream().readAllBytes());
+                return photoComponent.addPhoto(multipartFile.getOriginalFilename(), encryptedFile);
+            }
+            else {
                 return photoComponent.addPhoto(multipartFile.getOriginalFilename(), multipartFile.getInputStream().readAllBytes());
-        }
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            throw new CustomException(ExceptionCode.FILE_FIND_FAIL);
+            }
+
+        } catch (CustomException customException) {
+            throw customException;
+        } catch (IOException ioException){
+            throw new CustomException(ExceptionCode.PHOTO_FIND_FAIL);
         }
     }
 
-    private void makeRelationSnapAndAlbum(Snap snap, Long album_id) {
-        Album foundAlbum = albumRepository.findById(album_id).orElseThrow(() -> new CustomException(ExceptionCode.ALBUM_NOT_EXIST));
+    private void addSnapInAlbum(Snap snap, Long albumId) {
+
+        if(albumId == null){
+
+        }
+        else{
+
+        }
+        Album foundAlbum = albumRepository.findById(albumId).orElseThrow(() -> new CustomException(ExceptionCode.ALBUM_NOT_EXIST));
         snap.updateAlbum(foundAlbum);
         snapRepository.save(snap);
     }
@@ -268,7 +260,7 @@ public class SnapServiceImpl implements SnapService {
     private void processSnapForNonClassification(Snap snap, User user){
 
         Album basicAlbum = albumService.findBasicAlbum(user);
-        makeRelationSnapAndAlbum(snap, basicAlbum.getAlbumId());
+        addSnapInAlbum(snap, basicAlbum.getAlbumId());
     }
 
     @Override
@@ -276,25 +268,28 @@ public class SnapServiceImpl implements SnapService {
     public SnapFindAllInAlbumResDto findAllSnapInAlbum(String uId, Long album_id) {
         Album foundAlbum = albumRepository.findById(album_id).orElseThrow(() -> new CustomException(ExceptionCode.ALBUM_NOT_EXIST));
         User foundUser = userRepository.findByLoginId(uId).orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
+        List<Snap> foundSnaps = snapRepository.findAllByAlbum( foundAlbum );
+
         try {
             Album album = albumRepository.findById(album_id)
                     .orElseThrow(() -> new CustomException(ExceptionCode.ALBUM_NOT_EXIST));
             albumService.isMyAlbum(foundUser, album);
         } catch (CustomException e) {
+
             /*
              * 유저가 없거나, 권한이 없으면 공개인 것만 유저에게 반환한다.
              * */
             return SnapFindAllInAlbumResDto.builder()
                     .albumId(foundAlbum.getAlbumId())
                     .albumName(foundAlbum.getAlbumName())
-                    .snapFindResDtos(foundAlbum.getSnaps().stream()
+                    .snapFindResDtos(foundSnaps.stream()
                             .sorted(Comparator.comparing(Snap::getSnapId).reversed())
                             .filter( snap -> !snap.isPrivate())
                             .map(snap ->
                                     SnapFindResDto.entityToResDto(
                                             snap,
                                             urlComponent.makePhotoURL(snap.getFileName(), false),
-                                            urlComponent.makeProfileURL(snap.getUser().getProfilePhoto().getProfilePhotoId())
+                                            urlComponent.makePhotoURL(snap.getUser().getProfilePhotoName(),false)
                                     )
                             )
                             .collect(Collectors.toList()))
@@ -304,13 +299,13 @@ public class SnapServiceImpl implements SnapService {
         return SnapFindAllInAlbumResDto.builder()
                 .albumId(foundAlbum.getAlbumId())
                 .albumName(foundAlbum.getAlbumName())
-                .snapFindResDtos(foundAlbum.getSnaps().stream()
+                .snapFindResDtos(foundSnaps.stream()
                         .sorted(Comparator.comparing(Snap::getSnapId).reversed())
                         .map(snap ->
                                 SnapFindResDto.entityToResDto(
                                         snap,
                                         urlComponent.makePhotoURL(snap.getFileName(), snap.isPrivate()),
-                                        urlComponent.makeProfileURL(snap.getUser().getProfilePhoto().getProfilePhotoId())
+                                        urlComponent.makePhotoURL(snap.getUser().getProfilePhotoName(),false)
                                 )
                         )
                         .collect(Collectors.toList()))

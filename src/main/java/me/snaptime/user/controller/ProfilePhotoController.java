@@ -1,4 +1,4 @@
-package me.snaptime.profilePhoto.controller;
+package me.snaptime.user.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -6,8 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.snaptime.common.CommonResponseDto;
-import me.snaptime.profilePhoto.dto.res.ProfilePhotoResDto;
-import me.snaptime.profilePhoto.service.ProfilePhotoService;
+import me.snaptime.user.service.ProfilePhotoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,11 +28,11 @@ public class ProfilePhotoController {
 
     @Operation(summary = "프로필 사진 조회",description = "유저의 번호로 유저의 프로필 사진을 조회 합니다.")
     @Parameter(name = "profilePhotoId", description = "조회 할 프로필 사진의 albumId")
-    @GetMapping("/{profilePhotoId}")
-    public ResponseEntity<?> downloadProfileToFileSystem(@PathVariable("profilePhotoId") Long profilePhotoId) {
-        log.info("[downloadProfile] 유저의 프로필 사진을 조회합니다. profilePhotoId : {}",profilePhotoId);
+    @GetMapping
+    public ResponseEntity<?> downloadProfileToFileSystem(
+            @AuthenticationPrincipal String reqLoginId) {
 
-        byte[] downloadProfile = profilePhotoService.downloadPhotoFromFileSystem(profilePhotoId);
+        byte[] downloadProfile = profilePhotoService.downloadPhotoFromFileSystem(reqLoginId);
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.valueOf("image/png"))
                 .body(downloadProfile);
@@ -46,11 +45,11 @@ public class ProfilePhotoController {
                                                        @RequestParam MultipartFile file) throws Exception {
         String loginId = userDetails.getUsername();
         log.info("[updateProfile] 유저의 프로필 사진을 수정합니다. loginId : {}", loginId);
-        ProfilePhotoResDto updateProfile = profilePhotoService.updatePhotoFromFileSystem(loginId, file);
+        profilePhotoService.updatePhotoFromFileSystem(loginId, file);
         return ResponseEntity.status(HttpStatus.OK).body(
                 new CommonResponseDto<>(
                         "프로필 사진 수정을 성공적으로 완료하였습니다.",
-                        updateProfile)
+                        null)
         );
     }
 }

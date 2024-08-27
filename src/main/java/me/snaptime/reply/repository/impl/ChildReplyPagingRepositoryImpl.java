@@ -33,7 +33,7 @@ public class ChildReplyPagingRepositoryImpl implements ChildReplyPagingRepositor
         List<Tuple> tuples =  jpaQueryFactory.select(
                         childReply.childReplyId,childReply.content,childReply.parentReply.parentReplyId,
                         writerUser.nickname,writerUser.loginId,tagUser.nickname,tagUser.loginId,
-                        writerUser.profilePhoto.profilePhotoId, childReply.lastModifiedDate
+                        writerUser.profilePhotoName, childReply.lastModifiedDate
                 )
                 .from(childReply)
                 .leftJoin(tagUser).on(childReply.replyTagUser.userId.eq(tagUser.userId))

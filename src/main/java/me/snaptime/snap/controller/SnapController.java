@@ -6,10 +6,9 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import me.snaptime.common.CommonResponseDto;
-import me.snaptime.snap.dto.req.CreateSnapReqDto;
-import me.snaptime.snap.dto.req.ModifySnapReqDto;
+import me.snaptime.snap.dto.req.SnapAddReqDto;
+import me.snaptime.snap.dto.req.SnapUpdateReqDto;
 import me.snaptime.snap.dto.res.SnapFindAllInAlbumResDto;
 import me.snaptime.snap.dto.res.SnapFindDetailResDto;
 import me.snaptime.snap.service.SnapService;
@@ -23,11 +22,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Validated
 @RestController
 @RequiredArgsConstructor
-@Validated
 @Tag(name = "[Snap] Snap API")
-@Slf4j
 public class SnapController {
 
     private final SnapService snapService;
@@ -35,16 +33,12 @@ public class SnapController {
     @Operation(summary = "Snap 생성", description = "Empty Value를 보내지마세요")
     @PostMapping(value = "/snap", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<CommonResponseDto<Long>> createSnap(
-            final @ModelAttribute @Valid CreateSnapReqDto createSnapReqDto,
-            final @AuthenticationPrincipal String reqLoginId) {
+            final @AuthenticationPrincipal String reqLoginId,
+            @ModelAttribute @Valid SnapAddReqDto snapAddReqDto) {
 
-        Long snapId = snapService.createSnap(createSnapReqDto,reqLoginId);
-
+        snapService.addSnap(reqLoginId, snapAddReqDto);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new CommonResponseDto<>(
-                "스냅이 정상적으로 저장되었습니다.",
-                        snapId
-        ));
+                .body(CommonResponseDto.of("스냅이 정상적으로 저장되었습니다.", null));
     }
 
     @GetMapping("/albums/{albumId}/snaps")
@@ -81,7 +75,7 @@ public class SnapController {
     })
     @PutMapping(value = "/snap", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<CommonResponseDto<Long>> modifySnap(
-            final @ModelAttribute ModifySnapReqDto modifySnapReqDto,
+            final @ModelAttribute SnapUpdateReqDto snapUpdateReqDto,
             final @RequestParam boolean isPrivate,
             final @RequestParam Long snapId,
             final @RequestParam(required = false) List<String> tagUserLoginIds,
@@ -91,7 +85,7 @@ public class SnapController {
         return ResponseEntity.status(HttpStatus.OK).body(
                 new CommonResponseDto<>(
                         "스냅이 정상적으로 수정되었습니다.",
-                        snapService.modifySnap(snapId, modifySnapReqDto, uId, tagUserLoginIds, isPrivate)
+                        snapService.modifySnap(snapId, snapUpdateReqDto, uId, tagUserLoginIds, isPrivate)
                 )
         );
     }

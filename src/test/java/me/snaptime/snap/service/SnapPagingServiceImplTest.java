@@ -60,20 +60,19 @@ public class SnapPagingServiceImplTest {
         Tuple tuple1 = mock(Tuple.class);
         Tuple tuple2 = mock(Tuple.class);
         Tuple tuple3 = mock(Tuple.class);
-        given(urlComponent.makeProfileURL(any(Long.class)))
-                .willReturn("profile1")
-                .willReturn("profile2")
-                .willReturn("profile3");
         given(urlComponent.makePhotoURL(any(String.class),any(Boolean.class)))
-                .willReturn("photoURL1")
-                .willReturn("photoURL2")
-                .willReturn("photoURL3");
+                .willReturn("profile2")
+                .willReturn("profile2")
+                .willReturn("profile2")
+                .willReturn("profile2")
+                .willReturn("profile2")
+                .willReturn("profile2");
         given(tuple1.get(snap.snapId)).willReturn(1L);
         given(tuple2.get(snap.snapId)).willReturn(2L);
         given(tuple3.get(snap.snapId)).willReturn(3L);
-        given(tuple1.get(user.profilePhoto.profilePhotoId)).willReturn(1L);
-        given(tuple2.get(user.profilePhoto.profilePhotoId)).willReturn(2L);
-        given(tuple3.get(user.profilePhoto.profilePhotoId)).willReturn(3L);
+        given(tuple1.get(user.profilePhotoName)).willReturn("profilePhotoName");
+        given(tuple2.get(user.profilePhotoName)).willReturn("profilePhotoName");
+        given(tuple3.get(user.profilePhotoName)).willReturn("profilePhotoName");
         given(tuple1.get(snap.oneLineJournal)).willReturn("일기1");
         given(tuple2.get(snap.oneLineJournal)).willReturn("일기2");
         given(tuple3.get(snap.oneLineJournal)).willReturn("일기3");
@@ -96,9 +95,9 @@ public class SnapPagingServiceImplTest {
         assertThat(snapFindPagingResDto.snapFindDetailResDtos().get(1).oneLineJournal()).isEqualTo("일기2");
         assertThat(snapFindPagingResDto.snapFindDetailResDtos().get(2).oneLineJournal()).isEqualTo("일기3");
 
-        assertThat(snapFindPagingResDto.snapFindDetailResDtos().get(0).snapPhotoURL()).isEqualTo("photoURL1");
-        assertThat(snapFindPagingResDto.snapFindDetailResDtos().get(1).snapPhotoURL()).isEqualTo("photoURL2");
-        assertThat(snapFindPagingResDto.snapFindDetailResDtos().get(2).snapPhotoURL()).isEqualTo("photoURL3");
+        assertThat(snapFindPagingResDto.snapFindDetailResDtos().get(0).snapPhotoURL()).isEqualTo("profile2");
+        assertThat(snapFindPagingResDto.snapFindDetailResDtos().get(1).snapPhotoURL()).isEqualTo("profile2");
+        assertThat(snapFindPagingResDto.snapFindDetailResDtos().get(2).snapPhotoURL()).isEqualTo("profile2");
 
         verify(snapRepository,times(1)).findSnapPage(any(Long.class),any(User.class));
         verify(userRepository,times(1)).findByLoginId(any(String.class));

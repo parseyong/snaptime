@@ -47,7 +47,7 @@ public class SnapPagingServiceImpl implements SnapPagingService {
         {
 
             Long snapId = tuple.get(snap.snapId);
-            String profilePhotoURL = urlComponent.makeProfileURL(tuple.get(user.profilePhoto.profilePhotoId));
+            String profilePhotoURL = urlComponent.makePhotoURL(tuple.get(user.profilePhotoName),false);
             String snapPhotoURL = urlComponent.makePhotoURL(tuple.get(snap.fileName),false);
 
             return SnapFindDetailResDto.toDto(tuple,profilePhotoURL,snapPhotoURL,

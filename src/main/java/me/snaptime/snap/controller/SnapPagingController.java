@@ -10,7 +10,6 @@ import me.snaptime.snap.service.SnapPagingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,15 +21,14 @@ public class SnapPagingController {
 
     private final SnapPagingService snapPagingService;
 
+    @GetMapping("/community/snaps/{pageNum}")
     @Operation(summary = "Snap 조회", description = "커뮤니티에서 Snap을 10개씩 페이징조회합니다.")
     @Parameter(name = "pageNum", description = "Snap페이지 번호를 보내주세요")
-    @GetMapping("/community/snaps/{pageNum}")
     public ResponseEntity<CommonResponseDto<SnapFindPagingResDto>> findSnapPage(
-            @AuthenticationPrincipal final UserDetails userDetails,
-            @PathVariable final Long pageNum) {
+            final @AuthenticationPrincipal String reqLoginId,
+            final @PathVariable Long pageNum) {
 
-        String reqLoginId = userDetails.getUsername();
-        return ResponseEntity.status(HttpStatus.OK).body(new CommonResponseDto(
+        return ResponseEntity.status(HttpStatus.OK).body(CommonResponseDto.of(
                 "스냅 페이징조회가 완료되었습니다.", snapPagingService.findSnapPage(reqLoginId,pageNum)));
     }
 

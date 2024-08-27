@@ -13,8 +13,16 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -46,6 +54,7 @@ public class SnapPagingControllerTest {
     @DisplayName("스냅 페이징조회테스트 -> 성공")
     public void findSnapPagingTest1() throws Exception {
         //given
+        makeAuthentication();
 
         //when, then
         this.mockMvc.perform(get("/community/snaps/{pageNum}",1L)
@@ -62,6 +71,7 @@ public class SnapPagingControllerTest {
     @DisplayName("스냅 페이징조회테스트 -> (실패 : PathVariable 타입예외)")
     public void findSnapPagingTest2() throws Exception{
         //given
+        makeAuthentication();
 
         //when, then
         this.mockMvc.perform(get("/community/snaps/{pageNum}","test")
@@ -78,6 +88,7 @@ public class SnapPagingControllerTest {
     @DisplayName("스냅 페이징조회테스트 -> (실패 : 존재하지 않는 페이지)")
     public void findSnapPagingTest3() throws Exception{
         //given
+        makeAuthentication();
         given(snapPagingService.findSnapPage(any(String.class),any(Long.class)))
                 .willThrow(new CustomException(ExceptionCode.PAGE_NOT_EXIST));
 
@@ -89,5 +100,13 @@ public class SnapPagingControllerTest {
                 .andDo(print());
 
         verify(snapPagingService,times(1)).findSnapPage(any(String.class),any(Long.class));
+    }
+
+    private void makeAuthentication(){
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken("reqLoginId","1234",authorities);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }

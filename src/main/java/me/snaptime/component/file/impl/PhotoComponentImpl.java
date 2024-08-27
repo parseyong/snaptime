@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.snaptime.component.file.PhotoComponent;
 import me.snaptime.exception.CustomException;
 import me.snaptime.exception.ExceptionCode;
-import me.snaptime.snap.dto.file.PhotoInfo;
+import me.snaptime.snap.dto.res.PhotoPathResDto;
 import me.snaptime.util.FileNameGenerator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -32,7 +32,7 @@ public class PhotoComponentImpl implements PhotoComponent {
             return Files.readAllBytes(new File(filePath).toPath());
         } catch (Exception e) {
             log.error(e.getMessage());
-            throw new CustomException(ExceptionCode.FILE_FIND_FAIL);
+            throw new CustomException(ExceptionCode.PHOTO_FIND_FAIL);
         }
     }
 
@@ -45,7 +45,7 @@ public class PhotoComponentImpl implements PhotoComponent {
             Files.delete(path);
         } catch (Exception e) {
             log.error(e.getMessage());
-            throw new CustomException(ExceptionCode.FILE_DELETE_FAIL);
+            throw new CustomException(ExceptionCode.PHOTO_DELETE_FAIL);
         }
     }
 
@@ -57,12 +57,12 @@ public class PhotoComponentImpl implements PhotoComponent {
             Files.write(Paths.get(filePath), fileBytes);
         } catch (Exception e) {
             log.error(e.getMessage());
-            throw new CustomException(ExceptionCode.FILE_ADD_FAILE);
+            throw new CustomException(ExceptionCode.PHOTO_ADD_FAILE);
         }
     }
 
     @Override
-    public PhotoInfo addPhoto(String originalFileName, byte[] fileBytes) {
+    public PhotoPathResDto addPhoto(String originalFileName, byte[] fileBytes) {
 
         // UUID를 통한 파일명 생성
         String generatedName = FileNameGenerator.generatorName(originalFileName);
@@ -74,10 +74,10 @@ public class PhotoComponentImpl implements PhotoComponent {
             Files.write(Paths.get(filePath), fileBytes);
         } catch (Exception e) {
             log.error(e.getMessage());
-            throw new CustomException(ExceptionCode.FILE_ADD_FAILE);
+            throw new CustomException(ExceptionCode.PHOTO_ADD_FAILE);
         }
 
-        return PhotoInfo.builder()
+        return PhotoPathResDto.builder()
                 .filePath(filePath)
                 .fileName(generatedName)
                 .build();

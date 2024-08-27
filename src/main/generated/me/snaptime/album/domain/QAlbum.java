@@ -34,8 +34,6 @@ public class QAlbum extends EntityPathBase<Album> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> lastModifiedDate = _super.lastModifiedDate;
 
-    public final ListPath<me.snaptime.snap.domain.Snap, me.snaptime.snap.domain.QSnap> snaps = this.<me.snaptime.snap.domain.Snap, me.snaptime.snap.domain.QSnap>createList("snaps", me.snaptime.snap.domain.Snap.class, me.snaptime.snap.domain.QSnap.class, PathInits.DIRECT2);
-
     public final me.snaptime.user.domain.QUser user;
 
     public QAlbum(String variable) {
@@ -56,7 +54,7 @@ public class QAlbum extends EntityPathBase<Album> {
 
     public QAlbum(Class<? extends Album> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.user = inits.isInitialized("user") ? new me.snaptime.user.domain.QUser(forProperty("user"), inits.get("user")) : null;
+        this.user = inits.isInitialized("user") ? new me.snaptime.user.domain.QUser(forProperty("user")) : null;
     }
 
 }

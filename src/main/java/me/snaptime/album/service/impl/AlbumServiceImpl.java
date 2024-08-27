@@ -110,13 +110,7 @@ public class AlbumServiceImpl implements AlbumService {
             throw new CustomException(ExceptionCode.CAN_NOT_BE_MODIFIED_OR_DELETED_BASIC_ALBUM);
         }
 
-        // 삭제될 앨범안에 있는 스냅을 기본앨범으로 이동
-        List<Snap> snaps = album.getSnaps();
-        snaps.forEach(snap -> snap.updateAlbum(basicAlbum));
-        album.resetSnapsForDelete();
-
-        // Album-snap 관계에 고아객체 제거를 true로 설정하지 않았기때문에 snap이 삭제가 되지 않는다.
-        snapRepository.saveAll(snaps);
+        moveSnapToBasicAlbumForDelete(album, basicAlbum);
         albumRepository.delete(album);
     }
 
@@ -151,6 +145,20 @@ public class AlbumServiceImpl implements AlbumService {
         }
     }
 
+    @Override
+    public Album findAlbumForSnapAdd(User reqUser, Long albumId) {
+
+        if(albumId == null){
+            return findBasicAlbum(reqUser);
+        }
+        else {
+            Album album = albumRepository.findById(albumId)
+                    .orElseThrow(() -> new CustomException(ExceptionCode.ALBUM_NOT_EXIST));
+            isMyAlbum(reqUser,album);
+            return album;
+        }
+    }
+
     private String findAlbumThumbnailPhotoURL(Album album){
 
         Optional<Snap> thumnailSnapOptional = snapRepository.findThumnailSnap(album);
@@ -161,6 +169,14 @@ public class AlbumServiceImpl implements AlbumService {
             Snap thumnailSnap = thumnailSnapOptional.get();
             return urlComponent.makePhotoURL(thumnailSnap.getFileName(), false);
         }
+    }
+
+    private void moveSnapToBasicAlbumForDelete(Album deletedAlbum, Album basicAlbum){
+
+        List<Snap> snaps = snapRepository.findAllByAlbum(deletedAlbum);
+        snaps.forEach(snap -> snap.updateAlbum(basicAlbum));
+
+        snapRepository.saveAll(snaps);
     }
 
 }

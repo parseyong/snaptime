@@ -65,7 +65,7 @@ public class QSnap extends EntityPathBase<Snap> {
     public QSnap(Class<? extends Snap> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.album = inits.isInitialized("album") ? new me.snaptime.album.domain.QAlbum(forProperty("album"), inits.get("album")) : null;
-        this.user = inits.isInitialized("user") ? new me.snaptime.user.domain.QUser(forProperty("user"), inits.get("user")) : null;
+        this.user = inits.isInitialized("user") ? new me.snaptime.user.domain.QUser(forProperty("user")) : null;
     }
 
 }

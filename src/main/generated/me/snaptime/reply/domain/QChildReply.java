@@ -59,8 +59,8 @@ public class QChildReply extends EntityPathBase<ChildReply> {
     public QChildReply(Class<? extends ChildReply> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.parentReply = inits.isInitialized("parentReply") ? new QParentReply(forProperty("parentReply"), inits.get("parentReply")) : null;
-        this.replyTagUser = inits.isInitialized("replyTagUser") ? new me.snaptime.user.domain.QUser(forProperty("replyTagUser"), inits.get("replyTagUser")) : null;
-        this.user = inits.isInitialized("user") ? new me.snaptime.user.domain.QUser(forProperty("user"), inits.get("user")) : null;
+        this.replyTagUser = inits.isInitialized("replyTagUser") ? new me.snaptime.user.domain.QUser(forProperty("replyTagUser")) : null;
+        this.user = inits.isInitialized("user") ? new me.snaptime.user.domain.QUser(forProperty("user")) : null;
     }
 
 }

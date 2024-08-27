@@ -3,7 +3,6 @@ package me.snaptime.user.repository;
 import me.snaptime.component.url.impl.UrlComponentImpl;
 import me.snaptime.config.JpaAuditingConfig;
 import me.snaptime.config.QueryDslConfig;
-import me.snaptime.profilePhoto.repository.ProfilePhotoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,8 +20,6 @@ public class UserCustomRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private ProfilePhotoRepository profilePhotoRepository;
 
 
     @MockBean

@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
 
         List<UserFindByNameResDto> userFindByNameResDtos = tuples.stream().map(tuple ->
         {
-            String profilePhotoURL = urlComponent.makeProfileURL(tuple.get(user.profilePhoto.profilePhotoId));
+            String profilePhotoURL = urlComponent.makePhotoURL(tuple.get(user.profilePhotoName),false);
             return UserFindByNameResDto.toDto(tuple,profilePhotoURL);
         }).collect(Collectors.toList());
 

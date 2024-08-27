@@ -75,4 +75,14 @@ public interface AlbumService {
         album : 비교할 대상 album
     */
     void isMyAlbum(User user, Album album);
+
+    /*
+        스냅저장 시 스냅이 저장되는 스냅을 가져옵니다.
+        albumId가 null인 경우 basicAlbum이 선택되며
+        albumId가 자신이 만든 앨범이 아닌경우 예외를 반환합니다.
+
+        reqUser : 요청유저의 loginId
+        albumId : 저장할 앨범 id
+    */
+    Album findAlbumForSnapAdd(User reqUser, Long albumId);
 }

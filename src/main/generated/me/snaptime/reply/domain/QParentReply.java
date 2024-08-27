@@ -24,8 +24,6 @@ public class QParentReply extends EntityPathBase<ParentReply> {
 
     public final me.snaptime.common.QBaseTimeEntity _super = new me.snaptime.common.QBaseTimeEntity(this);
 
-    public final ListPath<ChildReply, QChildReply> childReplyList = this.<ChildReply, QChildReply>createList("childReplyList", ChildReply.class, QChildReply.class, PathInits.DIRECT2);
-
     public final StringPath content = createString("content");
 
     //inherited
@@ -59,7 +57,7 @@ public class QParentReply extends EntityPathBase<ParentReply> {
     public QParentReply(Class<? extends ParentReply> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.snap = inits.isInitialized("snap") ? new me.snaptime.snap.domain.QSnap(forProperty("snap"), inits.get("snap")) : null;
-        this.user = inits.isInitialized("user") ? new me.snaptime.user.domain.QUser(forProperty("user"), inits.get("user")) : null;
+        this.user = inits.isInitialized("user") ? new me.snaptime.user.domain.QUser(forProperty("user")) : null;
     }
 
 }

@@ -11,8 +11,6 @@ import me.snaptime.user.domain.User;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.util.List;
-
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -35,9 +33,6 @@ public class ParentReply extends BaseTimeEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id",nullable = false)
     private User user;
-
-    @OneToMany(mappedBy = "parentReply",cascade = CascadeType.REMOVE)
-    private List<ChildReply> childReplyList;
 
     @Builder
     protected ParentReply(String content, Snap snap, User user){

@@ -44,9 +44,9 @@ public enum ExceptionCode {
     ALREADY_SNAP_VISIBILITY(HttpStatus.BAD_REQUEST, "이미 설정되어있는 스냅상태입니다."),
 
     // File Exception
-    FILE_ADD_FAILE(HttpStatus.BAD_REQUEST, "파일저장에 실패했습니다."),
-    FILE_DELETE_FAIL(HttpStatus.BAD_REQUEST, "파일삭제에 실패했습니다."),
-    FILE_FIND_FAIL(HttpStatus.BAD_REQUEST, "파일조회에 실패했습니다."),
+    PHOTO_ADD_FAILE(HttpStatus.BAD_REQUEST, "사진저장에 실패했습니다."),
+    PHOTO_DELETE_FAIL(HttpStatus.BAD_REQUEST, "사진삭제에 실패했습니다."),
+    PHOTO_FIND_FAIL(HttpStatus.BAD_REQUEST, "사진조회에 실패했습니다."),
 
     // Album Exception
     ALBUM_NOT_EXIST(HttpStatus.BAD_REQUEST, "앨범이 존재하지 않습니다."),

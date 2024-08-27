@@ -9,8 +9,6 @@ import me.snaptime.exception.ExceptionCode;
 import me.snaptime.jwt.JwtProvider;
 import me.snaptime.jwt.redis.RefreshToken;
 import me.snaptime.jwt.redis.RefreshTokenRepository;
-import me.snaptime.profilePhoto.domain.ProfilePhoto;
-import me.snaptime.profilePhoto.repository.ProfilePhotoRepository;
 import me.snaptime.user.domain.User;
 import me.snaptime.user.dto.req.SignInReqDto;
 import me.snaptime.user.dto.req.UserReqDto;
@@ -30,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserSignServiceImpl implements UserSignService {
 
     private final UserRepository userRepository;
-    private final ProfilePhotoRepository profilePhotoRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -47,13 +44,6 @@ public class UserSignServiceImpl implements UserSignService {
         String fileName = "default.png";
         String filePath =  "/test_resource/" + fileName;
 
-        ProfilePhoto profilePhoto = ProfilePhoto.builder()
-                .profilePhotoName(fileName)
-                .profilePhotoPath(filePath)
-                .build();
-        //기본 프로필 저장
-        profilePhotoRepository.save(profilePhoto);
-
         //새로운 사용자 객체 생성
         User user = User.builder()
                 .nickname(userReqDto.name())
@@ -61,7 +51,8 @@ public class UserSignServiceImpl implements UserSignService {
                 .password(passwordEncoder.encode(userReqDto.password()))
                 .email(userReqDto.email())
                 .birthDay(userReqDto.birthDay())
-                .profilePhoto(profilePhoto)
+                .profilePhotoPath(filePath)
+                .profilePhotoName(fileName)
                 .secretKey(CipherUtil.generateAESKey())
                 .build();
 

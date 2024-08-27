@@ -16,10 +16,4 @@ public class UrlComponentImpl implements UrlComponent {
         return request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort() +
                 "/photo?fileName=" + fileName + "&isEncrypted=" + isEncrypted;
     }
-
-    @Override
-    public String makeProfileURL(Long profilePhotoId) {
-        return request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort() +
-                "/profile-photos/"+profilePhotoId;
-    }
 }

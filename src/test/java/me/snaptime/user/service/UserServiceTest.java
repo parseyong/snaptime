@@ -4,8 +4,6 @@ import me.snaptime.album.service.AlbumService;
 import me.snaptime.jwt.JwtProvider;
 import me.snaptime.jwt.redis.RefreshToken;
 import me.snaptime.jwt.redis.RefreshTokenRepository;
-import me.snaptime.profilePhoto.domain.ProfilePhoto;
-import me.snaptime.profilePhoto.repository.ProfilePhotoRepository;
 import me.snaptime.user.domain.User;
 import me.snaptime.user.dto.req.SignInReqDto;
 import me.snaptime.user.dto.req.UserReqDto;
@@ -44,9 +42,6 @@ class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
-
-    @Mock
-    private ProfilePhotoRepository profilePhotoRepository;
 
     @Mock
     private RefreshTokenRepository refreshTokenRepository;
@@ -108,8 +103,6 @@ class UserServiceTest {
         //userRepository.save(any(User.class)) 메서드가 호출되면
         // 첫 번째 전달된 User 객체를 반환하도록(Mockito의 returnsFirstArg() 메서드를 사용하여) 설정하는 것입니다.
         Mockito.when(userRepository.save(any(User.class)))
-                .then(returnsFirstArg());
-        Mockito.when(profilePhotoRepository.save(any(ProfilePhoto.class)))
                 .then(returnsFirstArg());
 
         //when

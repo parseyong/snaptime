@@ -282,7 +282,7 @@ public class FriendServiceImplTest {
         Tuple tuple1 = mock(Tuple.class);
         Tuple tuple2 = mock(Tuple.class);
         Tuple tuple3 = mock(Tuple.class);
-        given(urlComponent.makeProfileURL(any(Long.class)))
+        given(urlComponent.makePhotoURL(any(String.class),any(Boolean.class)))
                 .willReturn("profile1")
                 .willReturn("profile2")
                 .willReturn("profile3");
@@ -290,9 +290,9 @@ public class FriendServiceImplTest {
         given(tuple2.get(user.loginId)).willReturn("testLoginId2");
         given(tuple3.get(user.loginId)).willReturn("testLoginId3");
 
-        given(tuple1.get(user.profilePhoto.profilePhotoId)).willReturn(4L);
-        given(tuple2.get(user.profilePhoto.profilePhotoId)).willReturn(5L);
-        given(tuple3.get(user.profilePhoto.profilePhotoId)).willReturn(6L);
+        given(tuple1.get(user.profilePhotoName)).willReturn("profilePhotoName");
+        given(tuple2.get(user.profilePhotoName)).willReturn("profilePhotoName");
+        given(tuple3.get(user.profilePhotoName)).willReturn("profilePhotoName");
 
         given(tuple1.get(user.nickname)).willReturn("name1");
         given(tuple2.get(user.nickname)).willReturn("name2");
@@ -322,7 +322,7 @@ public class FriendServiceImplTest {
         assertThat(result.hasNextPage()).isFalse();
 
         verify(userRepository,times(5)).findByLoginId(any(String.class));
-        verify(urlComponent,times(3)).makeProfileURL(any(Long.class));
+        verify(urlComponent,times(3)).makePhotoURL(any(String.class), any(Boolean.class));
         verify(friendRepository,times(1))
                 .findFriendPage(any(User.class),any(FriendSearchType.class),any(Long.class),any(String.class));
 

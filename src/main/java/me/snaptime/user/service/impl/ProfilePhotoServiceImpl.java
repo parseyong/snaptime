@@ -1,15 +1,12 @@
-package me.snaptime.profilePhoto.service.impl;
+package me.snaptime.user.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.snaptime.exception.CustomException;
 import me.snaptime.exception.ExceptionCode;
-import me.snaptime.profilePhoto.domain.ProfilePhoto;
-import me.snaptime.profilePhoto.dto.res.ProfilePhotoResDto;
-import me.snaptime.profilePhoto.repository.ProfilePhotoRepository;
-import me.snaptime.profilePhoto.service.ProfilePhotoService;
 import me.snaptime.user.domain.User;
 import me.snaptime.user.repository.UserRepository;
+import me.snaptime.user.service.ProfilePhotoService;
 import me.snaptime.util.ProfilePhotoNameGenerator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -21,23 +18,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class ProfilePhotoServiceImpl implements ProfilePhotoService {
     private final UserRepository userRepository;
-    private final ProfilePhotoRepository profilePhotoRepository;
+
 
     @Value("${fileSystemPath}")
     private String FOLDER_PATH;
 
     @Override
     @Transactional(readOnly = true)
-    public byte[] downloadPhotoFromFileSystem(Long profilePhotoId){
-        ProfilePhoto profilePhoto = profilePhotoRepository.findById(profilePhotoId).orElseThrow(()->new CustomException(ExceptionCode.PROFILE_PHOTO_NOT_EXIST));
-        String filePath = profilePhoto.getProfilePhotoPath();
+    public byte[] downloadPhotoFromFileSystem(String reqLoginId){
+        User reqUser = userRepository.findByLoginId(reqLoginId).orElseThrow();
+        String filePath = reqUser.getProfilePhotoPath();
 
         //jar파일에서 resource 폴더 경로가 달라지는 경우를 위한 로직
         //jar파일이 실행되면, 로컬(ide)에서의 resource 경로와, jar파일에서의 resource 경로가 달라진다.
@@ -63,7 +59,7 @@ public class ProfilePhotoServiceImpl implements ProfilePhotoService {
                 return Files.readAllBytes(path);
             }catch (IOException e){
                 log.error(e.getMessage());
-                throw new CustomException(ExceptionCode.FILE_FIND_FAIL);
+                throw new CustomException(ExceptionCode.PHOTO_FIND_FAIL);
             }
         }
     }
@@ -72,27 +68,13 @@ public class ProfilePhotoServiceImpl implements ProfilePhotoService {
     //트랜잭션 어노테이션을 사용하면 upload -> delete -> update, 프로필을 삭제를 해도 수정에 성공함.
     @Override
     @Transactional
-    public ProfilePhotoResDto updatePhotoFromFileSystem(String loginId, MultipartFile updateFile) throws Exception{
-        User updateUser = userRepository.findByLoginId(loginId).orElseThrow(()-> new CustomException(ExceptionCode.USER_NOT_EXIST));
-        ProfilePhoto profilePhoto = profilePhotoRepository.findById(updateUser.getProfilePhoto().getProfilePhotoId()).orElseThrow(()-> new CustomException(ExceptionCode.PROFILE_PHOTO_NOT_EXIST));
+    public void updatePhotoFromFileSystem(String reqLoginId, MultipartFile updateFile) throws Exception{
+        User updateUser = userRepository.findByLoginId(reqLoginId)
+                .orElseThrow(()-> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
         String updateFileName = ProfilePhotoNameGenerator.generatorProfilePhotoName(updateFile.getOriginalFilename());
         String updateFilePath = FOLDER_PATH + updateFileName;
 
-        try{
-            if(!profilePhoto.getProfilePhotoName().equals("test_resource/default.png"))
-            {
-                Path path = Paths.get(profilePhoto.getProfilePhotoPath());
-                Files.deleteIfExists(path);
-            }
-            updateFile.transferTo(new File(updateFilePath));
-        }catch (IOException e){
-            log.error(e.getMessage());
-            throw new CustomException(ExceptionCode.FILE_FIND_FAIL);
-        }
 
-        profilePhoto.updateProfilePhoto(updateFileName,updateFilePath);
-
-        return ProfilePhotoResDto.toDto(profilePhotoRepository.save(profilePhoto));
     }
 }

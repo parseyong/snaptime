@@ -52,7 +52,7 @@ public class ProfileServiceImpl implements ProfileService {
             isFollow = friendService.checkIsFollow(reqUser, targetUser);
         }
 
-        String profileURL = urlComponent.makeProfileURL(targetUser.getProfilePhoto().getProfilePhotoId());
+        String profileURL = urlComponent.makePhotoURL(targetUser.getProfilePhotoPath(), false);
 
         return UserProfileResDto.toDto(targetUser, profileURL, isFollow);
     }

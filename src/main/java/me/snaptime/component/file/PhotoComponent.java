@@ -1,6 +1,6 @@
 package me.snaptime.component.file;
 
-import me.snaptime.snap.dto.file.PhotoInfo;
+import me.snaptime.snap.dto.res.PhotoPathResDto;
 
 public interface PhotoComponent {
 
@@ -34,5 +34,5 @@ public interface PhotoComponent {
         originalFileName : 기존 파일명
         fileBytes        : 저장할 사진의 바이트데이터
     */
-    PhotoInfo addPhoto(String originalFileName, byte[] fileBytes);
+    PhotoPathResDto addPhoto(String originalFileName, byte[] fileBytes);
 }

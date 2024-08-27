@@ -170,7 +170,7 @@ public class AlarmServiceImpl implements AlarmService {
         followAlarms.forEach(followAlarm -> {
 
             User sender = followAlarm.getSender();
-            String senderProfilePhotoURL = urlComponent.makeProfileURL(sender.getProfilePhoto().getProfilePhotoId());
+            String senderProfilePhotoURL = urlComponent.makePhotoURL(sender.getProfilePhotoName(),false);
             String timeAgo = TimeAgoCalculator.findTimeAgo(followAlarm.getCreatedDate());
 
             AlarmFindResDto alarmFindResDto = AlarmFindResDto.toFollowAlarmDto(senderProfilePhotoURL, timeAgo, followAlarm);
@@ -185,7 +185,7 @@ public class AlarmServiceImpl implements AlarmService {
         snapAlarms.forEach(snapAlarm -> {
 
             User sender = snapAlarm.getSender();
-            String senderProfilePhotoURL = urlComponent.makeProfileURL(sender.getProfilePhoto().getProfilePhotoId());
+            String senderProfilePhotoURL = urlComponent.makePhotoURL(sender.getProfilePhotoName(),false);
             String snapPhotoURL = urlComponent.makePhotoURL(snapAlarm.getSnap().getFileName(),false);
             String timeAgo = TimeAgoCalculator.findTimeAgo(snapAlarm.getCreatedDate());
 
@@ -201,7 +201,7 @@ public class AlarmServiceImpl implements AlarmService {
         replyAlarms.forEach(replyAlarm -> {
 
             User sender = replyAlarm.getSender();
-            String senderProfilePhotoURL = urlComponent.makeProfileURL(sender.getProfilePhoto().getProfilePhotoId());
+            String senderProfilePhotoURL = urlComponent.makePhotoURL(sender.getProfilePhotoName(),false);
             String snapPhotoURL = urlComponent.makePhotoURL(replyAlarm.getSnap().getFileName(),false);
             String timeAgo = TimeAgoCalculator.findTimeAgo(replyAlarm.getCreatedDate());
 

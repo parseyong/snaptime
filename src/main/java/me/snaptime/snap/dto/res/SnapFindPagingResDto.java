@@ -9,6 +9,7 @@ public record SnapFindPagingResDto(
 
     List<SnapFindDetailResDto> snapFindDetailResDtos,
     boolean hasNextPage
+
 ) {
     public static SnapFindPagingResDto toDto(List<SnapFindDetailResDto> snapFindDetailResDtos, boolean hasNextPage){
 
