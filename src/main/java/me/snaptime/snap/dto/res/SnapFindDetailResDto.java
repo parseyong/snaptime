@@ -27,6 +27,7 @@ public record SnapFindDetailResDto(
         Long likeCnt,
         boolean isLikedSnap
 ) {
+    // tuple형태의 snap정보를 받을 떄 사용
     public static SnapFindDetailResDto toDto(Tuple tuple, String profilePhotoURL, String snapPhotoURL,
                                              List<TagUserFindResDto> tagUserFindResDtos, Long likeCnt, boolean isLikedSnap){
 
@@ -45,6 +46,7 @@ public record SnapFindDetailResDto(
                 .build();
     }
 
+    // Snap객체로 snap정보를 받을 떄 사용
     public static SnapFindDetailResDto toDto(Snap snap, String profilePhotoURL, String snapPhotoURL,
                                              List<TagUserFindResDto> tagUserFindResDtos, Long likeCnt, boolean isLikedSnap){
 

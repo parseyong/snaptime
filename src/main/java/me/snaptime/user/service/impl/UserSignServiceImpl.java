@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.snaptime.album.service.AlbumService;
+import me.snaptime.component.cipher.CipherComponent;
 import me.snaptime.exception.CustomException;
 import me.snaptime.exception.ExceptionCode;
 import me.snaptime.jwt.JwtProvider;
@@ -16,7 +17,6 @@ import me.snaptime.user.dto.res.SignInResDto;
 import me.snaptime.user.dto.res.UserFindResDto;
 import me.snaptime.user.repository.UserRepository;
 import me.snaptime.user.service.UserSignService;
-import me.snaptime.util.CipherUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +32,7 @@ public class UserSignServiceImpl implements UserSignService {
     private final JwtProvider jwtProvider;
     private final RefreshTokenRepository refreshTokenRepository;
     private final AlbumService albumService;
+    private final CipherComponent cipherComponent;
 
     @Override
     public UserFindResDto signUp(UserReqDto userReqDto) {
@@ -53,7 +54,7 @@ public class UserSignServiceImpl implements UserSignService {
                 .birthDay(userReqDto.birthDay())
                 .profilePhotoPath(filePath)
                 .profilePhotoName(fileName)
-                .secretKey(CipherUtil.generateAESKey())
+                .secretKey(cipherComponent.generateAESKey())
                 .build();
 
         // NonClassification 앨범 생성

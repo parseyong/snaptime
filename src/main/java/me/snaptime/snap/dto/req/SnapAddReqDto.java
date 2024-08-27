@@ -17,7 +17,7 @@ public record SnapAddReqDto(
         String oneLineJournal,
 
         @Schema(
-                description = "크롤링API를 통해 얻은 사진을 MultipartFile형식으로 보내주세요."
+                description = "크롤링API를 통해 얻은 사진을 MultipartFile형식으로 보내주세요. "
         )
         MultipartFile multipartFile,
 
@@ -25,7 +25,7 @@ public record SnapAddReqDto(
                 example = "false",
                 description = "스냅의 공개여부를 보내주세요."
         )
-        @NotNull(message = "내용을 입력해주세요")
+        @NotNull(message = "공개여부를 입력해주세요.")
         boolean isPrivate,
 
         @Schema(

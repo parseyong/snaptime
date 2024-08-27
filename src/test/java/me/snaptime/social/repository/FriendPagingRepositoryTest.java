@@ -1,6 +1,7 @@
 package me.snaptime.social.repository;
 
 import com.querydsl.core.Tuple;
+import me.snaptime.component.cipher.impl.CipherComponentImpl;
 import me.snaptime.component.url.impl.UrlComponentImpl;
 import me.snaptime.config.JpaAuditingConfig;
 import me.snaptime.config.QueryDslConfig;
@@ -11,7 +12,6 @@ import me.snaptime.friend.enums.FriendSearchType;
 import me.snaptime.friend.repository.FriendRepository;
 import me.snaptime.user.domain.User;
 import me.snaptime.user.repository.UserRepository;
-import me.snaptime.util.CipherUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.fail;
 
 @DataJpaTest
-@Import({QueryDslConfig.class, JpaAuditingConfig.class})
+@Import({QueryDslConfig.class, JpaAuditingConfig.class, CipherComponentImpl.class})
 @TestPropertySource(locations = "classpath:application-test.yml")
 public class FriendPagingRepositoryTest {
 
@@ -36,6 +36,8 @@ public class FriendPagingRepositoryTest {
     private UserRepository userRepository;
     @Autowired
     private FriendRepository friendRepository;
+    @Autowired
+    private CipherComponentImpl cipherComponent;
     private User reqUser;
 
     @MockBean
@@ -51,7 +53,7 @@ public class FriendPagingRepositoryTest {
                 .profilePhotoName("testProfileName1")
                 .profilePhotoPath("testPath")
                 .birthDay(String.valueOf(LocalDateTime.now()))
-                .secretKey(CipherUtil.generateAESKey())
+                .secretKey(cipherComponent.generateAESKey())
                 .build();
         userRepository.save(reqUser);
         for(int i=0;i<5;i++){
@@ -120,7 +122,7 @@ public class FriendPagingRepositoryTest {
                 .profilePhotoName("testProfileName1")
                 .profilePhotoPath("testPath")
                 .birthDay(String.valueOf(LocalDateTime.now()))
-                .secretKey(CipherUtil.generateAESKey())
+                .secretKey(cipherComponent.generateAESKey())
                 .build();
         userRepository.save(user);
         friendRepository.save(

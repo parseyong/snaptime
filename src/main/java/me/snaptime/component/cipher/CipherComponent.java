@@ -4,6 +4,10 @@ import javax.crypto.SecretKey;
 
 public interface CipherComponent {
 
+    /*
+        AES 개인키를 생성합니다.
+    */
+    SecretKey generateAESKey();
 
     /*
         secretKey로 파일데이터 암호화합니다.

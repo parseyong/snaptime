@@ -77,7 +77,6 @@ public class AlbumServiceImpl implements AlbumService {
 
         User reqUser = userRepository.findByLoginId(reqLoginId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
-
         Album album = albumRepository.findById(albumId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.ALBUM_NOT_EXIST));
 
@@ -138,9 +137,9 @@ public class AlbumServiceImpl implements AlbumService {
     }
 
     @Override
-    public void isMyAlbum(User user, Album album) {
+    public void isMyAlbum(User reqUser, Album album) {
 
-        if( album.getUser().getUserId() != user.getUserId() ){
+        if( album.getUser().getUserId() != reqUser.getUserId() ){
             throw new CustomException(ExceptionCode.ACCESS_FAIL_ALBUM);
         }
     }

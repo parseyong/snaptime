@@ -1,6 +1,5 @@
 package me.snaptime.component.file;
 
-import me.snaptime.snap.dto.res.PhotoPathResDto;
 
 public interface PhotoComponent {
 
@@ -20,12 +19,12 @@ public interface PhotoComponent {
     void deletePhoto(String fileName);
 
     /*
-        사진을 수정합니다.
+        사진을 수정합니다. 기존사진을 암호화하여 저장하거나 복호화하여 저장할 떄 호출됩니다.
 
-        fileName  : 수정할 사진의 파일명(새로운 사진의 originalFileName은 newFileName에 반영되지 않습니다. 기존fileName에 덮어씌워집니다.)
-        fileBytes : 변경할 사진의 바이트데이터
+        fileName  : 수정할 사진의 파일명
+        fileBytes : 암호화(복호화)된 사진의 바이트 데이터
     */
-    void updatePhoto(String fileName, byte[] fileBytes);
+    void updatePhotoVisibility(String fileName, byte[] fileBytes);
 
     /*
         UUID를 사용하여 fileName 재정의 후 사진을 저장합니다.
@@ -34,5 +33,5 @@ public interface PhotoComponent {
         originalFileName : 기존 파일명
         fileBytes        : 저장할 사진의 바이트데이터
     */
-    PhotoPathResDto addPhoto(String originalFileName, byte[] fileBytes);
+    String addPhoto(String originalFileName, byte[] fileBytes);
 }

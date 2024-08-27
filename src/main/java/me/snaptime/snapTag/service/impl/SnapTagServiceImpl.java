@@ -50,7 +50,7 @@ public class SnapTagServiceImpl implements SnapTagService {
 
     @Override
     @Transactional
-    public void modifyTagUser(List<String> tagUserLoginIds, Snap snap){
+    public void updateTagUsers(List<String> tagUserLoginIds, Snap snap){
 
         List<SnapTag> snapTags = snapTagRepository.findBySnap(snap);
 

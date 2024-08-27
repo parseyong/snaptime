@@ -53,7 +53,7 @@ public interface AlarmService {
     Long findNotReadAlarmCnt(String reqLoginId);
 
     /*
-        알림을 삭제합니다.
+        알림을 삭제합니다. 읽지않은 알림도 삭제가 가능합니다.
         읽지않은 팔로우요청에 대한 알림의 경우 자동으로 요청거절이 됩니다.
 
         reqLoginId : 요청자의 loginId

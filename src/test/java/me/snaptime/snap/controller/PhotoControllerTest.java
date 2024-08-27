@@ -1,9 +1,9 @@
 package me.snaptime.snap.controller;
 
-import me.snaptime.snap.service.impl.SnapServiceImpl;
+import me.snaptime.photo.controller.PhotoController;
+import me.snaptime.photo.service.impl.PhotoServiceImpl;
 import me.snaptime.user.dto.req.UserReqDto;
 import me.snaptime.user.service.UserSignService;
-import me.snaptime.user.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,10 +26,7 @@ public class PhotoControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private SnapServiceImpl snapService;
-
-    @MockBean
-    private UserServiceImpl userService;
+    private PhotoServiceImpl photoService;
 
     @MockBean
     private UserSignService userSignService;
@@ -45,7 +42,7 @@ public class PhotoControllerTest {
         ));
         byte[] emptyByte = {};
 
-        given(snapService.downloadPhotoFromFileSystem("image.png", "mockUid", true)).willReturn(emptyByte);
+        given(photoService.findPhoto("image.png", "mockUid", true)).willReturn(emptyByte);
         // when
         mockMvc.perform(
                 get("/photo?fileName=image.png&isEncrypted=true"))

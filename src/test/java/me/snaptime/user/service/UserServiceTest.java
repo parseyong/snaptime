@@ -1,6 +1,7 @@
 package me.snaptime.user.service;
 
 import me.snaptime.album.service.AlbumService;
+import me.snaptime.component.cipher.CipherComponent;
 import me.snaptime.jwt.JwtProvider;
 import me.snaptime.jwt.redis.RefreshToken;
 import me.snaptime.jwt.redis.RefreshTokenRepository;
@@ -24,6 +25,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.crypto.KeyGenerator;
 import java.util.Optional;
 
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
@@ -48,6 +50,8 @@ class UserServiceTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;
+    @Mock
+    private CipherComponent cipherComponent;
 
     @Mock
     private JwtProvider jwtProvider;
@@ -98,7 +102,9 @@ class UserServiceTest {
                 .email("strong@gmail.com")
                 .birthDay("1999-10-29")
                 .build();
-
+        KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+        keyGenerator.init(256);
+        Mockito.when(cipherComponent.generateAESKey()).thenReturn(keyGenerator.generateKey());
 
         //userRepository.save(any(User.class)) 메서드가 호출되면
         // 첫 번째 전달된 User 객체를 반환하도록(Mockito의 returnsFirstArg() 메서드를 사용하여) 설정하는 것입니다.

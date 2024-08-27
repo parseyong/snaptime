@@ -29,9 +29,9 @@ public class SnapQdslRepositoryImpl implements SnapQdslRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     /*
-            하나의 쿼리로 모든 정보를 가져오는 로직은 복잡한 join조건과
-            여러개의 일대다 관계를 가지는 테이블간 조인이 여러개 이루어지다보니 조인테이블의 양이 증가함에따라
-            성능이 오히려 저하되는 모습이 확인되어 두 개의 쿼리로 분리하여 로직을 수행하도록 했습니다.
+           하나의 쿼리로 모든 정보를 가져오는 로직은 복잡한 join조건과
+           여러개의 일대다 관계를 가지는 테이블간 조인이 여러개 이루어지다보니 조인테이블의 양이 증가함에따라
+           성능이 오히려 저하되는 모습이 확인되어 두 개의 쿼리로 분리하여 로직을 수행하도록 했습니다.
     */
     @Override
     public List<Tuple> findSnapPage(Long pageNum, User reqUser) {

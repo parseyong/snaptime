@@ -74,7 +74,8 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     @Transactional(readOnly = true)
     public List<ProfileTagSnapResDto> getTagSnap(String loginId) {
-        User user = userRepository.findByLoginId(loginId).orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
+        User user = userRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
         return profileRepository.findTagSnap(user);
     }

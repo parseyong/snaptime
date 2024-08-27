@@ -55,7 +55,7 @@ public enum ExceptionCode {
     ACCESS_FAIL_ALBUM(HttpStatus.FORBIDDEN, "앨범에 대한 권한이 없습니다."),
     CAN_NOT_BE_MODIFIED_OR_DELETED_BASIC_ALBUM(HttpStatus.BAD_REQUEST, "기본앨범은 수정,삭제할 수 없습니다."),
 
-    // Jwt Exception
+    // Jwt Exception (리팩토링 미진행부분)
     ACCESS_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED,  "AccessToken 이 만료되었습니다."),
     REFRESH_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED,  "RefreshToken 이 만료되었습니다."),
     TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "토큰이 유효하지 않습니다."),

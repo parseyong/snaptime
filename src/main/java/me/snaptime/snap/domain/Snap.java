@@ -30,9 +30,6 @@ public class Snap extends BaseTimeEntity {
     @Column(name = "file_name", nullable = false)
     private String fileName;
 
-    @Column(name = "file_path", nullable = false)
-    private String filePath;
-
     @Column(name = "file_type", nullable = false)
     private String fileType;
 
@@ -48,13 +45,12 @@ public class Snap extends BaseTimeEntity {
 
     @Builder
     protected Snap(String oneLineJournal, Album album, User user, String fileName,
-                   String filePath, String fileType, boolean isPrivate) {
+                   String fileType, boolean isPrivate) {
         this.oneLineJournal = oneLineJournal;
         this.album = album;
         this.user = user;
         this.fileName = fileName;
         this.fileType = fileType;
-        this.filePath = filePath;
         this.isPrivate = isPrivate;
     }
 
@@ -70,5 +66,12 @@ public class Snap extends BaseTimeEntity {
         this.oneLineJournal = oneLineJournal;
     }
 
+    public void updateFileName(String fileName){
+        this.fileName = fileName;
+    }
+
+    public void updateFileType(String fileType){
+        this.fileType = fileType;
+    }
 
 }

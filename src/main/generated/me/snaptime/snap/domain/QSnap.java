@@ -31,8 +31,6 @@ public class QSnap extends EntityPathBase<Snap> {
 
     public final StringPath fileName = createString("fileName");
 
-    public final StringPath filePath = createString("filePath");
-
     public final StringPath fileType = createString("fileType");
 
     public final BooleanPath isPrivate = createBoolean("isPrivate");

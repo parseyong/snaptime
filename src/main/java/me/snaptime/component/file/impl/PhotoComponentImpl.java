@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import me.snaptime.component.file.PhotoComponent;
 import me.snaptime.exception.CustomException;
 import me.snaptime.exception.ExceptionCode;
-import me.snaptime.snap.dto.res.PhotoPathResDto;
 import me.snaptime.util.FileNameGenerator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -50,7 +49,7 @@ public class PhotoComponentImpl implements PhotoComponent {
     }
 
     @Override
-    public void updatePhoto(String fileName, byte[] fileBytes) {
+    public void updatePhotoVisibility(String fileName, byte[] fileBytes) {
 
         String filePath = FOLDER_PATH + fileName;
         try {
@@ -62,13 +61,13 @@ public class PhotoComponentImpl implements PhotoComponent {
     }
 
     @Override
-    public PhotoPathResDto addPhoto(String originalFileName, byte[] fileBytes) {
+    public String addPhoto(String originalFileName, byte[] fileBytes) {
 
         // UUID를 통한 파일명 생성
-        String generatedName = FileNameGenerator.generatorName(originalFileName);
+        String fileName = FileNameGenerator.generatorName(originalFileName);
 
         // 파일이 저장될 경로 생성
-        String filePath = FOLDER_PATH + generatedName;
+        String filePath = FOLDER_PATH + fileName;
 
         try {
             Files.write(Paths.get(filePath), fileBytes);
@@ -77,9 +76,6 @@ public class PhotoComponentImpl implements PhotoComponent {
             throw new CustomException(ExceptionCode.PHOTO_ADD_FAILE);
         }
 
-        return PhotoPathResDto.builder()
-                .filePath(filePath)
-                .fileName(generatedName)
-                .build();
+        return fileName;
     }
 }

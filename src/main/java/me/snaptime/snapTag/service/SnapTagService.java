@@ -11,7 +11,7 @@ public interface SnapTagService {
     void addTagUser(List<String> tagUserLoginIds, Snap snap);
 
     // 스냅 수정 시 태그정보를 갱신합니다.
-    void modifyTagUser(List<String> tagUserLoginIds, Snap snap);
+    void updateTagUsers(List<String> tagUserLoginIds, Snap snap);
 
     // 스냅에 저장된 모든 태그정보를 삭제합니다.
     void deleteAllTagUser(Snap snap);

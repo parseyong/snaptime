@@ -57,7 +57,7 @@ public class AlarmServiceImpl implements AlarmService {
         snapAlarm.readAlarm();
         snapAlarmRepository.save(snapAlarm);
 
-        return snapService.findSnap(snapAlarm.getSnap().getSnapId(), reqLoginId);
+        return snapService.findSnapDetail(reqLoginId, snapAlarm.getSnap().getSnapId());
     }
 
     @Override
@@ -186,7 +186,7 @@ public class AlarmServiceImpl implements AlarmService {
 
             User sender = snapAlarm.getSender();
             String senderProfilePhotoURL = urlComponent.makePhotoURL(sender.getProfilePhotoName(),false);
-            String snapPhotoURL = urlComponent.makePhotoURL(snapAlarm.getSnap().getFileName(),false);
+            String snapPhotoURL = urlComponent.makePhotoURL(snapAlarm.getSnap().getFileName(),snapAlarm.getSnap().isPrivate());
             String timeAgo = TimeAgoCalculator.findTimeAgo(snapAlarm.getCreatedDate());
 
             AlarmFindResDto alarmFindResDto = AlarmFindResDto.toSnapAlarmDto(senderProfilePhotoURL, snapPhotoURL, timeAgo, snapAlarm);
@@ -202,7 +202,7 @@ public class AlarmServiceImpl implements AlarmService {
 
             User sender = replyAlarm.getSender();
             String senderProfilePhotoURL = urlComponent.makePhotoURL(sender.getProfilePhotoName(),false);
-            String snapPhotoURL = urlComponent.makePhotoURL(replyAlarm.getSnap().getFileName(),false);
+            String snapPhotoURL = urlComponent.makePhotoURL(replyAlarm.getSnap().getFileName(),replyAlarm.getSnap().isPrivate());
             String timeAgo = TimeAgoCalculator.findTimeAgo(replyAlarm.getCreatedDate());
 
             AlarmFindResDto alarmFindResDto = AlarmFindResDto.toReplyAlarmDto(senderProfilePhotoURL, snapPhotoURL, timeAgo, replyAlarm);

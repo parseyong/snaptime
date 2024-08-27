@@ -9,7 +9,7 @@ import java.util.List;
 public interface AlbumService {
 
     /*
-        썸네일이 포함된 앨범리스트를 조회합니다.
+        썸네일 URL이 포함된 앨범리스트를 조회합니다.
         썸네일은 공개스냅중 제일 최신스냅이 선택됩니다.
         앨범id, albumName, 썸네일URL이 포함된 DTO리스트를 반환합니다.
         앨범에 공개스냅이 없을경우 썸네일URL은 NULL입니다.

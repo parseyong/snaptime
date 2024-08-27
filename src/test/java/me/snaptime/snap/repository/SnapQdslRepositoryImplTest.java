@@ -3,6 +3,7 @@ package me.snaptime.snap.repository;
 import com.querydsl.core.Tuple;
 import me.snaptime.album.domain.Album;
 import me.snaptime.album.repository.AlbumRepository;
+import me.snaptime.component.cipher.impl.CipherComponentImpl;
 import me.snaptime.component.url.UrlComponent;
 import me.snaptime.config.JpaAuditingConfig;
 import me.snaptime.config.QueryDslConfig;
@@ -13,7 +14,6 @@ import me.snaptime.friend.repository.FriendRepository;
 import me.snaptime.snap.domain.Snap;
 import me.snaptime.user.domain.User;
 import me.snaptime.user.repository.UserRepository;
-import me.snaptime.util.CipherUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.test.util.AssertionErrors.fail;
 
 @DataJpaTest
-@Import({QueryDslConfig.class, JpaAuditingConfig.class})
+@Import({QueryDslConfig.class, JpaAuditingConfig.class, CipherComponentImpl.class})
 @TestPropertySource(locations = "classpath:application-test.yml")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class SnapQdslRepositoryImplTest {
@@ -44,6 +44,8 @@ public class SnapQdslRepositoryImplTest {
     private FriendRepository friendRepository;
     @Autowired
     private AlbumRepository albumRepository;
+    @Autowired
+    private CipherComponentImpl cipherComponent;
     private User reqUser;
 
     @MockBean
@@ -64,7 +66,7 @@ public class SnapQdslRepositoryImplTest {
                 .birthDay(String.valueOf(LocalDateTime.now()))
                 .profilePhotoName("testProfileName1")
                 .profilePhotoPath("testPath")
-                .secretKey(CipherUtil.generateAESKey())
+                .secretKey(cipherComponent.generateAESKey())
                 .build();
         User user2 = User.builder()
                 .email("test2@google.com")
@@ -74,7 +76,7 @@ public class SnapQdslRepositoryImplTest {
                 .birthDay(String.valueOf(LocalDateTime.now()))
                 .profilePhotoName("testProfileName2")
                 .profilePhotoPath("testPath")
-                .secretKey(CipherUtil.generateAESKey())
+                .secretKey(cipherComponent.generateAESKey())
                 .build();
         User user3 = User.builder()
                 .email("test3@google.com")
@@ -84,7 +86,7 @@ public class SnapQdslRepositoryImplTest {
                 .birthDay(String.valueOf(LocalDateTime.now()))
                 .profilePhotoName("testProfileName3")
                 .profilePhotoPath("testPath")
-                .secretKey(CipherUtil.generateAESKey())
+                .secretKey(cipherComponent.generateAESKey())
                 .build();
         User user4 = User.builder()
                 .email("test4@google.com")
@@ -94,7 +96,7 @@ public class SnapQdslRepositoryImplTest {
                 .birthDay(String.valueOf(LocalDateTime.now()))
                 .profilePhotoName("testProfileName4")
                 .profilePhotoPath("testPath")
-                .secretKey(CipherUtil.generateAESKey())
+                .secretKey(cipherComponent.generateAESKey())
                 .build();
 
         userRepository.saveAll(List.of(reqUser,user2,user3,user4));
@@ -155,7 +157,6 @@ public class SnapQdslRepositoryImplTest {
                         .oneLineJournal("1줄일기")
                         .user(user)
                         .fileName("fileName")
-                        .filePath("testPath")
                         .fileType("testType")
                         .build()
         );

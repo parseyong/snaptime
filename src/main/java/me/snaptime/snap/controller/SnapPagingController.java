@@ -22,7 +22,8 @@ public class SnapPagingController {
     private final SnapPagingService snapPagingService;
 
     @GetMapping("/community/snaps/{pageNum}")
-    @Operation(summary = "Snap 조회", description = "커뮤니티에서 Snap을 10개씩 페이징조회합니다.")
+    @Operation(summary = "Snap 조회", description = "커뮤니티에서 친구의 공개Snap을 10개씩 페이징조회합니다.<br>" +
+                                                    "자신의 공개스냅또한 같이 조회됩니다.")
     @Parameter(name = "pageNum", description = "Snap페이지 번호를 보내주세요")
     public ResponseEntity<CommonResponseDto<SnapFindPagingResDto>> findSnapPage(
             final @AuthenticationPrincipal String reqLoginId,
