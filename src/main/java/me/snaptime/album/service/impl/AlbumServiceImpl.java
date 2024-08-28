@@ -158,7 +158,8 @@ public class AlbumServiceImpl implements AlbumService {
         }
     }
 
-    private String findAlbumThumbnailPhotoURL(Album album){
+    @Override
+    public String findAlbumThumbnailPhotoURL(Album album){
 
         Optional<Snap> thumnailSnapOptional = snapRepository.findThumnailSnap(album);
 

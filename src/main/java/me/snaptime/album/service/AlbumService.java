@@ -85,4 +85,11 @@ public interface AlbumService {
         albumId : 저장할 앨범 id
     */
     Album findAlbumForSnapAdd(User reqUser, Long albumId);
+    
+    /*
+        앨범의 썸네일사진 URL을 가져옵니다.
+        
+        album : 썸네일 조회할 앨범
+    */
+    String findAlbumThumbnailPhotoURL(Album album);
 }

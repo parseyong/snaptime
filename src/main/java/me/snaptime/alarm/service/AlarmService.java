@@ -61,4 +61,5 @@ public interface AlarmService {
         alarmType  : 알림타입, 알림타입에따라 삭제로직이 달라지므로 알림타입을 인자로 받습니다.
     */
     void deleteAlarm(String reqLoginId, Long alarmId, AlarmType alarmType);
+
 }

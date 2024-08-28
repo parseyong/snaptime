@@ -17,6 +17,7 @@ import me.snaptime.exception.ExceptionCode;
 import me.snaptime.friend.service.FriendService;
 import me.snaptime.reply.dto.res.ParentReplyPagingResDto;
 import me.snaptime.reply.service.ReplyService;
+import me.snaptime.snap.domain.Snap;
 import me.snaptime.snap.dto.res.SnapFindDetailResDto;
 import me.snaptime.snap.service.SnapService;
 import me.snaptime.user.domain.User;
@@ -84,6 +85,9 @@ public class AlarmServiceImpl implements AlarmService {
 
         // 자신한테 온 알림인지 여부체크
         isMyAlarm(reqLoginId, replyAlarm.getReceiver().getLoginId());
+
+        // 접근가능한 스냅인지 체크.
+        isAccessableSnap(reqLoginId, replyAlarm.getSnap());
 
         replyAlarm.readAlarm();
         replyAlarmRepository.save(replyAlarm);
@@ -208,5 +212,12 @@ public class AlarmServiceImpl implements AlarmService {
             AlarmFindResDto alarmFindResDto = AlarmFindResDto.toReplyAlarmDto(senderProfilePhotoURL, snapPhotoURL, timeAgo, replyAlarm);
             alarmFindResDtos.add(alarmFindResDto);
         });
+    }
+
+    // 접근가능한 스냅인지 체크. 공개스냅이였다가 비공개로 전환했을 경우 접근차단을 위한 메소드
+    private void isAccessableSnap(String reqLoginId, Snap snap){
+
+        if( snap.isPrivate() && !snap.getUser().getLoginId().equals(reqLoginId))
+            throw new CustomException(ExceptionCode.ACCESS_FAIL_SNAP);
     }
 }

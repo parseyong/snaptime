@@ -79,8 +79,8 @@ public class SnapServiceImpl implements SnapService {
         Snap snap = snapRepository.findById(snapId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.SNAP_NOT_EXIST));
 
-        if(snap.isPrivate()) {
-            isMySnap(reqUser,snap);
+        if(snap.isPrivate() && !isMySnap(reqUser, snap)) {
+            throw new CustomException(ExceptionCode.ACCESS_FAIL_SNAP);
         }
 
         String profilePhotoURL = urlComponent.makePhotoURL(reqUser.getProfilePhotoName(), false);
@@ -104,7 +104,8 @@ public class SnapServiceImpl implements SnapService {
         Snap snap = snapRepository.findById(snapId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.SNAP_NOT_EXIST));
 
-        isMySnap(reqUser,snap);
+        if(!isMySnap(reqUser,snap))
+            throw new CustomException(ExceptionCode.ACCESS_FAIL_SNAP);
 
         if(snapUpdateReqDto.multipartFile() != null){
 
@@ -135,7 +136,9 @@ public class SnapServiceImpl implements SnapService {
         if (snap.isPrivate() == isPrivate) {
             throw new CustomException(ExceptionCode.ALREADY_SNAP_VISIBILITY);
         }
-        isMySnap(reqUser,snap);
+
+        if(!isMySnap(reqUser, snap))
+            throw new CustomException(ExceptionCode.ACCESS_FAIL_SNAP);
 
         if(isPrivate){
             // 암호화하여 저장
@@ -170,7 +173,8 @@ public class SnapServiceImpl implements SnapService {
                 .orElseThrow(() -> new CustomException(ExceptionCode.ALBUM_NOT_EXIST));
 
         albumService.isMyAlbum(reqUser, album);
-        isMySnap(reqUser,snap);
+        if(!isMySnap(reqUser,snap))
+            throw new CustomException(ExceptionCode.ACCESS_FAIL_SNAP);
 
         snap.updateAlbum(album);
         snapRepository.save(snap);
@@ -185,7 +189,8 @@ public class SnapServiceImpl implements SnapService {
         Snap snap = snapRepository.findById(snapId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.SNAP_NOT_EXIST));
 
-        isMySnap(reqUser,snap);
+        if(!isMySnap(reqUser,snap))
+            throw new CustomException(ExceptionCode.ACCESS_FAIL_SNAP);
 
         photoComponent.deletePhoto(snap.getFileName());
         snapRepository.delete(snap);
@@ -200,13 +205,15 @@ public class SnapServiceImpl implements SnapService {
         Album album = albumRepository.findById(albumId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.ALBUM_NOT_EXIST));
 
-        albumService.isMyAlbum(reqUser, album);
         List<Snap> snaps = snapRepository.findAllByAlbum( album );
 
-        List<SnapFindResDto> snapFindResDtos = snaps.stream().map(snap -> {
-            String snapPhotoURL = urlComponent.makePhotoURL(snap.getFileName(), snap.isPrivate());
-            return SnapFindResDto.toDto(snap, snapPhotoURL);
-        }).collect(Collectors.toList());
+        List<SnapFindResDto> snapFindResDtos = snaps.stream()
+                .filter(snap -> snap.isPrivate() && !isMySnap(reqUser, snap))
+                .map(snap -> {
+                    String snapPhotoURL = urlComponent.makePhotoURL(snap.getFileName(), snap.isPrivate());
+                    return SnapFindResDto.toDto(snap, snapPhotoURL);
+                })
+                .collect(Collectors.toList());
 
         return SnapFindAllInAlbumResDto.toDto(snapFindResDtos,album);
 
@@ -230,8 +237,11 @@ public class SnapServiceImpl implements SnapService {
         }
     }
 
-    private void isMySnap(User reqUser, Snap snap){
+    private boolean isMySnap(User reqUser, Snap snap){
+
         if(snap.getUser().getUserId() != reqUser.getUserId())
-            throw new CustomException(ExceptionCode.ACCESS_FAIL_SNAP);
+            return false;
+
+        return true;
     }
 }
