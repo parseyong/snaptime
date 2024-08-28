@@ -39,7 +39,8 @@ public class SnapController {
     }
 
     @GetMapping(value = "/albums/snaps/{snapId}")
-    @Operation(summary = "1개의 Snap 상세조회", description = "1개 Snap의 상세정보(태그정보,좋아요 수 등등..)를 조회합니다.")
+    @Operation(summary = "1개의 Snap 상세조회", description = "1개 Snap의 상세정보(태그정보,좋아요 수 등등..)를 조회합니다." +
+                                                            "비공개 스냅의 경우 자신의 쓴 snap이여야만 조회가 가능합니다.")
     @Parameter(name = "snapId", description = "조회할 snap의 id")
     public ResponseEntity<CommonResponseDto<SnapFindDetailResDto>> findSnapDetail(
             final @AuthenticationPrincipal String reqLoginId,
@@ -107,9 +108,9 @@ public class SnapController {
     }
 
     @GetMapping("/albums/{albumId}/snaps/all")
-    @Operation(summary = "자신의 Album에 포함된 snap조회", description = "자신의 Album에 포함된 snap을 공개여부와 상관없이 조회합니다.<br>" +
-                                                                "이 요청은 자신의 앨범에 저장된 스냅을 보는 요청으로 " +
-                                                                "다른사람의 앨범을 보려면 profile api를 이용해주세요.")
+    @Operation(summary = "Album에 포함된 snap조회", description = "Album에 포함된 snap을 조회합니다.<br>" +
+                                                                "다른사람의 앨범안의 snap을 조회할 경우 공개스냅만 조회됩니다.<br>" +
+                                                                "나의 앨범을 조회할 경우 비공개스냅또 같이 조회됩니다.")
     public ResponseEntity<CommonResponseDto<SnapFindAllInAlbumResDto>> findAllSnapInAlbum(
             final @PathVariable("albumId") Long albumId,
             final @AuthenticationPrincipal String reqLoginId) {
