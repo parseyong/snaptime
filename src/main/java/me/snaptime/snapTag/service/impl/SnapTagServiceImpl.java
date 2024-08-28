@@ -35,6 +35,10 @@ public class SnapTagServiceImpl implements SnapTagService {
     public void addTagUser(List<String> tagUserLoginIds, Snap snap){
 
         List<SnapTag> snapTags = tagUserLoginIds.stream().map( tagUserloginId -> {
+
+            // 셀프태그인지 체크
+            isSelfTag(snap,tagUserloginId);
+
             User tagUser = userRepository.findByLoginId(tagUserloginId)
                     .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
@@ -58,13 +62,7 @@ public class SnapTagServiceImpl implements SnapTagService {
         snapTagRepository.deleteAll( findDeletedTagUsers(snapTags,tagUserLoginIds) );
 
         // 태그유저 추가
-       snapTagRepository.saveAll( findNewTagUsers(tagUserLoginIds, snap) );
-    }
-
-    @Override
-    @Transactional
-    public void deleteAllTagUser(Snap snap){
-        snapTagRepository.deleteAll(snapTagRepository.findBySnap(snap));
+        snapTagRepository.saveAll( findNewTagUsers(tagUserLoginIds, snap) );
     }
 
     @Override
@@ -93,6 +91,10 @@ public class SnapTagServiceImpl implements SnapTagService {
                     .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
             if(!snapTagRepository.existsBySnapAndTagUser(snap,tagUser)){
+
+                // 셀프태그인지 체크
+                isSelfTag(snap,tagUserloginId);
+
                 alarmAddService.addSnapAlarm(snap.getUser(), tagUser, snap, AlarmType.SNAPTAG);
                 return SnapTag.builder()
                         .snap(snap)
@@ -104,4 +106,9 @@ public class SnapTagServiceImpl implements SnapTagService {
         }).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
+    private void isSelfTag(Snap snap, String tagUserLoginId){
+
+        if(snap.getUser().getLoginId().equals(tagUserLoginId))
+            throw new CustomException(ExceptionCode.CAN_NOT_SELF_TAG);
+    }
 }

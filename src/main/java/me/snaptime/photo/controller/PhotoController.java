@@ -26,7 +26,7 @@ public class PhotoController {
     @GetMapping("/photo")
     @Operation(summary = "photo 조회", description = "사진을 조회합니다.")
     @Parameters({
-            @Parameter(name = "fileName", description = "찾을 사진의 이름을 입력해주세요." +
+            @Parameter(name = "fileName", description = "찾을 사진(snap 사진 or 프로필 사진)의 fileName을 입력해주세요." +
                                                         "이미지타입(ex. png)를 포함한 파일이름을 입력해주세요.<br> " +
                                                         "암호화된 사진인 경우 인증을 한 뒤 복호화하여 반환합니다.<br>" +
                                                         "기본적으로는 인증토큰없이 사진조회가 가능하지만 암호화된 사진의 경우에는 인증토큰이 필요합니다."),

@@ -46,7 +46,7 @@ public class ReplyAlarm extends BaseTimeEntity {
     private String replyMessage;
 
     @Column(name = "is_read",nullable = false)
-    private boolean isRead = false;
+    private boolean isRead;
 
     @Builder
     protected ReplyAlarm(User sender, User receiver, Snap snap, String replyMessage, AlarmType alarmType){
@@ -55,6 +55,7 @@ public class ReplyAlarm extends BaseTimeEntity {
         this.alarmType=alarmType;
         this.snap=snap;
         this.replyMessage=replyMessage;
+        this.isRead = false;
     }
 
     public void readAlarm(){

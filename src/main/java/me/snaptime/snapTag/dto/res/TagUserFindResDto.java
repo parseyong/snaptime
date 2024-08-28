@@ -13,7 +13,7 @@ public record TagUserFindResDto(
     public static TagUserFindResDto toDto(SnapTag snapTag){
         return TagUserFindResDto.builder()
                 .tagUserLoginId(snapTag.getTagUser().getLoginId())
-                .tagUserName(snapTag.getTagUser().getUsername())
+                .tagUserName(snapTag.getTagUser().getNickname())
                 .build();
     }
 }

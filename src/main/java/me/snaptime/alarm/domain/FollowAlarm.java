@@ -36,13 +36,14 @@ public class FollowAlarm extends BaseTimeEntity {
     private AlarmType alarmType;
 
     @Column(name = "is_read",nullable = false)
-    private boolean isRead = false;
+    private boolean isRead;
 
     @Builder
     protected FollowAlarm(User sender, User receiver, AlarmType alarmType){
         this.sender=sender;
         this.receiver=receiver;
         this.alarmType=alarmType;
+        this.isRead = false;
     }
 
     public void readAlarm(){

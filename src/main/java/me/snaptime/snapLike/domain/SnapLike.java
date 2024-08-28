@@ -20,12 +20,12 @@ public class SnapLike {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long snapLikeId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name="snap_id",nullable = false)
     private Snap snap;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id",nullable = false)
     private User user;

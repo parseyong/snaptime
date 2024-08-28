@@ -19,11 +19,11 @@ public class Friend {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long friendId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User receiver;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User sender;
 

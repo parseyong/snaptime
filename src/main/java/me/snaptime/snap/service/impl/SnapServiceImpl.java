@@ -60,15 +60,15 @@ public class SnapServiceImpl implements SnapService {
                 .oneLineJournal(snapAddReqDto.oneLineJournal())
                 .fileName(fileName)
                 .fileType(snapAddReqDto.multipartFile().getContentType())
-                .album(albumService.findAlbumForSnapAdd(reqUser,snapAddReqDto.albumId()))
+                .album(albumService.findAlbumForSnapAdd(reqUser, snapAddReqDto.albumId()))
                 .build();
+
+        snapRepository.save(snap);
 
         // tagUserLoginIds가 파라미터로 주어졌을 경우 태그에 추가
         if (snapAddReqDto.tagUserLoginIds() != null) {
             snapTagService.addTagUser(snapAddReqDto.tagUserLoginIds(), snap);
         }
-
-        snapRepository.save(snap);
     }
 
     @Override
@@ -107,16 +107,19 @@ public class SnapServiceImpl implements SnapService {
         isMySnap(reqUser,snap);
 
         if(snapUpdateReqDto.multipartFile() != null){
+
             // 기존 사진 삭제
             photoComponent.deletePhoto(snap.getFileName());
             String fileName = addPhoto(reqUser, snapUpdateReqDto.multipartFile(), snap.isPrivate());
             snap.updateFileName(fileName);
             snap.updateFileType(snapUpdateReqDto.multipartFile().getContentType());
         }
+        
         snap.updateOneLineJournal(snapUpdateReqDto.oneLineJournal());
-        snapTagService.updateTagUsers(snapUpdateReqDto.tagUserLoginIds(), snap);
 
         snapRepository.save(snap);
+        // 태그정보 수정
+        snapTagService.updateTagUsers(snapUpdateReqDto.tagUserLoginIds(), snap);
     }
 
     @Override

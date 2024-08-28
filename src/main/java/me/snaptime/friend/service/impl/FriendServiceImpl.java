@@ -8,8 +8,8 @@ import me.snaptime.exception.CustomException;
 import me.snaptime.exception.ExceptionCode;
 import me.snaptime.friend.domain.Friend;
 import me.snaptime.friend.dto.res.FriendCntResDto;
+import me.snaptime.friend.dto.res.FriendFindPagingResDto;
 import me.snaptime.friend.dto.res.FriendInfoResDto;
-import me.snaptime.friend.dto.res.FriendPagingResDto;
 import me.snaptime.friend.enums.FriendSearchType;
 import me.snaptime.friend.repository.FriendRepository;
 import me.snaptime.friend.service.FriendService;
@@ -65,12 +65,15 @@ public class FriendServiceImpl implements FriendService {
     @Transactional
     public String acceptFollow(User sender, User receiver, boolean isAccept){
 
-        // sender가 receiver에게 친구요청을 보낸게 맞는지 체크
+        // 존재하는 친구요청인지 확인
         Optional<Friend> friendOptional = friendRepository.findBySenderAndReceiver(sender,receiver);
+        
         if(friendOptional.isEmpty())
             throw new CustomException(ExceptionCode.FRIEND_REQ_NOT_EXIST);
 
         if(isAccept){
+
+            // receiver -> sender 방향으로 친구관계를 추가해야하므로 반대로 집어넣어줍니다.
             Friend friend = Friend.builder()
                     .sender(receiver)
                     .receiver(sender)
@@ -87,22 +90,24 @@ public class FriendServiceImpl implements FriendService {
 
     @Override
     @Transactional
-    public void unFollow(String deletorLoginId, String deletedUserLoginId){
+    public void unFollow(String reqLoginId, String deletedUserLoginId){
 
-        User deletor = findUserByLoginId(deletorLoginId);
+        User reqUser = findUserByLoginId(reqLoginId);
         User deletedUser = findUserByLoginId(deletedUserLoginId);
-        Friend friend = friendRepository.findBySenderAndReceiver(deletor,deletedUser)
+
+        Friend friend = friendRepository.findBySenderAndReceiver(reqUser,deletedUser)
                 .orElseThrow(() -> new CustomException(ExceptionCode.FRIEND_NOT_EXIST));
 
         friendRepository.delete(friend);
     }
 
     @Override
-    public FriendPagingResDto findFriendPage(String reqLoginId, String targetLoginId, Long pageNum,
-                                             FriendSearchType searchType, String searchKeyword){
+    public FriendFindPagingResDto findFriendPageByUser(String reqLoginId, String targetLoginId, Long pageNum,
+                                                       FriendSearchType searchType, String searchKeyword){
 
         User reqUser = findUserByLoginId(reqLoginId);
         User targetUser = findUserByLoginId(targetLoginId);
+
         List<Tuple> tuples = friendRepository.findFriendPage(targetUser,searchType,pageNum,searchKeyword);
 
         // 다음 페이지 유무 체크
@@ -115,13 +120,13 @@ public class FriendServiceImpl implements FriendService {
             return FriendInfoResDto.toDto(tuple,profilePhotoURL,isMyFriend);
         }).collect(Collectors.toList());
 
-        return FriendPagingResDto.toDto(friendInfoResDtos, hasNextPage);
+        return FriendFindPagingResDto.toDto(friendInfoResDtos, hasNextPage);
     }
 
     @Override
-    public FriendCntResDto findFriendCnt(String loginId){
+    public FriendCntResDto findFriendCnt(String targetUserLoginId){
 
-        User targetUser = findUserByLoginId(loginId);
+        User targetUser = findUserByLoginId(targetUserLoginId);
 
         // target의 팔로잉,팔로워 수 조회
         Long followingCnt = friendRepository.countBySender(targetUser);

@@ -16,7 +16,8 @@ public record SnapUpdateReqDto(
         String oneLineJournal,
 
         @Schema(
-                description = "크롤링API를 통해 얻은 사진을 MultipartFile형식으로 보내주세요."
+                description = "크롤링API를 통해 얻은 사진을 MultipartFile형식으로 보내주세요." +
+                        "변경을 원하지 않다면 기존 사진을 MultipartFile형식으로 보내주세요."
         )
         MultipartFile multipartFile,
 

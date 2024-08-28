@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface FriendRepository extends JpaRepository<Friend,Long>, FriendPagingRepository {
+public interface FriendRepository extends JpaRepository<Friend,Long>, FriendQdslRepository {
     Optional<Friend> findBySenderAndReceiver(User sender, User receiver);
     
     // sender의 팔로잉 수 조회

@@ -42,7 +42,7 @@ public class SnapAlarm extends BaseTimeEntity {
     private AlarmType alarmType;
 
     @Column(name = "is_read",nullable = false)
-    private boolean isRead = false;
+    private boolean isRead;
 
     @Builder
     protected SnapAlarm(Snap snap, User sender, User receiver, AlarmType alarmType){
@@ -50,6 +50,7 @@ public class SnapAlarm extends BaseTimeEntity {
         this.receiver=receiver;
         this.snap = snap;
         this.alarmType=alarmType;
+        this.isRead = false;
     }
 
     public void readAlarm(){

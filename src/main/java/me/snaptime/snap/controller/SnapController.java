@@ -27,7 +27,7 @@ public class SnapController {
 
     private final SnapService snapService;
 
-    @PostMapping(value = "/snaps", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/albums/snaps", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "Snap 생성", description = "스냅을 생성합니다.")
     public ResponseEntity<CommonResponseDto<Long>> createSnap(
             final @AuthenticationPrincipal String reqLoginId,
@@ -38,7 +38,7 @@ public class SnapController {
                 .body(CommonResponseDto.of("스냅이 정상적으로 저장되었습니다.", null));
     }
 
-    @GetMapping(value = "/snaps/{snapId}")
+    @GetMapping(value = "/albums/snaps/{snapId}")
     @Operation(summary = "1개의 Snap 상세조회", description = "1개 Snap의 상세정보(태그정보,좋아요 수 등등..)를 조회합니다.")
     @Parameter(name = "snapId", description = "조회할 snap의 id")
     public ResponseEntity<CommonResponseDto<SnapFindDetailResDto>> findSnapDetail(
@@ -49,7 +49,7 @@ public class SnapController {
                 CommonResponseDto.of("스냅이 정상적으로 불러와졌습니다.", snapService.findSnapDetail(reqLoginId, snapId)));
     }
 
-    @PatchMapping(value = "/snaps/{snapId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PatchMapping(value = "/albums/snaps/{snapId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "Snap 수정", description = "Snap의 한줄일기, 사진, 태그정보를 수정합니다. <br>" +
                                                     "공개여부, 앨범위치를 변경하려면 다른 요청을 보내주세요.")
     public ResponseEntity<CommonResponseDto<Void>> updateSnap(
@@ -62,7 +62,7 @@ public class SnapController {
                 .body(CommonResponseDto.of("스냅이 정상적으로 수정되었습니다.", null));
     }
 
-    @PatchMapping("/snaps/{snapId}/visibility")
+    @PatchMapping("/albums/snaps/{snapId}/visibility")
     @Operation(summary = "Snap 공개상태 변경", description = "Snap 공개 상태를 변경합니다.")
     @Parameters({
             @Parameter(name = "snapId", description = "공개상태를 변경할 snapId를 입력해주세요."),
@@ -94,7 +94,7 @@ public class SnapController {
                 .body(CommonResponseDto.of("스냅위치 변경이 완료되었습니다.",null));
     }
 
-    @DeleteMapping(value = "/snaps/{snapId}")
+    @DeleteMapping(value = "/albums/snaps/{snapId}")
     @Operation(summary = "Snap 삭제", description = "스냅을 삭제합니다.")
     @Parameter(name = "snapId", description = "삭제할 Snap ID")
     ResponseEntity<CommonResponseDto<Void>> deleteSnap(

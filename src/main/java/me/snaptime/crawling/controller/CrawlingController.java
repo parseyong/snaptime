@@ -47,9 +47,9 @@ public class CrawlingController {
                 .body(CommonResponseDto.of("onepercent 크롤링 성공",photoBytes));
     }
 
+    @GetMapping("/studio808")
     @Operation(summary = "Studio808 크롤링 API", description = "Studio808 크롤링 API입니다.")
     @Parameter(name = "crawlingURL", description = "QR Code의 URL")
-    @GetMapping("/studio808")
     ResponseEntity<CommonResponseDto<byte[]>> studio808Crawling(
             final @RequestParam("crawlingURL") @NotBlank(message = "크롤링할 Studio8080 사진URL값을 입력해주세요.") String crawlingURL) {
 
@@ -58,9 +58,9 @@ public class CrawlingController {
                 .body(CommonResponseDto.of("Studio8080 크롤링 성공",photoBytes));
     }
 
+    @GetMapping("/photosignature")
     @Operation(summary = "PhotoSignature 크롤링 API", description = "PhotoSignature 크롤링 API입니다.")
     @Parameter(name = "crawlingURL", description = "QR Code의 URL")
-    @GetMapping("/photosignature")
     ResponseEntity<CommonResponseDto<byte[]>> photoSignatureCrawling(
             final @RequestParam("crawlingURL") @NotBlank(message = "크롤링할 PhotoSignature 사진URL값을 입력해주세요.") String crawlingURL) {
 
