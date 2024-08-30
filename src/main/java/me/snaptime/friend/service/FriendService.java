@@ -53,9 +53,9 @@ public interface FriendService {
     /*
         targetUser의 팔로워, 팔로잉수를 조회합니다.
 
-        targetUserLoginId : 팔로워, 팔로잉수를 조회할 유저의 loginId
+        targetUser : 팔로워, 팔로잉수를 조회할 유저
     */
-    FriendCntResDto findFriendCnt(String targetUserLoginId);
+    FriendCntResDto findFriendCnt(User targetUser);
 
     /*
         reqUser가 targetUser를 팔로우했는 지 여부 반환

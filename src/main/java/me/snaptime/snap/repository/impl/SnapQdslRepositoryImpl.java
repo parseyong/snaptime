@@ -15,10 +15,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 import static me.snaptime.friend.domain.QFriend.friend;
 import static me.snaptime.snap.domain.QSnap.snap;
+import static me.snaptime.snapTag.domain.QSnapTag.snapTag;
 import static me.snaptime.user.domain.QUser.user;
 
 
@@ -68,17 +68,29 @@ public class SnapQdslRepositoryImpl implements SnapQdslRepository {
     }
 
     @Override
-    public Optional<Snap> findThumnailSnap(Album album) {
+    public List<Snap> findThumnailSnaps(Album album, Long thumnailCnt) {
 
         QAlbum qAlbum = new QAlbum("album");
 
-        Optional<Snap> thumnailSnapOptional = Optional.ofNullable(jpaQueryFactory.select(snap)
+        List<Snap> snaps = jpaQueryFactory.select(snap)
                 .from(snap)
                 .join(qAlbum).on(snap.album.albumId.eq(album.getAlbumId()))
                 .where(snap.isPrivate.isFalse())
                 .orderBy(snap.createdDate.desc())
-                .fetchFirst());
+                .limit(thumnailCnt)
+                .fetch();
 
-        return thumnailSnapOptional;
+        return snaps;
+    }
+
+    @Override
+    public List<Snap> findTagedSnaps(User targetUser) {
+
+        return jpaQueryFactory.select( snap )
+                .from(snap)
+                .join(snapTag).on(snap.snapId.eq(snapTag.snap.snapId))
+                .where(snapTag.tagUser.userId.eq(targetUser.getUserId()).and(snap.isPrivate.isFalse()))
+                .orderBy(snap.createdDate.desc())
+                .fetch();
     }
 }

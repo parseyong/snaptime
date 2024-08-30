@@ -85,7 +85,7 @@ public class SnapController {
             @Parameter(name = "snapId", description = "위치를 변경할 Snap Id"),
             @Parameter(name = "albumId", description = "이동할 Album Id")
     })
-    ResponseEntity<CommonResponseDto<Void>> relocateSnap(
+    ResponseEntity<CommonResponseDto<Void>> updateSnapPosition(
             final @AuthenticationPrincipal String reqLoginId,
             final @PathVariable("snapId") Long snapId,
             final @PathVariable("albumId") Long albumId) {
@@ -110,7 +110,7 @@ public class SnapController {
     @GetMapping("/albums/{albumId}/snaps/all")
     @Operation(summary = "Album에 포함된 snap조회", description = "Album에 포함된 snap을 조회합니다.<br>" +
                                                                 "다른사람의 앨범안의 snap을 조회할 경우 공개스냅만 조회됩니다.<br>" +
-                                                                "나의 앨범을 조회할 경우 비공개스냅또 같이 조회됩니다.")
+                                                                "나의 앨범을 조회할 경우 비공개스냅도 같이 조회됩니다.")
     public ResponseEntity<CommonResponseDto<SnapFindAllInAlbumResDto>> findAllSnapInAlbum(
             final @PathVariable("albumId") Long albumId,
             final @AuthenticationPrincipal String reqLoginId) {

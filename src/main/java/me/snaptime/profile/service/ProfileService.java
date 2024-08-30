@@ -1,20 +1,27 @@
 package me.snaptime.profile.service;
 
-import me.snaptime.profile.dto.res.AlbumSnapResDto;
-import me.snaptime.profile.dto.res.ProfileCntResDto;
-import me.snaptime.profile.dto.res.ProfileTagSnapResDto;
 import me.snaptime.profile.dto.res.UserProfileResDto;
+import me.snaptime.snap.dto.res.SnapFindResDto;
 
 import java.util.List;
 
 public interface ProfileService {
-    /* 호출자의 loginId, 피호출자의 loginId를 통해 피호출자의 album과 snap을 조회 */
-    List<AlbumSnapResDto> getAlbumSnap(String reqLoginId, String targetLoginId);
-    /* loginId에 해당하는 User의 profile 사진을 조회 */
-    UserProfileResDto getUserProfile(String reqLoginId, String targetLoginId);
-    /* loginId에 해당하는 User의 스냅, 팔로우, 팔로워 수 리턴 */
-    ProfileCntResDto getUserProfileCnt(String loginId);
-    /* loginId에 해당하는 User가 Tag된 snap들을 조회합니다 */
-    List<ProfileTagSnapResDto> getTagSnap(String loginId);
+
+    /*
+        targetLoginId의 유저프로필 정보를 조회합니다.
+        팔로워 팔로잉 수, 스냅 수, 유저이름, 프로필 사진을 반환합니다.
+
+        reqLoginId    : 요청자의 loginId
+        targetLoginId : 프로필조회할 유저의 loginId
+    */
+    UserProfileResDto findUserProfile(String reqLoginId, String targetLoginId);
+
+
+    /*
+        유저가 태그된 스냅을 조회합니다.
+
+        targetLoginId : 조회할 유저의 loginId
+    */
+    List<SnapFindResDto> findTagSnap(String targetLoginId);
 
 }

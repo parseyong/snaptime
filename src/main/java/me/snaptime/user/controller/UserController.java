@@ -81,7 +81,7 @@ public class UserController {
                 .body(CommonResponseDto.of("유저 비밀번호 수정이 성공적으로 완료되었습니다.", null));
     }
 
-    @PutMapping(value = "/users/profile", consumes = MULTIPART_FORM_DATA)
+    @PutMapping(value = "/users/profile/photo", consumes = MULTIPART_FORM_DATA)
     @Operation(summary = "프로필 사진 수정",description = "유저의 프로필 사진을 수정 합니다.")
     public ResponseEntity<?> updateProfilePhoto(
             final @AuthenticationPrincipal String reqLoginId,

@@ -124,9 +124,7 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public FriendCntResDto findFriendCnt(String targetUserLoginId){
-
-        User targetUser = findUserByLoginId(targetUserLoginId);
+    public FriendCntResDto findFriendCnt(User targetUser){
 
         // target의 팔로잉,팔로워 수 조회
         Long followingCnt = friendRepository.countBySender(targetUser);

@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import me.snaptime.album.dto.res.AlbumFindResDto;
 import me.snaptime.album.service.AlbumService;
@@ -26,17 +27,25 @@ public class AlbumController {
     private final AlbumService albumService;
 
     @GetMapping(path = "/albums/with-thumnail")
-    @Operation(summary = "Album 목록(썸네일 포함) 조회", description = "사용자의 Album 목록(썸네일 포함)을 조회합니다.")
+    @Operation(summary = "Album 목록(썸네일 포함) 조회", description = "사용자의 Album 목록(썸네일 포함)을 조회합니다.<br>" +
+                                                                    "썸네일로 선택되는 앨범은 한개입니다.<br>" +
+                                                                    "썸네일은 공개스냅 중 최신스냅이 선택됩니다.")
+    @Parameters({
+            @Parameter(name = "thumnailCnt" , description = "필요한 각 앨범의 썸네일 개수를 보내주세요."),
+            @Parameter(name = "targetLoginId", description = "조회할 유저의 loginId를 입력해주세요.")
+    })
+    @Parameter(name = "targetLoginId", description = "앨범을 조회할 유저의 loginId를 입력해주세요.")
     public ResponseEntity<CommonResponseDto<List<AlbumFindResDto>>> findAllAlbumsWithThumnail(
-            final @AuthenticationPrincipal String reqLoginId) {
+            final @RequestParam("targetLoginId") @NotBlank(message = "조회할 유저의 loginId를 입력해주세요.") String targetLoginId,
+            final @RequestParam("thumnailCnt") @NotNull(message = "필요한 각 앨범의 썸네일 개수를 보내주세요.")Long thumnailCnt) {
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(CommonResponseDto.of("앨범목록(썸네일 포함) 조회성공",
-                        albumService.findAllAlbumsWithThumnail(reqLoginId)));
+        return ResponseEntity.status(HttpStatus.OK).body
+                (CommonResponseDto.of("앨범목록(썸네일 포함) 조회성공", albumService.findAllAlbumsWithThumnail(targetLoginId, thumnailCnt)));
     }
 
     @GetMapping("/albums")
-    @Operation(summary = "Album 목록 조회", description = "사용자의 Album 목록(썸네일 미포함)을 조회합니다.")
+    @Operation(summary = "Album 목록 조회", description = "자신의 Album 목록(썸네일 미포함)을 조회합니다.<br>" +
+                                                        "다른유저의 Album목록(썸네일 미포함)을 조회하는 요청은 없습니다.")
     public ResponseEntity<CommonResponseDto<List<AlbumFindResDto>>> findAllAlbums(
             final @AuthenticationPrincipal String reqLoginId) {
 

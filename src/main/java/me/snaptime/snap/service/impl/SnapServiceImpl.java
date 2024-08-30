@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.crypto.SecretKey;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -208,11 +209,14 @@ public class SnapServiceImpl implements SnapService {
         List<Snap> snaps = snapRepository.findAllByAlbum( album );
 
         List<SnapFindResDto> snapFindResDtos = snaps.stream()
-                .filter(snap -> snap.isPrivate() && !isMySnap(reqUser, snap))
                 .map(snap -> {
+                    if(snap.isPrivate() && !isMySnap(reqUser,snap))
+                        return null;
+
                     String snapPhotoURL = urlComponent.makePhotoURL(snap.getFileName(), snap.isPrivate());
                     return SnapFindResDto.toDto(snap, snapPhotoURL);
                 })
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
         return SnapFindAllInAlbumResDto.toDto(snapFindResDtos,album);

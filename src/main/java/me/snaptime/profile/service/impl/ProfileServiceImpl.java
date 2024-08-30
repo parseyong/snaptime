@@ -1,18 +1,13 @@
 package me.snaptime.profile.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import me.snaptime.component.UrlComponent;
 import me.snaptime.exception.CustomException;
 import me.snaptime.exception.ExceptionCode;
-import me.snaptime.friend.dto.res.FriendCntResDto;
 import me.snaptime.friend.service.FriendService;
-import me.snaptime.profile.dto.res.AlbumSnapResDto;
-import me.snaptime.profile.dto.res.ProfileCntResDto;
-import me.snaptime.profile.dto.res.ProfileTagSnapResDto;
 import me.snaptime.profile.dto.res.UserProfileResDto;
-import me.snaptime.profile.repository.ProfileRepository;
 import me.snaptime.profile.service.ProfileService;
+import me.snaptime.snap.dto.res.SnapFindResDto;
 import me.snaptime.snap.repository.SnapRepository;
 import me.snaptime.user.domain.User;
 import me.snaptime.user.repository.UserRepository;
@@ -20,64 +15,50 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-@Slf4j
-@RequiredArgsConstructor
 @Service
-@Transactional
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ProfileServiceImpl implements ProfileService {
-    private final ProfileRepository profileRepository;
+
     private final UserRepository userRepository;
     private final UrlComponent urlComponent;
     private final SnapRepository snapRepository;
     private final FriendService friendService;
 
     @Override
-    @Transactional(readOnly = true)
-    public List<AlbumSnapResDto> getAlbumSnap(String reqLoginId, String targetLoginId) {
-        User targetUser = userRepository.findByLoginId(targetLoginId).orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
+    public UserProfileResDto findUserProfile(String reqLoginId, String targetLoginId) {
 
-        return profileRepository.findAlbumSnap(targetUser, reqLoginId.equals(targetLoginId));
-    }
+        User reqUser = userRepository.findByLoginId(reqLoginId)
+                .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
+        User targetUser = userRepository.findByLoginId(targetLoginId)
+                .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
-    @Override
-    @Transactional(readOnly = true)
-    public UserProfileResDto getUserProfile(String reqLoginId, String targetLoginId) {
 
-        Boolean isFollow = null;
-        User targetUser = userRepository.findByLoginId(targetLoginId).orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
+        String profilePhotoURL = urlComponent.makePhotoURL(targetUser.getProfilePhotoName(), false);
+        Long snapCnt = snapRepository.countByUser(targetUser);
 
-        if(!reqLoginId.equals(targetLoginId)){
-            User reqUser = userRepository.findByLoginId(reqLoginId).orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
-            isFollow = friendService.isFollow(reqUser, targetUser);
-        }
-
-        String profileURL = urlComponent.makePhotoURL(targetUser.getProfilePhotoName(), false);
-
-        return UserProfileResDto.toDto(targetUser, profileURL, isFollow);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public ProfileCntResDto getUserProfileCnt(String loginId) {
-        User user = userRepository.findByLoginId(loginId).orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
-        Long userSnapCnt = snapRepository.countByUser(user);
-        FriendCntResDto friendCntResDto = friendService.findFriendCnt(loginId);
-
-        return ProfileCntResDto.builder()
-                .snapCnt(userSnapCnt)
-                .followerCnt(friendCntResDto.followerCnt())
-                .followingCnt(friendCntResDto.followingCnt())
+        return UserProfileResDto.builder()
+                .userId(targetUser.getUserId())
+                .loginId(targetUser.getLoginId())
+                .nickName(targetUser.getNickname())
+                .profilePhotoURL(profilePhotoURL)
+                .friendCntResDto( friendService.findFriendCnt(targetUser) )
+                .snapCnt(snapCnt)
+                .isFollow(friendService.isFollow(reqUser, targetUser))
                 .build();
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<ProfileTagSnapResDto> getTagSnap(String loginId) {
-        User user = userRepository.findByLoginId(loginId)
+    public List<SnapFindResDto> findTagSnap(String targetLoginId) {
+
+        User targetUser = userRepository.findByLoginId(targetLoginId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
-        return profileRepository.findTagSnap(user);
+        return snapRepository.findTagedSnaps(targetUser).stream().map(snap -> {
+            String snapPhotoURL = urlComponent.makePhotoURL(snap.getFileName(),snap.isPrivate());
+            return SnapFindResDto.toDto(snap, snapPhotoURL);
+        }).collect(Collectors.toList());
     }
-
 }

@@ -6,7 +6,6 @@ import me.snaptime.snap.domain.Snap;
 import me.snaptime.user.domain.User;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface SnapQdslRepository {
 
@@ -21,9 +20,17 @@ public interface SnapQdslRepository {
 
     /*
         앨범의 썸네일Snap을 조회합니다.
-        썸네일은 공개스냅중 제일 최신스냅이 선택되며 공개스냅이 없을 시 null을 반환합니다.
+        썸네일은 공개스냅중 제일 최신스냅이 선택되며 공개스냅이 없을 시 빈 리스트를 반환합니다.
 
-        Album : 썸네일조회할 앨범
+        Album       : 썸네일조회할 앨범
+        thumnailCnt : 썸네일 개수
     */
-    Optional<Snap> findThumnailSnap(Album album);
+    List<Snap> findThumnailSnaps(Album album, Long thumnailCnt);
+
+    /*
+        유저가 태그된 스냅리스트를 조회합니다.
+
+        targetUser : 대상이 되는 유저
+    */
+    List<Snap> findTagedSnaps(User targetUser);
 }

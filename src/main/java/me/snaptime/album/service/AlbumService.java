@@ -9,17 +9,18 @@ import java.util.List;
 public interface AlbumService {
 
     /*
-        썸네일 URL이 포함된 앨범리스트를 조회합니다.
+        썸네일 URL이 포함된 유저(다른사람 포함)의 앨범리스트를 조회합니다.
         썸네일은 공개스냅중 제일 최신스냅이 선택됩니다.
         앨범id, albumName, 썸네일URL이 포함된 DTO리스트를 반환합니다.
         앨범에 공개스냅이 없을경우 썸네일URL은 NULL입니다.
 
-        reqLoginId : 앨범을 조회할 유저의 loginId
+        targetLoginId  : 앨범을 조회할 유저의 loginId
+        thumnailCnt    : 썸네일에 포함되는 스냅의 수
     */
-    List<AlbumFindResDto> findAllAlbumsWithThumnail(String reqLoginId);
+    List<AlbumFindResDto> findAllAlbumsWithThumnail(String targetLoginId, Long thumnailCnt);
 
     /*
-        썸네일이 미포함된 앨범리스트를 조회합니다.
+        썸네일이 미포함된 자신의 앨범리스트를 조회합니다.
         앨범id, albumName이 포함된 DTO리스트를 반환합니다.
 
         reqLoginId : 앨범을 조회할 유저의 loginId
@@ -85,11 +86,5 @@ public interface AlbumService {
         albumId : 저장할 앨범 id
     */
     Album findAlbumForSnapAdd(User reqUser, Long albumId);
-    
-    /*
-        앨범의 썸네일사진 URL을 가져옵니다.
-        
-        album : 썸네일 조회할 앨범
-    */
-    String findAlbumThumbnailPhotoURL(Album album);
+
 }

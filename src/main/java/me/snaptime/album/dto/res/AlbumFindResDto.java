@@ -3,26 +3,20 @@ package me.snaptime.album.dto.res;
 import lombok.Builder;
 import me.snaptime.album.domain.Album;
 
+import java.util.List;
+
 @Builder
 public record AlbumFindResDto(
         Long albumId,
         String albumName,
-        String thumbnailPhotoURL
+        List<String> thumbnailPhotoURLs
 ) {
-    public static AlbumFindResDto toDto(Album album,String thumbnailPhotoURL){
+    public static AlbumFindResDto toDto(Album album, List<String> thumbnailPhotoURLs){
 
-        if(thumbnailPhotoURL == null){
-            return AlbumFindResDto.builder()
-                    .albumId(album.getAlbumId())
-                    .albumName(album.getAlbumName())
-                    .build();
-        }
-        else{
-            return AlbumFindResDto.builder()
-                    .albumId(album.getAlbumId())
-                    .albumName(album.getAlbumName())
-                    .thumbnailPhotoURL(thumbnailPhotoURL)
-                    .build();
-        }
+        return AlbumFindResDto.builder()
+                .albumId(album.getAlbumId())
+                .albumName(album.getAlbumName())
+                .thumbnailPhotoURLs(thumbnailPhotoURLs)
+                .build();
     }
 }

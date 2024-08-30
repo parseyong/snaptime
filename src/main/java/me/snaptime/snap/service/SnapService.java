@@ -66,9 +66,9 @@ public interface SnapService {
     void deleteSnap(String reqLoginId, Long snapId);
 
     /*
-        앨범에 저장된 모든 스냅을 가져옵니다. (공개 비공개 모두)
-        이 메소드는 자신의 앨범에 저장된 스냅을 보는 요청입니다.
-        다른사람의 앨범을 보려할 시 예외를 반환합니다.
+        앨범에 저장된 모든 스냅을 가져옵니다.
+        자신의 앨범을 볼경우에는 비공개, 공개모두 조회됩니다.
+        다른유저의 앨범을 볼 경우에는 공개스냅만 조회됩니다.
 
         reqLoginId : 요청자의 loginId
         albumId    : 조회하려는 앨범 id

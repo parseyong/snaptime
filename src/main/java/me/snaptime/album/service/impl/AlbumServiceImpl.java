@@ -34,16 +34,23 @@ public class AlbumServiceImpl implements AlbumService {
     private String basicAlbumName;
 
     @Override
-    public List<AlbumFindResDto> findAllAlbumsWithThumnail(String reqLoginId) {
+    public List<AlbumFindResDto> findAllAlbumsWithThumnail(String targetLoginId, Long thumnailCnt) {
 
-        User reqUser = userRepository.findByLoginId(reqLoginId)
+        User targetUser = userRepository.findByLoginId(targetLoginId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
-        List<Album> albums = albumRepository.findAllByUser(reqUser);
+        List<Album> albums = albumRepository.findAllByUser(targetUser);
 
         return albums.stream().map(album -> {
-            String thumbnailPhotoURL = findAlbumThumbnailPhotoURL(album);
-            return AlbumFindResDto.toDto(album,thumbnailPhotoURL);
+            // 각 앨범의 썸네일 스냅조회
+            List<Snap> thumnailSnaps = snapRepository.findThumnailSnaps(album, thumnailCnt);
+
+            // 썸네일스냅의 사진URL생성
+            List<String> thumbnailPhotoURLs = thumnailSnaps.stream().map(thumnailSnap -> {
+                return urlComponent.makePhotoURL(thumnailSnap.getFileName(),false);
+            }).collect(Collectors.toList());
+
+            return AlbumFindResDto.toDto(album,thumbnailPhotoURLs);
         }).collect(Collectors.toList());
     }
 
@@ -155,19 +162,6 @@ public class AlbumServiceImpl implements AlbumService {
                     .orElseThrow(() -> new CustomException(ExceptionCode.ALBUM_NOT_EXIST));
             checkMyAlbum(reqUser,album);
             return album;
-        }
-    }
-
-    @Override
-    public String findAlbumThumbnailPhotoURL(Album album){
-
-        Optional<Snap> thumnailSnapOptional = snapRepository.findThumnailSnap(album);
-
-        if(thumnailSnapOptional.isEmpty())
-            return null;
-        else{
-            Snap thumnailSnap = thumnailSnapOptional.get();
-            return urlComponent.makePhotoURL(thumnailSnap.getFileName(), false);
         }
     }
 

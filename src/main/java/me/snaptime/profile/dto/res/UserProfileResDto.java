@@ -1,22 +1,16 @@
 package me.snaptime.profile.dto.res;
 
 import lombok.Builder;
-import me.snaptime.user.domain.User;
+import me.snaptime.friend.dto.res.FriendCntResDto;
 
 @Builder
 public record UserProfileResDto(
         Long userId,
-        String userName,
-        String profileURL,
+        String loginId,
+        String nickName,
+        String profilePhotoURL,
+        FriendCntResDto friendCntResDto,
+        Long snapCnt,
         Boolean isFollow
 ){
-    public static UserProfileResDto toDto(User user, String profileURL , Boolean isFollow)
-    {
-        return UserProfileResDto.builder()
-                .userId(user.getUserId())
-                .userName(user.getUsername())
-                .profileURL(profileURL)
-                .isFollow(isFollow)
-                .build();
-    }
 }
