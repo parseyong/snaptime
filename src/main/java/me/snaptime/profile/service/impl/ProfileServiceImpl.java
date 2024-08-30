@@ -37,7 +37,7 @@ public class ProfileServiceImpl implements ProfileService {
 
 
         String profilePhotoURL = urlComponent.makePhotoURL(targetUser.getProfilePhotoName(), false);
-        Long snapCnt = snapRepository.countByUser(targetUser);
+        Long snapCnt = snapRepository.countByWriter(targetUser);
 
         return UserProfileResDto.builder()
                 .userId(targetUser.getUserId())

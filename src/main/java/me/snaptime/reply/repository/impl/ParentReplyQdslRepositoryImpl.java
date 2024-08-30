@@ -1,13 +1,11 @@
 package me.snaptime.reply.repository.impl;
 
 import com.querydsl.core.Tuple;
-import com.querydsl.core.types.Order;
-import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import me.snaptime.exception.CustomException;
 import me.snaptime.exception.ExceptionCode;
-import me.snaptime.reply.repository.ParentReplyPagingRepository;
+import me.snaptime.reply.repository.ParentReplyQdslRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -20,7 +18,7 @@ import static me.snaptime.user.domain.QUser.user;
 
 @Repository
 @RequiredArgsConstructor
-public class ParentReplyPagingRepositoryImpl implements ParentReplyPagingRepository {
+public class ParentReplyQdslRepositoryImpl implements ParentReplyQdslRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
@@ -29,13 +27,13 @@ public class ParentReplyPagingRepositoryImpl implements ParentReplyPagingReposit
         Pageable pageable= PageRequest.of((int) (pageNum-1),20);
 
         List<Tuple> tuples =  jpaQueryFactory.select(
-                        user.loginId,user.profilePhotoName,user.nickname,
+                        user.loginId, user.profilePhotoName,user.nickname,
                         parentReply.content,parentReply.parentReplyId,parentReply.lastModifiedDate
                 )
                 .from(parentReply)
-                .join(user).on(parentReply.user.userId.eq(user.userId))
+                .join(user).on(parentReply.writer.userId.eq(user.userId))
                 .where(parentReply.snap.snapId.eq(snapId))
-                .orderBy(createOrderSpecifier())
+                .orderBy(parentReply.createdDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize()+1) //페이지의 크기
                 .fetch();
@@ -46,8 +44,5 @@ public class ParentReplyPagingRepositoryImpl implements ParentReplyPagingReposit
         return tuples;
     }
 
-    private OrderSpecifier createOrderSpecifier() {
-        return new OrderSpecifier(Order.DESC, parentReply.createdDate);
-    }
 
 }

@@ -42,7 +42,7 @@ public class QSnap extends EntityPathBase<Snap> {
 
     public final NumberPath<Long> snapId = createNumber("snapId", Long.class);
 
-    public final me.snaptime.user.domain.QUser user;
+    public final me.snaptime.user.domain.QUser writer;
 
     public QSnap(String variable) {
         this(Snap.class, forVariable(variable), INITS);
@@ -63,7 +63,7 @@ public class QSnap extends EntityPathBase<Snap> {
     public QSnap(Class<? extends Snap> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.album = inits.isInitialized("album") ? new me.snaptime.album.domain.QAlbum(forProperty("album"), inits.get("album")) : null;
-        this.user = inits.isInitialized("user") ? new me.snaptime.user.domain.QUser(forProperty("user")) : null;
+        this.writer = inits.isInitialized("writer") ? new me.snaptime.user.domain.QUser(forProperty("writer")) : null;
     }
 
 }

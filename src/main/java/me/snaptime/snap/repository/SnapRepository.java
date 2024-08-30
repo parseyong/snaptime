@@ -12,5 +12,5 @@ import java.util.List;
 public interface SnapRepository extends CrudRepository<Snap, Long>, SnapQdslRepository {
 
     List<Snap> findAllByAlbum(Album album);
-    Long countByUser(User user);
+    Long countByWriter(User writer);
 }

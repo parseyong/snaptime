@@ -2,7 +2,6 @@ package me.snaptime.reply.dto.req;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 public record ChildReplyAddReqDto(
         @Schema(
@@ -12,12 +11,6 @@ public record ChildReplyAddReqDto(
         @NotBlank(message = "내용을 입력해주세요")
         String replyMessage,
 
-        @Schema(
-                example = "1",
-                description = "등록할 대댓글의 부모댓글id를 입력해주세요"
-        )
-        @NotNull(message = "parentReplyId를 입력해주세요.")
-        Long parentReplyId,
 
         @Schema(
                 example = "홍길동",

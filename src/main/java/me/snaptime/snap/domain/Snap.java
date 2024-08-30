@@ -41,14 +41,14 @@ public class Snap extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id")
-    private User user;
+    private User writer;
 
     @Builder
-    protected Snap(String oneLineJournal, Album album, User user, String fileName,
+    protected Snap(String oneLineJournal, Album album, User writer, String fileName,
                    String fileType, boolean isPrivate) {
         this.oneLineJournal = oneLineJournal;
         this.album = album;
-        this.user = user;
+        this.writer = writer;
         this.fileName = fileName;
         this.fileType = fileType;
         this.isPrivate = isPrivate;

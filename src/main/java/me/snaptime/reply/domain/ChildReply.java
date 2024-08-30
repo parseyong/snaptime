@@ -26,7 +26,7 @@ public class ChildReply extends BaseTimeEntity {
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id",nullable = false)
-    private User user;
+    private User writer;
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -39,9 +39,9 @@ public class ChildReply extends BaseTimeEntity {
     private User replyTagUser;
 
     @Builder
-    protected ChildReply(String content, User user, User tagUser, ParentReply parentReply){
+    protected ChildReply(String content, User writer, User tagUser, ParentReply parentReply){
         this.content=content;
-        this.user=user;
+        this.writer=writer;
         this.replyTagUser=tagUser;
         this.parentReply=parentReply;
     }

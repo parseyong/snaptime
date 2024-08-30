@@ -38,7 +38,7 @@ public class QChildReply extends EntityPathBase<ChildReply> {
 
     public final me.snaptime.user.domain.QUser replyTagUser;
 
-    public final me.snaptime.user.domain.QUser user;
+    public final me.snaptime.user.domain.QUser writer;
 
     public QChildReply(String variable) {
         this(ChildReply.class, forVariable(variable), INITS);
@@ -60,7 +60,7 @@ public class QChildReply extends EntityPathBase<ChildReply> {
         super(type, metadata, inits);
         this.parentReply = inits.isInitialized("parentReply") ? new QParentReply(forProperty("parentReply"), inits.get("parentReply")) : null;
         this.replyTagUser = inits.isInitialized("replyTagUser") ? new me.snaptime.user.domain.QUser(forProperty("replyTagUser")) : null;
-        this.user = inits.isInitialized("user") ? new me.snaptime.user.domain.QUser(forProperty("user")) : null;
+        this.writer = inits.isInitialized("writer") ? new me.snaptime.user.domain.QUser(forProperty("writer")) : null;
     }
 
 }

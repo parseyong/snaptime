@@ -54,7 +54,7 @@ public class SnapQdslRepositoryImpl implements SnapQdslRepository {
                         snap.snapId, snap.createdDate, snap.lastModifiedDate, snap.oneLineJournal, snap.fileName
                 ).distinct()
                 .from(user)
-                .join(snap).on(snap.user.userId.eq(user.userId))
+                .join(snap).on(snap.writer.userId.eq(user.userId))
                 .where(user.userId.in(followUserIds).and(snap.isPrivate.isFalse()))
                 .orderBy(snap.createdDate.desc())
                 .offset(pageable.getOffset())

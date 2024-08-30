@@ -217,7 +217,7 @@ public class AlarmServiceImpl implements AlarmService {
     // 접근가능한 스냅인지 체크. 공개스냅이였다가 비공개로 전환했을 경우 접근차단을 위한 메소드
     private void isAccessableSnap(String reqLoginId, Snap snap){
 
-        if( snap.isPrivate() && !snap.getUser().getLoginId().equals(reqLoginId))
+        if( snap.isPrivate() && !snap.getWriter().getLoginId().equals(reqLoginId))
             throw new CustomException(ExceptionCode.ACCESS_FAIL_SNAP);
     }
 }

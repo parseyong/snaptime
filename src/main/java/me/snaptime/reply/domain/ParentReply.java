@@ -32,13 +32,13 @@ public class ParentReply extends BaseTimeEntity {
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id",nullable = false)
-    private User user;
+    private User writer;
 
     @Builder
-    protected ParentReply(String content, Snap snap, User user){
+    protected ParentReply(String content, Snap snap, User writer){
         this.content=content;
         this.snap=snap;
-        this.user=user;
+        this.writer=writer;
     }
 
     public void updateReply(String content){

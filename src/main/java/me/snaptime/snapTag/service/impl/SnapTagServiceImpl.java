@@ -42,7 +42,7 @@ public class SnapTagServiceImpl implements SnapTagService {
             User tagUser = userRepository.findByLoginId(tagUserloginId)
                     .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
-            alarmAddService.addSnapAlarm(snap.getUser(), tagUser,snap, AlarmType.SNAPTAG);
+            alarmAddService.addSnapAlarm(snap.getWriter(), tagUser,snap, AlarmType.SNAPTAG);
             return SnapTag.builder()
                     .snap(snap)
                     .tagUser(tagUser)
@@ -95,7 +95,7 @@ public class SnapTagServiceImpl implements SnapTagService {
                 // 셀프태그인지 체크
                 checkSelfTag(snap,tagUserloginId);
 
-                alarmAddService.addSnapAlarm(snap.getUser(), tagUser, snap, AlarmType.SNAPTAG);
+                alarmAddService.addSnapAlarm(snap.getWriter(), tagUser, snap, AlarmType.SNAPTAG);
                 return SnapTag.builder()
                         .snap(snap)
                         .tagUser(tagUser)
@@ -108,7 +108,7 @@ public class SnapTagServiceImpl implements SnapTagService {
 
     private void checkSelfTag(Snap snap, String tagUserLoginId){
 
-        if(snap.getUser().getLoginId().equals(tagUserLoginId))
+        if(snap.getWriter().getLoginId().equals(tagUserLoginId))
             throw new CustomException(ExceptionCode.CAN_NOT_SELF_TAG);
     }
 }

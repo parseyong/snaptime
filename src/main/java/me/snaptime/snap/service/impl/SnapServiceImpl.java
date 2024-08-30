@@ -56,7 +56,7 @@ public class SnapServiceImpl implements SnapService {
         String fileName = addPhoto(reqUser, snapAddReqDto.multipartFile(), snapAddReqDto.isPrivate());
 
         Snap snap = Snap.builder()
-                .user(reqUser)
+                .writer(reqUser)
                 .isPrivate(snapAddReqDto.isPrivate())
                 .oneLineJournal(snapAddReqDto.oneLineJournal())
                 .fileName(fileName)
@@ -243,7 +243,7 @@ public class SnapServiceImpl implements SnapService {
 
     private boolean isMySnap(User reqUser, Snap snap){
 
-        if(snap.getUser().getUserId() != reqUser.getUserId())
+        if(snap.getWriter().getUserId() != reqUser.getUserId())
             return false;
 
         return true;

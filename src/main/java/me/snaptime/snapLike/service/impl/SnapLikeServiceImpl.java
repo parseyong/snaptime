@@ -37,7 +37,7 @@ public class SnapLikeServiceImpl implements SnapLikeService {
                 .orElseThrow(() -> new CustomException(ExceptionCode.SNAP_NOT_EXIST));
         
         // 자기자신의 스냅에 좋아요를 누르는지 체크
-        if(snap.getUser().getUserId() == reqUser.getUserId())
+        if(snap.getWriter().getUserId() == reqUser.getUserId())
             throw new CustomException(ExceptionCode.CAN_NOT_SELF_LIKE);
 
         Optional<SnapLike> snapLikeOptional = snapLikeRepository.findBySnapAndUser(snap,reqUser);
@@ -49,7 +49,7 @@ public class SnapLikeServiceImpl implements SnapLikeService {
                             .user(reqUser)
                             .build()
             );
-            alarmAddService.addSnapAlarm(reqUser,snap.getUser(),snap, AlarmType.LIKE);
+            alarmAddService.addSnapAlarm(reqUser,snap.getWriter(),snap, AlarmType.LIKE);
             return "좋아요를 눌렀습니다.";
         }
         else{

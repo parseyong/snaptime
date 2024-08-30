@@ -7,12 +7,12 @@ import java.util.List;
 @Builder
 public record ParentReplyPagingResDto(
 
-        List<ParentReplyInfoResDto> parentReplyInfoResDtos,
+        List<ParentReplyFindResDto> parentReplyFindResDtos,
         boolean hasNextPage
 ) {
-    public static ParentReplyPagingResDto toDto(List<ParentReplyInfoResDto> parentReplyInfoResDtos, boolean hasNextPage){
+    public static ParentReplyPagingResDto toDto(List<ParentReplyFindResDto> parentReplyFindResDtos, boolean hasNextPage){
         return ParentReplyPagingResDto.builder()
-                .parentReplyInfoResDtos(parentReplyInfoResDtos)
+                .parentReplyFindResDtos(parentReplyFindResDtos)
                 .hasNextPage(hasNextPage)
                 .build();
     }
