@@ -58,7 +58,7 @@ public record SnapFindDetailResDto(
                 .snapModifiedDate(snap.getLastModifiedDate())
                 .writerLoginId(snap.getUser().getLoginId())
                 .profilePhotoURL(profilePhotoURL)
-                .writerUserName(snap.getUser().getUsername())
+                .writerUserName(snap.getUser().getNickname())
                 .tagUserFindResDtos(tagUserFindResDtos)
                 .likeCnt(likeCnt)
                 .isLikedSnap(isLikedSnap)

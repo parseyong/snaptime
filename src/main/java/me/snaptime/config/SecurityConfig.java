@@ -1,10 +1,10 @@
 package me.snaptime.config;
 
 import lombok.RequiredArgsConstructor;
+import me.snaptime.auth.JwtAuthFilter;
+import me.snaptime.auth.JwtProvider;
 import me.snaptime.exception.handler.CustomAccessDeniedHandler;
 import me.snaptime.exception.handler.CustomAuthenticationEntryPoint;
-import me.snaptime.jwt.JwtAuthFilter;
-import me.snaptime.jwt.JwtProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -34,8 +34,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(requests ->
                         requests
                                 .requestMatchers("/swagger-resources/**", "/swagger-ui/index.html", "/webjars/**", "/swagger/**", "/users/exception", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
-                                .requestMatchers("/users/sign-in", "/users/sign-up","/users/test/sign-in").permitAll()
-                                .requestMatchers(HttpMethod.GET,"/users/profile", "/profile-photos/**","/snap/**","/friends/**","/photo").permitAll()
+                                .requestMatchers("/sign-in", "/sign-up", "reissue").permitAll()
+                                .requestMatchers(HttpMethod.GET,"/photo").permitAll()
                                 .requestMatchers("/**").authenticated()
                                 .anyRequest().hasRole("USER")
                 )

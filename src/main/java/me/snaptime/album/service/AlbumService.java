@@ -74,7 +74,7 @@ public interface AlbumService {
         user  : 비교할 대상 user
         album : 비교할 대상 album
     */
-    void isMyAlbum(User user, Album album);
+    void checkMyAlbum(User user, Album album);
 
     /*
         스냅저장 시 스냅이 저장되는 스냅을 가져옵니다.

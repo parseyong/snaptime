@@ -1,133 +1,107 @@
 package me.snaptime.user.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import me.snaptime.common.CommonResponseDto;
-import me.snaptime.user.dto.req.SignInReqDto;
-import me.snaptime.user.dto.req.UserReqDto;
 import me.snaptime.user.dto.req.UserUpdateReqDto;
-import me.snaptime.user.dto.res.SignInResDto;
-import me.snaptime.user.dto.res.UserFindResDto;
-import me.snaptime.user.dto.res.UserPagingResDto;
+import me.snaptime.user.dto.res.UserFindMyPageResDto;
+import me.snaptime.user.dto.res.UserFindPagingResDto;
 import me.snaptime.user.service.UserService;
-import me.snaptime.user.service.UserSignService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-@Tag(name ="[User] User API", description = "유저 생성,유저 조회, 유저 수정, 유저 삭제")
-@Slf4j
-@RequestMapping("/users")
+import static org.apache.tomcat.util.http.fileupload.FileUploadBase.MULTIPART_FORM_DATA;
+
 @RestController
-@RequiredArgsConstructor
 @Validated
+@RequiredArgsConstructor
+@Tag(name ="[User] User API")
 public class UserController {
 
     private final UserService userService;
-    private final UserSignService userSignService;
 
-    @Operation(summary = "자신의 유저 정보 조회",description = "자신의 유저 정보를 조회합니다. ")
-    @GetMapping("/my")
-    public ResponseEntity<CommonResponseDto<UserFindResDto>> getMyUser(@AuthenticationPrincipal UserDetails userDetails){
-        UserFindResDto userFindResDto = userService.getUser(userDetails.getUsername());
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new CommonResponseDto<>(
-                        "유저 정보가 성공적으로 조회되었습니다.",
-                        userFindResDto));
-    }
-
-    @GetMapping("/{pageNum}")
-    @Operation(summary = "이름을 통해 유저리스트 조회",description = "유저이름을 통해 유저리스트를 반환합니다.<br>"+
-                                                                "해당 이름으로 시작하는 유저를 20개씩 반환합니다.<br>"+
-                                                                "searchKeyword는 반드시 입력해야합니다.")
-    public ResponseEntity<CommonResponseDto<UserPagingResDto>> findUserPageByName(
-            @RequestParam(name = "searchKeyword") @NotBlank(message = "검색어를 입력해주세요.") String searchKeyword,
-            @PathVariable(name = "pageNum") final Long pageNum){
-
-        return ResponseEntity.status(HttpStatus.OK).body(new CommonResponseDto("유저 검색이 완료되었습니다.",
-                userService.findUserPageByName(searchKeyword, pageNum)));
-    }
-
-    @Operation(summary = "유저 정보 수정",description = "해당 유저의 정보를 수정합니다. " +
-            "<br> 유저 loginId 수정 이후에는, Token의 loginId 정보와 현재 유저의 loginId가 다르므로," +
-            "<br> Token을 버리고 재 login을 유도해야 합니다.")
-    @PatchMapping()
-    public ResponseEntity<CommonResponseDto<UserFindResDto>> changeUser(@AuthenticationPrincipal UserDetails userDetails,
-                                                                        @Valid @RequestBody UserUpdateReqDto userUpdateReqDto){
-        UserFindResDto userFindResDto = userService.updateUser(userDetails.getUsername(), userUpdateReqDto);
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new CommonResponseDto<>(
-                        "유저 정보 수정이 성공적으로 완료되었습니다.",
-                        userFindResDto));
-    }
-    @Operation(summary = "유저 비밀번호 수정",description = "해당 유저의 비밀번호를 수정합니다.")
-    @PatchMapping("/password")
-    public ResponseEntity<CommonResponseDto<Void>> changeUser(@AuthenticationPrincipal UserDetails userDetails,
-                                                              @RequestParam("password")
-                                                              @NotBlank(message = "패스워드 입력은 필수입니다.") String password) {
-        userService.updatePassword(userDetails.getUsername(), password);
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new CommonResponseDto<>(
-                        "유저 비밀번호 수정이 성공적으로 완료되었습니다.",
-                        null));
-    }
-
-
-    @Operation(summary = "유저 삭제",description = "유저 번호로 유저를 삭제합니다.")
-    @DeleteMapping()
-    public ResponseEntity<CommonResponseDto<Void>> deleteUser(@AuthenticationPrincipal UserDetails userDetails,
-                                                              @RequestParam("password")
-                                                              @NotBlank(message = "패스워드 입력은 필수입니다.") String password){
-        userService.deleteUser(password, userDetails.getUsername());
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new CommonResponseDto<>(
-                        "유저 삭제가 성공적으로 완료되었습니다.",
-                        null));
-    }
-
-    @Operation(summary = "회원가입", description = "회원 가입 할 유저의 정보를 입력합니다. " +
-            "<br> 회원가입이 완료되면 자동으로 유저의 기본 profile 사진이 등록됩니다." +
-            "<br> 이후에 유저의 Token 을 통해 profile 사진을 수정할 수 있습니다.")
-    @PostMapping("/sign-up")
-    public ResponseEntity<CommonResponseDto<UserFindResDto>> signUp(@Valid @RequestBody UserReqDto userReqDto){
-        UserFindResDto userFindResDto = userSignService.signUp(userReqDto);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(
-                new CommonResponseDto<>(
-                        "유저 회원가입을 성공적으로 완료하였습니다.",
-                        userFindResDto));
-    }
-
-    @Operation(summary = "로그인", description = "회원 가입 한 유저의 loginId와 password를 입력합니다.")
-    @PostMapping("/sign-in")
-    public ResponseEntity<CommonResponseDto<SignInResDto>> signIn(@Valid @RequestBody SignInReqDto signInReqDto){
-        SignInResDto signInResDto = userSignService.signIn(signInReqDto);
+    @GetMapping("/users/my")
+    @Operation(summary = "자신의 유저 정보 조회",description = "자신의 유저 정보를 조회합니다.")
+    public ResponseEntity<CommonResponseDto<UserFindMyPageResDto>> findUserMyPage(
+            final @AuthenticationPrincipal String reqLoginId){
 
         return ResponseEntity.status(HttpStatus.OK).body(
-                new CommonResponseDto<>(
-                        "유저 로그인을 성공적으로 완료하였습니다.",
-                        signInResDto));
+                CommonResponseDto.of("나의 유저 정보가 성공적으로 조회되었습니다.", userService.findUserMyPage(reqLoginId)));
     }
 
-    @Operation(summary = "엑세스 토큰 재발급", description = "RefreshToken 을 통해 AccessToken 재발급"+
-    "<br> 엑세스 토큰이 만료되어 401 에러가 발생하면, RefreshToken을 헤더에 담아 요청"+
-    "<br>  AccessToken과 RefreshToken 을 재발급")
-    @PostMapping("/reissue")
-    public ResponseEntity<CommonResponseDto<SignInResDto>> reissue(HttpServletRequest request){
-        SignInResDto signInResDto = userSignService.reissueAccessToken(request);
+    @GetMapping("/users/{pageNum}")
+    @Operation(summary = "다른유저 정보 조회",description = "유저이름을 통해 유저리스트를 반환합니다.<br>"+
+                                                        "loginId나 닉네임이 키워드로 시작하는 유저를 20개씩 반환합니다.<br>"+
+                                                        "searchKeyword는 반드시 입력해야합니다.")
+    @Parameters({
+            @Parameter(name = "searchKeyword" , description = "searchKeyword를 입력해주세요", required = true, example = "검색어"),
+            @Parameter(name = "pageNum", description = "페이지번호를 입력해주세요,", required = true, example = "1"),
+    })
+    public ResponseEntity<CommonResponseDto<UserFindPagingResDto>> searchUserPaging(
+            final @PathVariable(name = "pageNum") Long pageNum,
+            final @RequestParam(name = "searchKeyword") @NotBlank(message = "검색어를 입력해주세요.") String searchKeyword){
 
         return ResponseEntity.status(HttpStatus.OK).body(
-                new CommonResponseDto<>(
-                        "리프레시 토큰으로 엑세스 토큰 재발급 성공",
-                        signInResDto
-                ));
+                CommonResponseDto.of("유저 검색이 완료되었습니다.", userService.searchUserPaging(searchKeyword, pageNum)));
     }
+
+    @PatchMapping("/users")
+    @Operation(summary = "유저 정보 수정",description = "자신의 유저의 정보를 수정합니다. " +
+                                        "비밀번호를 제외한 email,nickName,birthDay정보를 수정합니다.<br>" +
+                                        "변경을 원하지 않는 값에대해서는 기존값을 입력해주세요.")
+    public ResponseEntity<CommonResponseDto<UserFindMyPageResDto>> updateUser(
+            final @AuthenticationPrincipal String reqLoginId,
+            @RequestBody @Valid UserUpdateReqDto userUpdateReqDto){
+
+        userService.updateUser(reqLoginId, userUpdateReqDto);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(CommonResponseDto.of("유저 정보 수정이 성공적으로 완료되었습니다.", null));
+    }
+
+    @PatchMapping("/users/password")
+    @Operation(summary = "유저 비밀번호 수정",description = "해당 유저의 비밀번호를 수정합니다.<br>" +
+                                            "기존 비밀번호와 같은 비밀번호 입력 시 예외가 발생합니다.")
+    @Parameter(name = "newPassword", description = "새로운 비밀번호를 입력해주세요.", required = true, example = "1234")
+    public ResponseEntity<CommonResponseDto<Void>> updatePassword(
+            final @AuthenticationPrincipal String reqLoginId,
+            final @RequestParam("newPassword") @NotBlank(message = "패스워드 입력은 필수입니다.") String newPassword) {
+
+        userService.updatePassword(reqLoginId, newPassword);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(CommonResponseDto.of("유저 비밀번호 수정이 성공적으로 완료되었습니다.", null));
+    }
+
+    @PutMapping(value = "/users/profile", consumes = MULTIPART_FORM_DATA)
+    @Operation(summary = "프로필 사진 수정",description = "유저의 프로필 사진을 수정 합니다.")
+    public ResponseEntity<?> updateProfilePhoto(
+            final @AuthenticationPrincipal String reqLoginId,
+            @RequestParam @NotNull(message = "사진을 입력해주세요") MultipartFile multipartFile) {
+
+        userService.updateProfilePhoto(reqLoginId, multipartFile);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(CommonResponseDto.of("프로필 사진 수정이 완료되었습니다.", null));
+    }
+
+    @DeleteMapping("/users")
+    @Operation(summary = "유저 삭제",description = "유저 탈퇴를 합니다. 비밀번호가 맞아야만 탈퇴가 가능합니다.")
+    @Parameter(name = "password", description = "비밀번호를 입력해주세요.", required = true, example = "1234")
+    public ResponseEntity<CommonResponseDto<Void>> deleteUser(
+            final @AuthenticationPrincipal String reqLoginId,
+            final @RequestParam("password") @NotBlank(message = "패스워드 입력은 필수입니다.") String password){
+
+        userService.deleteUser(reqLoginId, password);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(CommonResponseDto.of("유저 삭제가 성공적으로 완료되었습니다.", null));
+    }
+
 }

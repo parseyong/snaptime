@@ -39,8 +39,6 @@ public class QUser extends EntityPathBase<User> {
 
     public final StringPath profilePhotoName = createString("profilePhotoName");
 
-    public final StringPath profilePhotoPath = createString("profilePhotoPath");
-
     public final StringPath roleName = createString("roleName");
 
     public final SimplePath<javax.crypto.SecretKey> secretKey = createSimple("secretKey", javax.crypto.SecretKey.class);

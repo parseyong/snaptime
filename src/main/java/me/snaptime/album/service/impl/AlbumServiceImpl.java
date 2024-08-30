@@ -5,7 +5,7 @@ import me.snaptime.album.domain.Album;
 import me.snaptime.album.dto.res.AlbumFindResDto;
 import me.snaptime.album.repository.AlbumRepository;
 import me.snaptime.album.service.AlbumService;
-import me.snaptime.component.url.UrlComponent;
+import me.snaptime.component.UrlComponent;
 import me.snaptime.exception.CustomException;
 import me.snaptime.exception.ExceptionCode;
 import me.snaptime.snap.domain.Snap;
@@ -80,7 +80,7 @@ public class AlbumServiceImpl implements AlbumService {
         Album album = albumRepository.findById(albumId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.ALBUM_NOT_EXIST));
 
-        isMyAlbum(reqUser,album);
+        checkMyAlbum(reqUser,album);
         Album basicAlbum = findBasicAlbum(reqUser);
 
         // 수정하려는 앨범이 기본앨범이면 예외반환
@@ -101,7 +101,7 @@ public class AlbumServiceImpl implements AlbumService {
         Album album = albumRepository.findById(albumId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.ALBUM_NOT_EXIST));
 
-        isMyAlbum(reqUser, album);
+        checkMyAlbum(reqUser, album);
         Album basicAlbum = findBasicAlbum(reqUser);
 
         // 삭제하려는 앨범이 기본앨범이면 예외반환
@@ -137,7 +137,7 @@ public class AlbumServiceImpl implements AlbumService {
     }
 
     @Override
-    public void isMyAlbum(User reqUser, Album album) {
+    public void checkMyAlbum(User reqUser, Album album) {
 
         if( album.getUser().getUserId() != reqUser.getUserId() ){
             throw new CustomException(ExceptionCode.ACCESS_FAIL_ALBUM);
@@ -153,7 +153,7 @@ public class AlbumServiceImpl implements AlbumService {
         else {
             Album album = albumRepository.findById(albumId)
                     .orElseThrow(() -> new CustomException(ExceptionCode.ALBUM_NOT_EXIST));
-            isMyAlbum(reqUser,album);
+            checkMyAlbum(reqUser,album);
             return album;
         }
     }

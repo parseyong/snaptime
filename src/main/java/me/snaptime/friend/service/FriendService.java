@@ -59,7 +59,10 @@ public interface FriendService {
 
     /*
         reqUser가 targetUser를 팔로우했는 지 여부 반환
+
+        reqUser : 요청자
+        targetUser : 팔로우여부를 체크할 유저
     */
-    boolean checkIsFollow(User reqUser, User targetUser);
+    boolean isFollow(User reqUser, User targetUser);
 
 }

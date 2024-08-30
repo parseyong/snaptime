@@ -2,109 +2,90 @@ package me.snaptime.user.service.impl;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import me.snaptime.album.service.AlbumService;
-import me.snaptime.component.cipher.CipherComponent;
+import me.snaptime.auth.JwtProvider;
+import me.snaptime.component.CipherComponent;
 import me.snaptime.exception.CustomException;
 import me.snaptime.exception.ExceptionCode;
-import me.snaptime.jwt.JwtProvider;
-import me.snaptime.jwt.redis.RefreshToken;
-import me.snaptime.jwt.redis.RefreshTokenRepository;
 import me.snaptime.user.domain.User;
 import me.snaptime.user.dto.req.SignInReqDto;
-import me.snaptime.user.dto.req.UserReqDto;
+import me.snaptime.user.dto.req.UserAddReqDto;
 import me.snaptime.user.dto.res.SignInResDto;
-import me.snaptime.user.dto.res.UserFindResDto;
 import me.snaptime.user.repository.UserRepository;
 import me.snaptime.user.service.UserSignService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Slf4j
-@RequiredArgsConstructor
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class UserSignServiceImpl implements UserSignService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
-    private final RefreshTokenRepository refreshTokenRepository;
     private final AlbumService albumService;
     private final CipherComponent cipherComponent;
 
     @Override
-    public UserFindResDto signUp(UserReqDto userReqDto) {
+    public void signUp(UserAddReqDto userAddReqDto) {
 
         //로그인 id가 이미 존재하는지 확인
-        if(userRepository.findByLoginId(userReqDto.loginId()).isPresent()){
+        if(userRepository.findByLoginId(userAddReqDto.loginId()).isPresent()){
             throw new CustomException(ExceptionCode.DUPLICATED_LOGIN_ID);
         }
 
-        String fileName = "default.png";
-        String filePath =  "/test_resource/" + fileName;
-
         //새로운 사용자 객체 생성
         User user = User.builder()
-                .nickname(userReqDto.name())
-                .loginId(userReqDto.loginId())
-                .password(passwordEncoder.encode(userReqDto.password()))
-                .email(userReqDto.email())
-                .birthDay(userReqDto.birthDay())
-                .profilePhotoPath(filePath)
-                .profilePhotoName(fileName)
+                .nickname(userAddReqDto.nickName())
+                .loginId(userAddReqDto.loginId())
+                .password(passwordEncoder.encode(userAddReqDto.password()))
+                .email(userAddReqDto.email())
+                .birthDay(userAddReqDto.birthDay())
+                .profilePhotoName("default.png")
                 .secretKey(cipherComponent.generateAESKey())
                 .build();
 
-        // NonClassification 앨범 생성
+        // 기본앨범 생성
         albumService.addBasicAlbum(user);
 
-        return UserFindResDto.toDto(userRepository.save(user));
+        userRepository.save(user);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public SignInResDto signIn(SignInReqDto signInReqDto) {
-        User user = userRepository.findByLoginId(signInReqDto.loginId()).orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
+
+        User user = userRepository.findByLoginId(signInReqDto.loginId())
+                .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
         if (!passwordEncoder.matches(signInReqDto.password(), user.getPassword())) {
             throw new CustomException(ExceptionCode.LOGIN_FAIL);
         }
-        String accessToken = jwtProvider.createAccessToken(user.getUserId(), user.getLoginId());
-        String refreshToken = jwtProvider.createRefreshToken(user.getUserId(), user.getLoginId());
-        refreshTokenRepository.save(new RefreshToken(user.getUserId(),refreshToken));
 
         return SignInResDto.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
+                .accessToken(jwtProvider.addAccessToken(user.getLoginId(), user.getUserId(), user.getAuthorities()))
+                .refreshToken(jwtProvider.addRefreshToken(user.getLoginId(), user.getUserId(), user.getAuthorities()))
                 .build();
     }
 
-    public SignInResDto reissueAccessToken(HttpServletRequest request){
+    @Override
+    public SignInResDto reissueTokens(HttpServletRequest request){
 
-        String token = jwtProvider.getAuthorizationToken(request);
-        Long userId = jwtProvider.getUserId(token);
 
-        RefreshToken refreshToken = refreshTokenRepository.findById(userId).orElseThrow(()-> new CustomException(ExceptionCode.TOKEN_NOT_FOUND));
+        String refreshToken = jwtProvider.findTokenByHeader(request);
 
-        if(!refreshToken.getRefreshToken().equals(token)) {
+        User user = userRepository.findByLoginId(jwtProvider.findLoginIdByRefreshToken(refreshToken))
+                .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
+
+        // refreshToken의 유효성 검사
+        if(!jwtProvider.isValidRefreshToken(refreshToken))
             throw new CustomException(ExceptionCode.TOKEN_INVALID);
-        }
 
-        User user = userRepository.findById(userId).orElseThrow(()-> new CustomException(ExceptionCode.USER_NOT_EXIST));
-
-        String newAccessToken = jwtProvider.createAccessToken(userId,user.getLoginId());
-        String newRefreshToken = jwtProvider.createRefreshToken(userId,user.getLoginId());
-
-        SignInResDto signInResDto = SignInResDto.builder()
-                .accessToken(newAccessToken)
-                .refreshToken(newRefreshToken)
+        // refreshToken과 accessToken 재발급
+        return SignInResDto.builder()
+                .accessToken(jwtProvider.addAccessToken(user.getLoginId(), user.getUserId(), user.getAuthorities()))
+                .refreshToken(jwtProvider.addRefreshToken(user.getLoginId(), user.getUserId(), user.getAuthorities()))
                 .build();
-
-        refreshTokenRepository.save(new RefreshToken(userId, newRefreshToken));
-
-        return signInResDto;
     }
-
 }

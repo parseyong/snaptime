@@ -1,8 +1,8 @@
 package me.snaptime.photo.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import me.snaptime.component.cipher.CipherComponent;
-import me.snaptime.component.file.PhotoComponent;
+import me.snaptime.component.CipherComponent;
+import me.snaptime.component.PhotoComponent;
 import me.snaptime.exception.CustomException;
 import me.snaptime.exception.ExceptionCode;
 import me.snaptime.photo.service.PhotoService;

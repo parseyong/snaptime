@@ -3,97 +3,126 @@ package me.snaptime.user.service.impl;
 
 import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import me.snaptime.component.url.UrlComponent;
+import me.snaptime.component.PhotoComponent;
+import me.snaptime.component.UrlComponent;
 import me.snaptime.exception.CustomException;
 import me.snaptime.exception.ExceptionCode;
 import me.snaptime.user.domain.User;
 import me.snaptime.user.dto.req.UserUpdateReqDto;
-import me.snaptime.user.dto.res.UserFindByNameResDto;
+import me.snaptime.user.dto.res.UserFindMyPageResDto;
+import me.snaptime.user.dto.res.UserFindPagingResDto;
 import me.snaptime.user.dto.res.UserFindResDto;
-import me.snaptime.user.dto.res.UserPagingResDto;
 import me.snaptime.user.repository.UserRepository;
 import me.snaptime.user.service.UserService;
 import me.snaptime.util.NextPageChecker;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static me.snaptime.user.domain.QUser.user;
 
 
-@Slf4j
-@RequiredArgsConstructor
 @Service
-@Transactional
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UrlComponent urlComponent;
+    private final PhotoComponent photoComponent;
 
-    @Transactional(readOnly = true)
-    public UserFindResDto getUser(String loginId) {
-        User user = userRepository.findByLoginId(loginId).orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
+    @Override
+    public UserFindMyPageResDto findUserMyPage(String reqLoginId) {
 
-        return UserFindResDto.toDto(user);
+        User reqUser = userRepository.findByLoginId(reqLoginId)
+                .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
+
+        String profilePhotoURL = urlComponent.makePhotoURL(reqUser.getProfilePhotoName(), false);
+        return UserFindMyPageResDto.toDto(reqUser, profilePhotoURL);
     }
 
     @Override
-    public UserPagingResDto findUserPageByName(String searchKeyword, Long pageNum){
+    public UserFindPagingResDto searchUserPaging(String searchKeyword, Long pageNum){
 
-        List<Tuple> tuples = userRepository.findUserPageByName(searchKeyword,pageNum);
+        List<Tuple> tuples = userRepository.searchUserPaging(searchKeyword,pageNum);
 
         // 다음 페이지 유무 체크
         boolean hasNextPage = NextPageChecker.hasNextPage(tuples,20L);
 
-        List<UserFindByNameResDto> userFindByNameResDtos = tuples.stream().map(tuple ->
-        {
+        List<UserFindResDto> userFindResDtos = tuples.stream().map(tuple -> {
             String profilePhotoURL = urlComponent.makePhotoURL(tuple.get(user.profilePhotoName),false);
-            return UserFindByNameResDto.toDto(tuple,profilePhotoURL);
+            return UserFindResDto.toDto(tuple, profilePhotoURL);
         }).collect(Collectors.toList());
 
-        return UserPagingResDto.toDto(userFindByNameResDtos, hasNextPage);
+        return UserFindPagingResDto.toDto(userFindResDtos, hasNextPage);
     }
 
-    public UserFindResDto updateUser(String loginId, UserUpdateReqDto userUpdateReqDto) {
+    @Override
+    @Transactional
+    public void updateUser(String reqLoginId, UserUpdateReqDto userUpdateReqDto) {
 
-        User user = userRepository.findByLoginId(loginId).orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
+        User reqUser = userRepository.findByLoginId(reqLoginId)
+                .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
-        if (userUpdateReqDto.name() != null && !userUpdateReqDto.name().isEmpty()) {
-            user.updateUserName(userUpdateReqDto.name());
-        }
+        reqUser.updateNickName(userUpdateReqDto.nickName());
+        reqUser.updateEmail(userUpdateReqDto.email());
+        reqUser.updateBirthDay(userUpdateReqDto.birthDay());
 
-        if (userUpdateReqDto.email() != null && !userUpdateReqDto.email().isEmpty()) {
-            user.updateUserEmail(userUpdateReqDto.email());
-        }
-
-        if (userUpdateReqDto.birthDay() != null && !userUpdateReqDto.birthDay().isEmpty()) {
-            user.updateUserBirthDay(userUpdateReqDto.birthDay());
-        }
-        return UserFindResDto.toDto(user);
+        userRepository.save(reqUser);
     }
 
-    public void deleteUser(String password, String loginId) {
+    @Override
+    @Transactional
+    public void updatePassword(String reqLoginId, String newPassword){
+        User reqUser = userRepository.findByLoginId(reqLoginId)
+                .orElseThrow(()-> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
-        User user = userRepository.findByLoginId(loginId).orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new CustomException(ExceptionCode.PASSWORD_AUTH_FAIL);
-        }
-        userRepository.deleteById(user.getUserId());
-    }
-
-    public void updatePassword(String loginId, String password){
-        User user = userRepository.findByLoginId(loginId).orElseThrow(()-> new CustomException(ExceptionCode.USER_NOT_EXIST));
-
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            user.updateUserPassword(passwordEncoder.encode(password));
-        }
-        else{
+        if (passwordEncoder.matches(newPassword, reqUser.getPassword())) {
             throw new CustomException(ExceptionCode.CAN_NOT_UPDATE_SAME_PASSWORD);
         }
+
+        reqUser.updatePassword(passwordEncoder.encode(newPassword));
+        userRepository.save(reqUser);
+    }
+
+    @Override
+    @Transactional
+    public void updateProfilePhoto(String reqLoginId, MultipartFile multipartFile){
+        User reqUser = userRepository.findByLoginId(reqLoginId)
+                .orElseThrow(()-> new CustomException(ExceptionCode.USER_NOT_EXIST));
+
+        try {
+
+            String profilePhotoName = photoComponent.addPhoto
+                    (multipartFile.getOriginalFilename(), multipartFile.getInputStream().readAllBytes());
+
+            reqUser.updateProfilePhotoName(profilePhotoName);
+        } catch (CustomException customException) {
+            throw customException;
+        } catch (IOException ioException){
+            throw new CustomException(ExceptionCode.PHOTO_FIND_FAIL);
+        }
+
+        userRepository.save(reqUser);
+    }
+
+    @Override
+    @Transactional
+    public void deleteUser(String reqLoginId, String password) {
+
+        User reqUser = userRepository.findByLoginId(reqLoginId)
+                .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
+
+        if (!passwordEncoder.matches(password, reqUser.getPassword())) {
+            throw new CustomException(ExceptionCode.USER_DELETE_FAIL);
+        }
+
+        userRepository.delete(reqUser);
     }
 }

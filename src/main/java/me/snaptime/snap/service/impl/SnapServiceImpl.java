@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import me.snaptime.album.domain.Album;
 import me.snaptime.album.repository.AlbumRepository;
 import me.snaptime.album.service.AlbumService;
-import me.snaptime.component.cipher.CipherComponent;
-import me.snaptime.component.file.PhotoComponent;
-import me.snaptime.component.url.UrlComponent;
+import me.snaptime.component.CipherComponent;
+import me.snaptime.component.PhotoComponent;
+import me.snaptime.component.UrlComponent;
 import me.snaptime.exception.CustomException;
 import me.snaptime.exception.ExceptionCode;
 import me.snaptime.snap.domain.Snap;
@@ -172,7 +172,7 @@ public class SnapServiceImpl implements SnapService {
         Album album = albumRepository.findById(albumId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.ALBUM_NOT_EXIST));
 
-        albumService.isMyAlbum(reqUser, album);
+        albumService.checkMyAlbum(reqUser, album);
         if(!isMySnap(reqUser,snap))
             throw new CustomException(ExceptionCode.ACCESS_FAIL_SNAP);
 

@@ -2,7 +2,7 @@ package me.snaptime.snap.service.impl;
 
 import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
-import me.snaptime.component.url.UrlComponent;
+import me.snaptime.component.UrlComponent;
 import me.snaptime.exception.CustomException;
 import me.snaptime.exception.ExceptionCode;
 import me.snaptime.snap.dto.res.SnapFindDetailResDto;

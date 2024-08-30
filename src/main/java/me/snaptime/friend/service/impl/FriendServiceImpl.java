@@ -3,7 +3,7 @@ package me.snaptime.friend.service.impl;
 import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
 import me.snaptime.alarm.service.AlarmAddService;
-import me.snaptime.component.url.UrlComponent;
+import me.snaptime.component.UrlComponent;
 import me.snaptime.exception.CustomException;
 import me.snaptime.exception.ExceptionCode;
 import me.snaptime.friend.domain.Friend;
@@ -115,7 +115,7 @@ public class FriendServiceImpl implements FriendService {
 
         List<FriendInfoResDto> friendInfoResDtos = tuples.stream().map(tuple ->
         {
-            boolean isMyFriend = checkIsFollow(reqUser ,findUserByLoginId(tuple.get(user.loginId)));
+            boolean isMyFriend = isFollow(reqUser ,findUserByLoginId(tuple.get(user.loginId)));
             String profilePhotoURL = urlComponent.makePhotoURL(tuple.get(user.profilePhotoName),false);
             return FriendInfoResDto.toDto(tuple,profilePhotoURL,isMyFriend);
         }).collect(Collectors.toList());
@@ -136,7 +136,7 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public boolean checkIsFollow(User reqUser, User targetUser){
+    public boolean isFollow(User reqUser, User targetUser){
         return friendRepository.existsBySenderAndReceiver(reqUser, targetUser);
     }
 

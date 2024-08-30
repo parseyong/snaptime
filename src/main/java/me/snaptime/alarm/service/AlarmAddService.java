@@ -27,10 +27,10 @@ public interface AlarmAddService {
     /*
        댓글알림을 생성합니다.
 
-       sender       : 행위(댓글달기)를 하여 알림을 보내는 유저
-       receiver     : 알림을 받는 유저
-       snapFindResDtos         : 행위가 이루어진 스냅
-       replyMessage : 댓글 미리보기(댓글이 수정되더라도 댓글미리보기는 변경되지 않습니다.)
+       sender          : 행위(댓글달기)를 하여 알림을 보내는 유저
+       receiver        : 알림을 받는 유저
+       snapFindResDtos : 행위가 이루어진 스냅
+       replyMessage    : 댓글 미리보기(댓글이 수정되더라도 댓글미리보기는 변경되지 않습니다.)
    */
     void addReplyAlarm(User sender, User receiver, Snap snap, String replyMessage);
 }

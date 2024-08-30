@@ -2,7 +2,7 @@ package me.snaptime.profile.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.snaptime.component.url.UrlComponent;
+import me.snaptime.component.UrlComponent;
 import me.snaptime.exception.CustomException;
 import me.snaptime.exception.ExceptionCode;
 import me.snaptime.friend.dto.res.FriendCntResDto;
@@ -49,10 +49,10 @@ public class ProfileServiceImpl implements ProfileService {
 
         if(!reqLoginId.equals(targetLoginId)){
             User reqUser = userRepository.findByLoginId(reqLoginId).orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
-            isFollow = friendService.checkIsFollow(reqUser, targetUser);
+            isFollow = friendService.isFollow(reqUser, targetUser);
         }
 
-        String profileURL = urlComponent.makePhotoURL(targetUser.getProfilePhotoPath(), false);
+        String profileURL = urlComponent.makePhotoURL(targetUser.getProfilePhotoName(), false);
 
         return UserProfileResDto.toDto(targetUser, profileURL, isFollow);
     }

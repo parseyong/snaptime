@@ -7,5 +7,6 @@ import lombok.Builder;
 public record SignInResDto(
         String accessToken,
         String refreshToken
-)
-{}
+) {
+
+}

@@ -4,7 +4,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import me.snaptime.component.url.UrlComponent;
+import me.snaptime.component.UrlComponent;
 import me.snaptime.profile.dto.res.AlbumSnapResDto;
 import me.snaptime.profile.dto.res.ProfileTagSnapResDto;
 import me.snaptime.profile.repository.ProfileRepository;

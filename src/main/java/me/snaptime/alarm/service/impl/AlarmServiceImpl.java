@@ -11,7 +11,7 @@ import me.snaptime.alarm.repository.FollowAlarmRepository;
 import me.snaptime.alarm.repository.ReplyAlarmRepository;
 import me.snaptime.alarm.repository.SnapAlarmRepository;
 import me.snaptime.alarm.service.AlarmService;
-import me.snaptime.component.url.UrlComponent;
+import me.snaptime.component.UrlComponent;
 import me.snaptime.exception.CustomException;
 import me.snaptime.exception.ExceptionCode;
 import me.snaptime.friend.service.FriendService;
@@ -53,7 +53,7 @@ public class AlarmServiceImpl implements AlarmService {
                 .orElseThrow(() -> new CustomException(ExceptionCode.ALARM_NOT_EXIST));
 
         // 자신한테 온 알림인지 여부체크
-        isMyAlarm(reqLoginId, snapAlarm.getReceiver().getLoginId());
+        checkMyAlarm(reqLoginId, snapAlarm.getReceiver().getLoginId());
 
         snapAlarm.readAlarm();
         snapAlarmRepository.save(snapAlarm);
@@ -68,7 +68,7 @@ public class AlarmServiceImpl implements AlarmService {
                 .orElseThrow(() -> new CustomException(ExceptionCode.ALARM_NOT_EXIST));
 
         // 자신한테 온 알림인지 여부체크
-        isMyAlarm(reqLoginId, followAlarm.getReceiver().getLoginId());
+        checkMyAlarm(reqLoginId, followAlarm.getReceiver().getLoginId());
 
         String message = friendService.acceptFollow(followAlarm.getSender(), followAlarm.getReceiver(), isAccept);
         followAlarm.readAlarm();
@@ -84,7 +84,7 @@ public class AlarmServiceImpl implements AlarmService {
                 .orElseThrow(() -> new CustomException(ExceptionCode.ALARM_NOT_EXIST));
 
         // 자신한테 온 알림인지 여부체크
-        isMyAlarm(reqLoginId, replyAlarm.getReceiver().getLoginId());
+        checkMyAlarm(reqLoginId, replyAlarm.getReceiver().getLoginId());
 
         // 접근가능한 스냅인지 체크.
         isAccessableSnap(reqLoginId, replyAlarm.getSnap());
@@ -122,7 +122,7 @@ public class AlarmServiceImpl implements AlarmService {
             FollowAlarm followAlarm = followAlarmRepository.findById(alarmId)
                     .orElseThrow(() -> new CustomException(ExceptionCode.ALARM_NOT_EXIST));
 
-            isMyAlarm(reqLoginId, followAlarm.getReceiver().getLoginId());
+            checkMyAlarm(reqLoginId, followAlarm.getReceiver().getLoginId());
             friendService.acceptFollow(followAlarm.getSender(), followAlarm.getReceiver(), false);
             followAlarmRepository.delete(followAlarm);
         }
@@ -132,7 +132,7 @@ public class AlarmServiceImpl implements AlarmService {
             ReplyAlarm replyAlarm = replyAlarmRepository.findById(alarmId)
                     .orElseThrow(() -> new CustomException(ExceptionCode.ALARM_NOT_EXIST));
 
-            isMyAlarm(reqLoginId, replyAlarm.getReceiver().getLoginId());
+            checkMyAlarm(reqLoginId, replyAlarm.getReceiver().getLoginId());
             replyAlarmRepository.delete(replyAlarm);
         }
 
@@ -141,13 +141,13 @@ public class AlarmServiceImpl implements AlarmService {
             SnapAlarm snapAlarm = snapAlarmRepository.findById(alarmId)
                     .orElseThrow(() -> new CustomException(ExceptionCode.ALARM_NOT_EXIST));
 
-            isMyAlarm(reqLoginId, snapAlarm.getReceiver().getLoginId());
+            checkMyAlarm(reqLoginId, snapAlarm.getReceiver().getLoginId());
             snapAlarmRepository.delete(snapAlarm);
         }
     }
 
     // 자신한테 온 알림인지 여부체크
-    private void isMyAlarm(String reqLoginId, String alarmReceiverLoginId){
+    private void checkMyAlarm(String reqLoginId, String alarmReceiverLoginId){
 
         if(!reqLoginId.equals(alarmReceiverLoginId))
             throw new CustomException(ExceptionCode.ACCESS_FAIL_ALARM);

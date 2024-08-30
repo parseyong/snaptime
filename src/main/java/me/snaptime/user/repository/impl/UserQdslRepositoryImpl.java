@@ -1,13 +1,11 @@
 package me.snaptime.user.repository.impl;
 
 import com.querydsl.core.Tuple;
-import com.querydsl.core.types.Order;
-import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import me.snaptime.exception.CustomException;
 import me.snaptime.exception.ExceptionCode;
-import me.snaptime.user.repository.UserPagingRepository;
+import me.snaptime.user.repository.UserQdslRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -18,20 +16,20 @@ import static me.snaptime.user.domain.QUser.user;
 
 @Repository
 @RequiredArgsConstructor
-public class UserPagingRepositoryImpl implements UserPagingRepository {
+public class UserQdslRepositoryImpl implements UserQdslRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<Tuple> findUserPageByName(String searchKeyword, Long pageNum){
+    public List<Tuple> searchUserPaging(String searchKeyword, Long pageNum){
         Pageable pageable= PageRequest.of((int) (pageNum-1),20);
 
         List<Tuple> tuples =  jpaQueryFactory.select(
-                        user.loginId, user.profilePhotoName, user.nickname
+                        user.userId, user.loginId, user.profilePhotoName, user.nickname
                 )
                 .from(user)
                 .where(user.nickname.startsWith(searchKeyword).or(user.loginId.startsWith(searchKeyword)))
-                .orderBy(new OrderSpecifier(Order.ASC, user.userId))
+                .orderBy(user.userId.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize()+1) //페이지의 크기
                 .fetch();

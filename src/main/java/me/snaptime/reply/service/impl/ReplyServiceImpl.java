@@ -3,7 +3,7 @@ package me.snaptime.reply.service.impl;
 import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
 import me.snaptime.alarm.service.AlarmAddService;
-import me.snaptime.component.url.UrlComponent;
+import me.snaptime.component.UrlComponent;
 import me.snaptime.exception.CustomException;
 import me.snaptime.exception.ExceptionCode;
 import me.snaptime.reply.domain.ChildReply;

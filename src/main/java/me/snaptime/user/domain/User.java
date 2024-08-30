@@ -41,9 +41,6 @@ public class User extends BaseTimeEntity implements UserDetails{
     @Column(name = "role_name", nullable = false)
     private String roleName;
 
-    @Column(name = "profile_photo_path",nullable = false)
-    private String profilePhotoPath;
-
     @Column(name = "profile_photo_name",nullable = false)
     private String profilePhotoName;
 
@@ -51,8 +48,8 @@ public class User extends BaseTimeEntity implements UserDetails{
     private SecretKey secretKey;
 
     @Builder
-    protected User(String nickname, String loginId, String password, String email, String birthDay,
-                   SecretKey secretKey, String profilePhotoName, String profilePhotoPath){
+    protected User(String nickname, String loginId, String password,
+                   String email, String birthDay, SecretKey secretKey, String profilePhotoName){
         this.nickname = nickname;
         this.loginId = loginId;
         this.password =password;
@@ -61,13 +58,27 @@ public class User extends BaseTimeEntity implements UserDetails{
         this.roleName = "ROLE_USER";
         this.secretKey = secretKey;
         this.profilePhotoName = profilePhotoName;
-        this.profilePhotoPath = profilePhotoPath;
     }
 
-    public void updateUserName(String userName) { this.nickname = userName;}
-    public void updateUserEmail(String email) { this.email = email;}
-    public void updateUserBirthDay(String birthDay) { this.birthDay = birthDay;}
-    public void updateUserPassword(String password){this.password = password;}
+    public void updateNickName(String nickName) {
+        this.nickname = nickName;
+    }
+
+    public void updateEmail(String email) {
+        this.email = email;
+    }
+
+    public void updateBirthDay(String birthDay) {
+        this.birthDay = birthDay;
+    }
+
+    public void updatePassword(String password){
+        this.password = password;
+    }
+
+    public void updateProfilePhotoName(String profilePhotoName){
+        this.profilePhotoName = profilePhotoName;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -78,7 +89,7 @@ public class User extends BaseTimeEntity implements UserDetails{
 
     @Override
     public String getUsername() {
-        return this.loginId;
+        return null;
     }
 
     @Override
