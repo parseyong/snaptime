@@ -8,9 +8,8 @@ public record ChildReplyAddReqDto(
                 example = "대댓글내용입니다.",
                 description = "대댓글로 등록할 내용을 입력해주세요"
         )
-        @NotBlank(message = "내용을 입력해주세요")
+        @NotBlank(message = "댓글내용을 입력해주세요.")
         String replyMessage,
-
 
         @Schema(
                 example = "홍길동",

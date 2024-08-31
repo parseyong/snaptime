@@ -5,10 +5,11 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import me.snaptime.common.CommonResponseDto;
 import me.snaptime.reply.dto.req.ChildReplyAddReqDto;
+import me.snaptime.reply.dto.req.ParentReplyAddReqDto;
+import me.snaptime.reply.dto.req.ReplyUpdateReqDto;
 import me.snaptime.reply.dto.res.ChildReplyPagingResDto;
 import me.snaptime.reply.dto.res.ParentReplyPagingResDto;
 import me.snaptime.reply.service.ReplyService;
@@ -28,16 +29,13 @@ public class ReplyController {
 
     @PostMapping("/snaps/{snapId}/parent-replies")
     @Operation(summary = "댓글 등록요청", description = "댓글을 등록할 snap의 Id와 댓글내용을 보내주세요.")
-    @Parameters({
-            @Parameter(name = "snapId", description = "댓글을 등록할 snap의 id", required = true, example = "1"),
-            @Parameter(name = "content", description = "댓글내용", required = true, example = "댓글내용"),
-    })
+    @Parameter(name = "snapId", description = "댓글을 등록할 snap의 id", required = true, example = "1")
     public ResponseEntity<CommonResponseDto<Void>> addParentReply(
             final @AuthenticationPrincipal String reqLoginId,
             final @PathVariable("snapId") Long snapId,
-            @RequestParam("content") @NotBlank(message = "댓글내용을 입력해주세요.") String content){
+            @RequestBody @Valid ParentReplyAddReqDto parentReplyAddReqDto){
 
-        replyService.addParentReply(reqLoginId, snapId, content);
+        replyService.addParentReply(reqLoginId, snapId, parentReplyAddReqDto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(CommonResponseDto.of("댓글등록이 성공했습니다.",null));
     }
@@ -88,32 +86,26 @@ public class ReplyController {
 
     @PatchMapping("/snaps/parent-replies/{parentReplyId}")
     @Operation(summary = "댓글 수정요청", description = "댓글 ID와 수정할 댓글내용을 입력해주세요")
-    @Parameters({
-            @Parameter(name = "parentReplyId", description = "댓글ID", required = true, example = "1"),
-            @Parameter(name = "newContent", description = "수정할 댓글내용", required = true, example = "수정된 댓글"),
-    })
+    @Parameter(name = "parentReplyId", description = "댓글ID", required = true, example = "1")
     public ResponseEntity<CommonResponseDto<Void>> updateParentReply(
             final @AuthenticationPrincipal String reqLoginId,
             final @PathVariable("parentReplyId") Long parentReplyId,
-            final @RequestParam @NotBlank(message = "댓글내용을 입력해주세요.") String newContent){
+            @RequestBody @Valid ReplyUpdateReqDto replyUpdateReqDto){
 
-        replyService.updateParentReply(reqLoginId, parentReplyId, newContent);
+        replyService.updateParentReply(reqLoginId, parentReplyId, replyUpdateReqDto);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(CommonResponseDto.of("댓글 수정을 완료했습니다",null));
     }
 
     @PatchMapping("/snaps/parent-replies/child-replies/{childReplyId}")
     @Operation(summary = "대댓글 수정요청", description = "대댓글 ID와 수정할 댓글내용을 입력해주세요")
-    @Parameters({
-            @Parameter(name = "childReplyId", description = "대댓글ID", required = true, example = "1"),
-            @Parameter(name = "newContent", description = "수정할 대댓글내용", required = true, example = "수정된 대댓글"),
-    })
+    @Parameter(name = "childReplyId", description = "대댓글ID", required = true, example = "1")
     public ResponseEntity<CommonResponseDto<Void>> updateChildReply(
             final @AuthenticationPrincipal String reqLoginId,
             final @PathVariable("childReplyId") Long childReplyId,
-            final @RequestParam("newContent") @NotBlank(message = "댓글내용을 입력해주세요.") String newContent){
+            final @RequestBody @Valid ReplyUpdateReqDto replyUpdateReqDto){
 
-        replyService.updateChildReply(reqLoginId,childReplyId,newContent);
+        replyService.updateChildReply(reqLoginId,childReplyId,replyUpdateReqDto);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(CommonResponseDto.of("대댓글 수정을 완료했습니다",null));
     }

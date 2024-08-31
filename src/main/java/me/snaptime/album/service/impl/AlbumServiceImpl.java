@@ -2,6 +2,8 @@ package me.snaptime.album.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import me.snaptime.album.domain.Album;
+import me.snaptime.album.dto.req.AlbumAddReqDto;
+import me.snaptime.album.dto.req.AlbumUpdateReqDto;
 import me.snaptime.album.dto.res.AlbumFindResDto;
 import me.snaptime.album.repository.AlbumRepository;
 import me.snaptime.album.service.AlbumService;
@@ -66,21 +68,21 @@ public class AlbumServiceImpl implements AlbumService {
 
     @Override
     @Transactional
-    public void addAlbum(String reqLoginId, String albumName) {
+    public void addAlbum(String reqLoginId, AlbumAddReqDto albumAddReqDto) {
 
         User reqUser = userRepository.findByLoginId(reqLoginId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
         albumRepository.save(
                 Album.builder()
-                .albumName(albumName)
+                .albumName(albumAddReqDto.albumName())
                 .user(reqUser)
                 .build());
     }
 
     @Override
     @Transactional
-    public void updateAlbumName(String reqLoginId, Long albumId, String newAlbumName) {
+    public void updateAlbumName(String reqLoginId, Long albumId, AlbumUpdateReqDto albumUpdateReqDto) {
 
         User reqUser = userRepository.findByLoginId(reqLoginId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
@@ -95,7 +97,7 @@ public class AlbumServiceImpl implements AlbumService {
             throw new CustomException(ExceptionCode.CAN_NOT_BE_MODIFIED_OR_DELETED_BASIC_ALBUM);
         }
 
-        album.updateAlbumName(newAlbumName);
+        album.updateAlbumName(albumUpdateReqDto.newAlbumName());
     }
 
     @Override

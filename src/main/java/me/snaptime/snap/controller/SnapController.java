@@ -53,6 +53,7 @@ public class SnapController {
     @PatchMapping(value = "/albums/snaps/{snapId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "Snap 수정", description = "Snap의 한줄일기, 사진, 태그정보를 수정합니다. <br>" +
                                                     "공개여부, 앨범위치를 변경하려면 다른 요청을 보내주세요.")
+    @Parameter(name = "snapId", description = "변경할 스냅의 id")
     public ResponseEntity<CommonResponseDto<Void>> updateSnap(
             final @AuthenticationPrincipal String reqLoginId,
             @ModelAttribute @Valid SnapUpdateReqDto snapUpdateReqDto,
@@ -63,7 +64,7 @@ public class SnapController {
                 .body(CommonResponseDto.of("스냅이 정상적으로 수정되었습니다.", null));
     }
 
-    @PatchMapping("/albums/snaps/{snapId}/visibility")
+    @PatchMapping("/albums/snaps/{snapId}/visibility/{isPrivate}")
     @Operation(summary = "Snap 공개상태 변경", description = "Snap 공개 상태를 변경합니다.")
     @Parameters({
             @Parameter(name = "snapId", description = "공개상태를 변경할 snapId를 입력해주세요."),
@@ -72,7 +73,7 @@ public class SnapController {
     public ResponseEntity<CommonResponseDto<Void>> updateVisibility(
             final @AuthenticationPrincipal String reqLoginId,
             final @PathVariable("snapId") Long snapId,
-            final @RequestParam("isPrivate") boolean isPrivate) {
+            final @PathVariable("isPrivate") boolean isPrivate) {
 
         snapService.updateSnapVisibility(reqLoginId, snapId, isPrivate);
         return ResponseEntity.status(HttpStatus.OK)
@@ -111,6 +112,7 @@ public class SnapController {
     @Operation(summary = "Album에 포함된 snap조회", description = "Album에 포함된 snap을 조회합니다.<br>" +
                                                                 "다른사람의 앨범안의 snap을 조회할 경우 공개스냅만 조회됩니다.<br>" +
                                                                 "나의 앨범을 조회할 경우 비공개스냅도 같이 조회됩니다.")
+    @Parameter(name = "albumId", description = "모든 스냅을 조회할 앨범의 id")
     public ResponseEntity<CommonResponseDto<SnapFindAllInAlbumResDto>> findAllSnapInAlbum(
             final @PathVariable("albumId") Long albumId,
             final @AuthenticationPrincipal String reqLoginId) {

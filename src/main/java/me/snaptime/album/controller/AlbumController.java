@@ -4,9 +4,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import me.snaptime.album.dto.req.AlbumAddReqDto;
+import me.snaptime.album.dto.req.AlbumUpdateReqDto;
 import me.snaptime.album.dto.res.AlbumFindResDto;
 import me.snaptime.album.service.AlbumService;
 import me.snaptime.common.CommonResponseDto;
@@ -55,28 +58,24 @@ public class AlbumController {
 
     @PostMapping("/albums")
     @Operation(summary = "Album 생성", description = "사용자의 Album을 생성합니다.")
-    @Parameter(name = "albumName", description = "생성할 앨범의 이름을 입력해주세요.")
     public ResponseEntity<CommonResponseDto<Void>> addAlbum(
             final @AuthenticationPrincipal String reqLoginId,
-            @RequestParam @NotBlank(message = "앨범이름을 보내주세요") String albumName) {
+            @RequestBody @Valid AlbumAddReqDto albumAddReqDto) {
 
-        albumService.addAlbum(reqLoginId, albumName);
+        albumService.addAlbum(reqLoginId, albumAddReqDto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(CommonResponseDto.of("사용자의 앨범을 정상적으로 생성했습니다.", null));
     }
 
     @PatchMapping("/albums/{albumId}")
     @Operation(summary = "Album 이름 변경", description = "Album의 이름을 변경합니다.")
-    @Parameters({
-            @Parameter(name = "newAlbumName" , description = "새로운 앨범이름을 입력해주세요.", required = true,example = "새 앨범이름"),
-            @Parameter(name = "albumId", description = "변경할 앨범의 Id를 입력해주세요.", required = true, example = "1"),
-    })
+    @Parameter(name = "albumId", description = "변경할 앨범의 Id를 입력해주세요.", required = true, example = "1")
     public ResponseEntity<CommonResponseDto<Void>> updateAlbumName(
             final @AuthenticationPrincipal String reqLoginId,
-            @RequestParam("newAlbumName") @NotBlank(message = "새 앨범이름을 보내주세요") String newAlbumName,
+            @RequestBody @Valid AlbumUpdateReqDto albumUpdateReqDto,
             final @PathVariable Long albumId) {
 
-        albumService.updateAlbumName(reqLoginId, albumId, newAlbumName);
+        albumService.updateAlbumName(reqLoginId, albumId, albumUpdateReqDto);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(CommonResponseDto.of("앨범 수정완료", null));
     }

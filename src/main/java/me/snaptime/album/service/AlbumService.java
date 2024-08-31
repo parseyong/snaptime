@@ -1,6 +1,8 @@
 package me.snaptime.album.service;
 
 import me.snaptime.album.domain.Album;
+import me.snaptime.album.dto.req.AlbumAddReqDto;
+import me.snaptime.album.dto.req.AlbumUpdateReqDto;
 import me.snaptime.album.dto.res.AlbumFindResDto;
 import me.snaptime.user.domain.User;
 
@@ -30,19 +32,19 @@ public interface AlbumService {
     /*
         새 앨범을 생성합니다.
 
-        reqLoginId : 앨범을 생성할 유저의 loginId
-        albumName  : 앨범의 이름
+        reqLoginId     : 앨범을 생성할 유저의 loginId
+        albumAddReqDto : 앨범의 이름이 담긴 dto
     */
-    void addAlbum(String reqLoginId, String albumName);
+    void addAlbum(String reqLoginId, AlbumAddReqDto albumAddReqDto);
 
     /*
         앨범이름을 수정합니다. 기본앨범은 수정할 수 없습니다.
 
-        reqLoginId   : 앨범을 수정할 유저의 loginId, 자신의 앨범이 아니라면 예외가 반환됩니다.
-        albumId      : 수정할 앨범 Id
-        newAlbumName : 새로운 앨범이름
+        reqLoginId        : 앨범을 수정할 유저의 loginId, 자신의 앨범이 아니라면 예외가 반환됩니다.
+        albumId           : 수정할 앨범 Id
+        albumUpdateReqDto : 새로운 앨범이름이 담긴 dto
     */
-    void updateAlbumName(String reqLoginId, Long albumId, String newAlbumName);
+    void updateAlbumName(String reqLoginId, Long albumId, AlbumUpdateReqDto albumUpdateReqDto);
 
     /*
         앨범을 삭제합니다. 앨범안에 있는 스냅들은 자동으로 기본앨범으로 이동됩니다.

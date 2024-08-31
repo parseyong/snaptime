@@ -1,7 +1,7 @@
 package me.snaptime.alarm.service;
 
+import me.snaptime.alarm.dto.req.AlarmDeleteReqDto;
 import me.snaptime.alarm.dto.res.AlarmFindAllResDto;
-import me.snaptime.alarm.enums.AlarmType;
 import me.snaptime.reply.dto.res.ParentReplyPagingResDto;
 import me.snaptime.snap.dto.res.SnapFindDetailResDto;
 
@@ -56,10 +56,10 @@ public interface AlarmService {
         알림을 삭제합니다. 읽지않은 알림도 삭제가 가능합니다.
         읽지않은 팔로우요청에 대한 알림의 경우 자동으로 요청거절이 됩니다.
 
-        reqLoginId : 요청자의 loginId
-        alarmId    : 삭제하려는 알림의 albumId
-        alarmType  : 알림타입, 알림타입에따라 삭제로직이 달라지므로 알림타입을 인자로 받습니다.
+        reqLoginId        : 요청자의 loginId
+        alarmId           : 삭제하려는 알림의 albumId
+        alarmDeleteReqDto : 알림타입이 담긴 dto, 알림타입에따라 삭제로직이 달라지므로 알림타입을 인자로 받습니다.
     */
-    void deleteAlarm(String reqLoginId, Long alarmId, AlarmType alarmType);
+    void deleteAlarm(String reqLoginId, Long alarmId, AlarmDeleteReqDto alarmDeleteReqDto);
 
 }

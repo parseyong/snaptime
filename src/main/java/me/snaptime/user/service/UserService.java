@@ -1,5 +1,7 @@
 package me.snaptime.user.service;
 
+import me.snaptime.user.dto.req.UserDeleteReqDto;
+import me.snaptime.user.dto.req.UserUpdatePasswordReqDto;
 import me.snaptime.user.dto.req.UserUpdateReqDto;
 import me.snaptime.user.dto.res.UserFindMyPageResDto;
 import me.snaptime.user.dto.res.UserFindPagingResDto;
@@ -35,10 +37,10 @@ public interface UserService {
         유저의 비밀번호를 변경합니다.
         이전과 같은 비밀번호로 변경할 수 없습니다.
 
-        reqLoginId  : 요청자의 loginId
-        newPassword : 새로운 비밀번호
+        reqLoginId               : 요청자의 loginId
+        userUpdatePasswordReqDto : 새로운 비밀번호가 담긴 dto
     */
-    void updatePassword(String reqLoginId, String newPassword);
+    void updatePassword(String reqLoginId, UserUpdatePasswordReqDto userUpdatePasswordReqDto);
 
     /*
         유저의 프로필사진을 수정합니다.
@@ -52,10 +54,10 @@ public interface UserService {
         유저를 탈퇴합니다.
         비밀번호가 틀리면 예외를 반환합니다.
 
-        reqLoginId  : 요청자의 loginId
-        password : 유저의 비밀번호
+        reqLoginId         : 요청자의 loginId
+        userDeleteReqDto   : 유저의 비밀번호가 담긴 dto
     */
-    void deleteUser(String reqLoginId, String password);
+    void deleteUser(String reqLoginId, UserDeleteReqDto userDeleteReqDto);
 
 
 }

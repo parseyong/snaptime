@@ -8,6 +8,8 @@ import me.snaptime.component.UrlComponent;
 import me.snaptime.exception.CustomException;
 import me.snaptime.exception.ExceptionCode;
 import me.snaptime.user.domain.User;
+import me.snaptime.user.dto.req.UserDeleteReqDto;
+import me.snaptime.user.dto.req.UserUpdatePasswordReqDto;
 import me.snaptime.user.dto.req.UserUpdateReqDto;
 import me.snaptime.user.dto.res.UserFindMyPageResDto;
 import me.snaptime.user.dto.res.UserFindPagingResDto;
@@ -79,15 +81,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void updatePassword(String reqLoginId, String newPassword){
+    public void updatePassword(String reqLoginId, UserUpdatePasswordReqDto userUpdatePasswordReqDto){
         User reqUser = userRepository.findByLoginId(reqLoginId)
                 .orElseThrow(()-> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
-        if (passwordEncoder.matches(newPassword, reqUser.getPassword())) {
+        if (passwordEncoder.matches(userUpdatePasswordReqDto.newPassword(), reqUser.getPassword())) {
             throw new CustomException(ExceptionCode.CAN_NOT_UPDATE_SAME_PASSWORD);
         }
 
-        reqUser.updatePassword(passwordEncoder.encode(newPassword));
+        reqUser.updatePassword(passwordEncoder.encode(userUpdatePasswordReqDto.newPassword()));
         userRepository.save(reqUser);
     }
 
@@ -114,12 +116,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void deleteUser(String reqLoginId, String password) {
+    public void deleteUser(String reqLoginId, UserDeleteReqDto userDeleteReqDto) {
 
         User reqUser = userRepository.findByLoginId(reqLoginId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
-        if (!passwordEncoder.matches(password, reqUser.getPassword())) {
+        if (!passwordEncoder.matches(userDeleteReqDto.password(), reqUser.getPassword())) {
             throw new CustomException(ExceptionCode.USER_DELETE_FAIL);
         }
 

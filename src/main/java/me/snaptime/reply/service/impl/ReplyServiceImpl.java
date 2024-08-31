@@ -9,6 +9,8 @@ import me.snaptime.exception.ExceptionCode;
 import me.snaptime.reply.domain.ChildReply;
 import me.snaptime.reply.domain.ParentReply;
 import me.snaptime.reply.dto.req.ChildReplyAddReqDto;
+import me.snaptime.reply.dto.req.ParentReplyAddReqDto;
+import me.snaptime.reply.dto.req.ReplyUpdateReqDto;
 import me.snaptime.reply.dto.res.ChildReplyFindResDto;
 import me.snaptime.reply.dto.res.ChildReplyPagingResDto;
 import me.snaptime.reply.dto.res.ParentReplyFindResDto;
@@ -46,7 +48,7 @@ public class ReplyServiceImpl implements ReplyService {
 
     @Override
     @Transactional
-    public void addParentReply(String reqLoginId, Long snapId, String content){
+    public void addParentReply(String reqLoginId, Long snapId, ParentReplyAddReqDto parentReplyAddReqDto){
         User reqUser = findUserByLoginId(reqLoginId);
         Snap snap = snapRepository.findById(snapId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.SNAP_NOT_EXIST));
@@ -55,11 +57,11 @@ public class ReplyServiceImpl implements ReplyService {
                 ParentReply.builder()
                         .writer(reqUser)
                         .snap(snap)
-                        .content(content)
+                        .content(parentReplyAddReqDto.replyMessage())
                         .build()
         );
 
-        alarmAddService.addReplyAlarm(reqUser, snap.getWriter(), snap, content);
+        alarmAddService.addReplyAlarm(reqUser, snap.getWriter(), snap, parentReplyAddReqDto.replyMessage());
     }
 
     @Transactional
@@ -127,22 +129,22 @@ public class ReplyServiceImpl implements ReplyService {
     }
 
     @Transactional
-    public void updateParentReply(String reqLoginId ,Long parentReplyId, String newContent){
+    public void updateParentReply(String reqLoginId ,Long parentReplyId, ReplyUpdateReqDto replyUpdateReqDto){
         ParentReply parentReply = parentReplyRepository.findById(parentReplyId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.REPLY_NOT_EXIST));
 
         checkMyReply(reqLoginId, parentReply.getWriter().getLoginId());
-        parentReply.updateReply(newContent);
+        parentReply.updateReply(replyUpdateReqDto.replyMessage());
         parentReplyRepository.save(parentReply);
     }
 
     @Transactional
-    public void updateChildReply(String reqLoginId, Long childReplyId, String newContent){
+    public void updateChildReply(String reqLoginId, Long childReplyId, ReplyUpdateReqDto replyUpdateReqDto){
         ChildReply childReply = childReplyRepository.findById(childReplyId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.REPLY_NOT_EXIST));
 
         checkMyReply(reqLoginId,childReply.getWriter().getLoginId());
-        childReply.updateReply(newContent);
+        childReply.updateReply(replyUpdateReqDto.replyMessage());
         childReplyRepository.save(childReply);
     }
 

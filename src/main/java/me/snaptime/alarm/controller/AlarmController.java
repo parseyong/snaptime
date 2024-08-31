@@ -4,10 +4,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import me.snaptime.alarm.dto.req.AlarmDeleteReqDto;
 import me.snaptime.alarm.dto.res.AlarmFindAllResDto;
-import me.snaptime.alarm.enums.AlarmType;
 import me.snaptime.alarm.service.AlarmService;
 import me.snaptime.common.CommonResponseDto;
 import me.snaptime.reply.dto.res.ParentReplyPagingResDto;
@@ -91,16 +92,13 @@ public class AlarmController {
     @DeleteMapping ("/{alarmId}")
     @Operation(summary = "알림을 삭제합니다.", description = "읽음 여부와 상관없이 알림을 삭제합니다.<br>" +
                                             "팔로우알림의 경우 해당요청을 자동거절처리한 뒤 삭제합니다.")
-    @Parameters({
-            @Parameter(name = "alarmId" , description = "alarmId를 입력해주세요", required = true,example = "1"),
-            @Parameter(name = "alarmType", description = "알림타입을 입력해주세요", required = true, example = "REPLY"),
-    })
+    @Parameter(name = "alarmId" , description = "alarmId를 입력해주세요", required = true,example = "1")
     public ResponseEntity<CommonResponseDto<Void>> deleteAlarm(
             final @AuthenticationPrincipal String reqLoginId,
             final @PathVariable Long alarmId,
-            final @RequestParam AlarmType alarmType) {
+            @RequestBody @Valid AlarmDeleteReqDto alarmDeleteReqDto) {
 
-        alarmService.deleteAlarm(reqLoginId, alarmId, alarmType);
+        alarmService.deleteAlarm(reqLoginId, alarmId, alarmDeleteReqDto);
         return ResponseEntity.status(HttpStatus.OK).body(CommonResponseDto.of("알림 삭제 성공", null));
     }
 }

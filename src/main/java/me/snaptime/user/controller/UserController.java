@@ -9,6 +9,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import me.snaptime.common.CommonResponseDto;
+import me.snaptime.user.dto.req.UserDeleteReqDto;
+import me.snaptime.user.dto.req.UserUpdatePasswordReqDto;
 import me.snaptime.user.dto.req.UserUpdateReqDto;
 import me.snaptime.user.dto.res.UserFindMyPageResDto;
 import me.snaptime.user.dto.res.UserFindPagingResDto;
@@ -71,12 +73,11 @@ public class UserController {
     @PatchMapping("/users/password")
     @Operation(summary = "유저 비밀번호 수정",description = "해당 유저의 비밀번호를 수정합니다.<br>" +
                                             "기존 비밀번호와 같은 비밀번호 입력 시 예외가 발생합니다.")
-    @Parameter(name = "newPassword", description = "새로운 비밀번호를 입력해주세요.", required = true, example = "1234")
     public ResponseEntity<CommonResponseDto<Void>> updatePassword(
             final @AuthenticationPrincipal String reqLoginId,
-            final @RequestParam("newPassword") @NotBlank(message = "패스워드 입력은 필수입니다.") String newPassword) {
+            @RequestBody @Valid UserUpdatePasswordReqDto userUpdatePasswordReqDto) {
 
-        userService.updatePassword(reqLoginId, newPassword);
+        userService.updatePassword(reqLoginId, userUpdatePasswordReqDto);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(CommonResponseDto.of("유저 비밀번호 수정이 성공적으로 완료되었습니다.", null));
     }
@@ -94,12 +95,11 @@ public class UserController {
 
     @DeleteMapping("/users")
     @Operation(summary = "유저 삭제",description = "유저 탈퇴를 합니다. 비밀번호가 맞아야만 탈퇴가 가능합니다.")
-    @Parameter(name = "password", description = "비밀번호를 입력해주세요.", required = true, example = "1234")
     public ResponseEntity<CommonResponseDto<Void>> deleteUser(
             final @AuthenticationPrincipal String reqLoginId,
-            final @RequestParam("password") @NotBlank(message = "패스워드 입력은 필수입니다.") String password){
+            @RequestBody @Valid UserDeleteReqDto userDeleteReqDto){
 
-        userService.deleteUser(reqLoginId, password);
+        userService.deleteUser(reqLoginId, userDeleteReqDto);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(CommonResponseDto.of("유저 삭제가 성공적으로 완료되었습니다.", null));
     }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import me.snaptime.alarm.domain.FollowAlarm;
 import me.snaptime.alarm.domain.ReplyAlarm;
 import me.snaptime.alarm.domain.SnapAlarm;
+import me.snaptime.alarm.dto.req.AlarmDeleteReqDto;
 import me.snaptime.alarm.dto.res.AlarmFindAllResDto;
 import me.snaptime.alarm.dto.res.AlarmFindResDto;
 import me.snaptime.alarm.enums.AlarmType;
@@ -115,7 +116,9 @@ public class AlarmServiceImpl implements AlarmService {
 
     @Override
     @Transactional
-    public void deleteAlarm(String reqLoginId, Long alarmId, AlarmType alarmType) {
+    public void deleteAlarm(String reqLoginId, Long alarmId, AlarmDeleteReqDto alarmDeleteReqDto) {
+
+        AlarmType alarmType = alarmDeleteReqDto.alarmType();
 
         // 팔로우 알림일 경우 거절처리 후 삭제
         if(alarmType == AlarmType.FOLLOW){
