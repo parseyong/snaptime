@@ -3,7 +3,6 @@ package me.snaptime.snap.dto.req;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -15,11 +14,6 @@ public record SnapAddReqDto(
         )
         @NotBlank(message = "한줄일기를 입력해주세요.")
         String oneLineJournal,
-
-        @Schema(
-                description = "크롤링API를 통해 얻은 사진을 MultipartFile형식으로 보내주세요. "
-        )
-        MultipartFile multipartFile,
 
         @Schema(
                 example = "false",

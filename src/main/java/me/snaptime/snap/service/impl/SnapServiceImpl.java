@@ -48,19 +48,19 @@ public class SnapServiceImpl implements SnapService {
 
     @Override
     @Transactional
-    public void addSnap(String reqLoginId, SnapAddReqDto snapAddReqDto) {
+    public void addSnap(String reqLoginId, SnapAddReqDto snapAddReqDto, MultipartFile multipartFile) {
 
         User reqUser = userRepository.findByLoginId(reqLoginId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
-        String fileName = addPhoto(reqUser, snapAddReqDto.multipartFile(), snapAddReqDto.isPrivate());
+        String fileName = addPhoto(reqUser, multipartFile, snapAddReqDto.isPrivate());
 
         Snap snap = Snap.builder()
                 .writer(reqUser)
                 .isPrivate(snapAddReqDto.isPrivate())
                 .oneLineJournal(snapAddReqDto.oneLineJournal())
                 .fileName(fileName)
-                .fileType(snapAddReqDto.multipartFile().getContentType())
+                .fileType(multipartFile.getContentType())
                 .album(albumService.findAlbumForSnapAdd(reqUser, snapAddReqDto.albumId()))
                 .build();
 
@@ -98,7 +98,7 @@ public class SnapServiceImpl implements SnapService {
 
     @Override
     @Transactional
-    public void updateSnap(String reqLoginId, Long snapId, SnapUpdateReqDto snapUpdateReqDto) {
+    public void updateSnap(String reqLoginId, Long snapId, SnapUpdateReqDto snapUpdateReqDto, MultipartFile multipartFile) {
 
         User reqUser = userRepository.findByLoginId(reqLoginId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
@@ -108,18 +108,19 @@ public class SnapServiceImpl implements SnapService {
         if(!isMySnap(reqUser,snap))
             throw new CustomException(ExceptionCode.ACCESS_FAIL_SNAP);
 
-        if(snapUpdateReqDto.multipartFile() != null){
+        if(multipartFile != null){
 
             // 기존 사진 삭제
             photoComponent.deletePhoto(snap.getFileName());
-            String fileName = addPhoto(reqUser, snapUpdateReqDto.multipartFile(), snap.isPrivate());
+            String fileName = addPhoto(reqUser, multipartFile, snap.isPrivate());
             snap.updateFileName(fileName);
-            snap.updateFileType(snapUpdateReqDto.multipartFile().getContentType());
+            snap.updateFileType(multipartFile.getContentType());
         }
         
         snap.updateOneLineJournal(snapUpdateReqDto.oneLineJournal());
 
         snapRepository.save(snap);
+
         // 태그정보 수정
         snapTagService.updateTagUsers(snapUpdateReqDto.tagUserLoginIds(), snap);
     }

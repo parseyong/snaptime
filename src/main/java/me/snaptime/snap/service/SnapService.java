@@ -4,6 +4,7 @@ import me.snaptime.snap.dto.req.SnapAddReqDto;
 import me.snaptime.snap.dto.req.SnapUpdateReqDto;
 import me.snaptime.snap.dto.res.SnapFindAllInAlbumResDto;
 import me.snaptime.snap.dto.res.SnapFindDetailResDto;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface SnapService {
 
@@ -12,8 +13,9 @@ public interface SnapService {
 
         reqLoginId    : 스냅을 저장하는 유저의 loginId
         snapAddReqDto : 스냅에 대한 정보가 담긴 dto
+        multipartFile : 스냅에 저장할 사진
     */
-    void addSnap(String reqLoginId, SnapAddReqDto snapAddReqDto);
+    void addSnap(String reqLoginId, SnapAddReqDto snapAddReqDto, MultipartFile multipartFile);
 
     /*
         1개 Snap의 상세정보(태그정보,좋아요 수 등등..)를 조회합니다.
@@ -31,8 +33,9 @@ public interface SnapService {
         reqLoginId       : 요청자의 loginId
         snapId           : 수정할 스냅의 id
         snapUpdateReqDto : 변경정보가 담긴 dto
+        multipartFile    : 변경할 파일, 변경을 원하지 않으면 null
     */
-    void updateSnap(String reqLoginId, Long snapId, SnapUpdateReqDto snapUpdateReqDto);
+    void updateSnap(String reqLoginId, Long snapId, SnapUpdateReqDto snapUpdateReqDto, MultipartFile multipartFile);
 
     /*
         스냅의 공개여부를 변경합니다. 현재상태값을 다시 보내면 예외를 반환합니다.

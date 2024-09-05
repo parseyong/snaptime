@@ -16,6 +16,7 @@ import me.snaptime.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -33,6 +34,9 @@ public class SnapTagServiceImpl implements SnapTagService {
     @Override
     @Transactional
     public void addTagUser(List<String> tagUserLoginIds, Snap snap){
+
+        if(tagUserLoginIds == null)
+            tagUserLoginIds = new ArrayList<>();
 
         List<SnapTag> snapTags = tagUserLoginIds.stream().map( tagUserloginId -> {
 
@@ -55,6 +59,9 @@ public class SnapTagServiceImpl implements SnapTagService {
     @Override
     @Transactional
     public void updateTagUsers(List<String> tagUserLoginIds, Snap snap){
+
+        if(tagUserLoginIds == null)
+            tagUserLoginIds = new ArrayList<>();
 
         List<SnapTag> snapTags = snapTagRepository.findBySnap(snap);
 

@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Validated
 @RestController
@@ -27,13 +28,17 @@ public class SnapController {
 
     private final SnapService snapService;
 
-    @PostMapping(value = "/albums/snaps", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    @Operation(summary = "Snap 생성", description = "스냅을 생성합니다.")
+    @PostMapping(value = "/albums/snaps", consumes = {MediaType.APPLICATION_JSON_VALUE,
+                                                        MediaType.MULTIPART_FORM_DATA_VALUE})
+    @Operation(summary = "Snap 생성", description = "스냅을 생성합니다.<br>" +
+            "현재 @RequestPart로 파일데이터를 받는 기능이 스웨거에서 지원이 되지 않습니다. 포스트맨으로 요청테스트를 하시길 바랍니다.")
+    @Parameter(name = "multipartFile", description = "크롤링API를 통해 얻은 사진을 MultipartFile형식으로 보내주세요.")
     public ResponseEntity<CommonResponseDto<Long>> createSnap(
             final @AuthenticationPrincipal String reqLoginId,
-            @ModelAttribute @Valid SnapAddReqDto snapAddReqDto) {
+            @RequestPart @Valid SnapAddReqDto snapAddReqDto,
+            final @RequestPart MultipartFile multipartFile) {
 
-        snapService.addSnap(reqLoginId, snapAddReqDto);
+        snapService.addSnap(reqLoginId, snapAddReqDto, multipartFile);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(CommonResponseDto.of("스냅이 정상적으로 저장되었습니다.", null));
     }
@@ -50,16 +55,23 @@ public class SnapController {
                 CommonResponseDto.of("스냅이 정상적으로 불러와졌습니다.", snapService.findSnapDetail(reqLoginId, snapId)));
     }
 
-    @PatchMapping(value = "/albums/snaps/{snapId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PatchMapping(value = "/albums/snaps/{snapId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
+                                                                    MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "Snap 수정", description = "Snap의 한줄일기, 사진, 태그정보를 수정합니다. <br>" +
-                                                    "공개여부, 앨범위치를 변경하려면 다른 요청을 보내주세요.")
-    @Parameter(name = "snapId", description = "변경할 스냅의 id")
+                                                    "공개여부, 앨범위치를 변경하려면 다른 요청을 보내주세요.<br>" +
+            "현재 @RequestPart로 파일데이터를 받는 기능이 스웨거에서 지원이 되지 않습니다. 포스트맨으로 요청테스트를 하시길 바랍니다.")
+    @Parameters({
+            @Parameter(name = "snapId", description = "변경할 스냅의 id"),
+            @Parameter(name = "multipartFile", description = "크롤링API를 통해 얻은 사진을 MultipartFile형식으로 보내주세요.<br>" +
+                                                            "사진변경을 원하지 않는다면 파일데이터를 보내지 마세요.")
+    })
     public ResponseEntity<CommonResponseDto<Void>> updateSnap(
             final @AuthenticationPrincipal String reqLoginId,
-            @ModelAttribute @Valid SnapUpdateReqDto snapUpdateReqDto,
+            @RequestPart @Valid SnapUpdateReqDto snapUpdateReqDto,
+            final @RequestPart(required = false) MultipartFile multipartFile,
             final @PathVariable("snapId") Long snapId) {
 
-        snapService.updateSnap(reqLoginId, snapId, snapUpdateReqDto);
+        snapService.updateSnap(reqLoginId, snapId, snapUpdateReqDto, multipartFile);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(CommonResponseDto.of("스냅이 정상적으로 수정되었습니다.", null));
     }
