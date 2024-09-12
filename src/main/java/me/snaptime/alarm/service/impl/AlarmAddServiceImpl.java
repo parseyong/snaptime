@@ -25,7 +25,6 @@ public class AlarmAddServiceImpl implements AlarmAddService {
 
     @Override
     public void addSnapAlarm(User sender, User receiver, Snap snap, AlarmType alarmType) {
-        // 자신의 스냅에 좋아요를 누를경우 알림생성 x
         if(sender.getUserId() == receiver.getUserId())
             return ;
 
@@ -52,7 +51,6 @@ public class AlarmAddServiceImpl implements AlarmAddService {
 
     @Override
     public void addReplyAlarm(User sender, User receiver, Snap snap, String replyMessage) {
-        // 자신의 스냅에 댓글을 쓴 경우 알림생성 x
         if(sender.getUserId() == receiver.getUserId())
             return ;
 
