@@ -8,6 +8,7 @@ public interface AlarmAddService {
 
     /*
         스냅알림(태그,좋아요)을 생성합니다. 스냅에 대한 알림타입이 2개이므로 알림타입을 인자로 받습니다.
+        sender와 receiver가 같은경우 알림을 생성하지 않습니다.
 
         sender               : 행위(좋아요,스냅에 태그)를 하여 알림을 보내는 유저
         receiver             : 알림을 받는 유저
@@ -18,6 +19,7 @@ public interface AlarmAddService {
 
     /*
        팔로우알림을 생성합니다.
+       sender와 receiver가 같은경우 알림을 생성하지 않습니다.
 
        sender   : 행위(팔로우 요청)를 하여 알림을 보내는 유저
        receiver : 알림을 받는 유저(팔로우요청을 받은 유저)
@@ -26,6 +28,7 @@ public interface AlarmAddService {
 
     /*
        댓글알림을 생성합니다.
+       sender와 receiver가 같은경우 알림을 생성하지 않습니다.
 
        sender          : 행위(댓글달기)를 하여 알림을 보내는 유저
        receiver        : 알림을 받는 유저

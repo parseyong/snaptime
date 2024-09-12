@@ -20,6 +20,7 @@ public interface ReplyService {
 
     /*
         댓글에 대댓글을 추가합니다.
+        snap작성자와 태그된 유저에게 알림이 추가됩니다.
 
         reqLoginId          : 요청자의 loginId
         parentReplyId       : 부모댓글의 id
