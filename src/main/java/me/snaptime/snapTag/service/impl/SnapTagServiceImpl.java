@@ -98,7 +98,6 @@ public class SnapTagServiceImpl implements SnapTagService {
                     .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
             if(!snapTagRepository.existsBySnapAndTagUser(snap,tagUser)){
-
                 // 셀프태그인지 체크
                 checkSelfTag(snap,tagUserloginId);
 

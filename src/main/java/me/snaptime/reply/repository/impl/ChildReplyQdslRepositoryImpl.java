@@ -28,7 +28,6 @@ public class ChildReplyQdslRepositoryImpl implements ChildReplyQdslRepository {
 
         List<ChildReply> childReplies = jpaQueryFactory.select( childReply )
                 .from(childReply)
-                .join(parentReply).on(parentReply.parentReplyId.eq(childReply.parentReply.parentReplyId))
                 .where(parentReply.parentReplyId.eq(parentReplyId))
                 .orderBy(childReply.createdDate.asc())
                 .offset(pageable.getOffset())

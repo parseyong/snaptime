@@ -21,10 +21,12 @@ public class Friend {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name="receiver_id",nullable = false)
     private User receiver;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name="sender_id",nullable = false)
     private User sender;
 
     @Builder

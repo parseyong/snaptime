@@ -23,8 +23,7 @@ public class SnapLikeController {
     @PostMapping("/albums/snaps/{snapId}/like")
     @Operation(summary = "스냅 좋아요 토글", description = "좋아요 토글할 snapId를 보내주세요<br>" +
                                         "특정 유저가 특정스냅에 좋아요를 눌렀다면 좋아요가 취소됩니다.<br>"+
-                                        "좋아요를 누르지 않았다면 좋아요가 추가됩니다.<br>" +
-                                        "자기 자신의 snap에는 좋아요를 추가할 수 없습니다.")
+                                        "좋아요를 누르지 않았다면 좋아요가 추가됩니다.<br>")
     @Parameter(name = "snapId", description = "좋아요를 누를 snap의 id를 입력해주세요.")
     public ResponseEntity<CommonResponseDto<Void>> toggleSnapLike(
             final @AuthenticationPrincipal String reqLoginId,

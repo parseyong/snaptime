@@ -32,7 +32,6 @@ public class SnapLikeServiceImpl implements SnapLikeService {
     public String toggleSnapLike(String reqLoginId, Long snapId){
         User reqUser = userRepository.findByLoginId(reqLoginId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
-
         Snap snap = snapRepository.findById(snapId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.SNAP_NOT_EXIST));
 

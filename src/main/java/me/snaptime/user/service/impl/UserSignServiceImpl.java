@@ -47,10 +47,10 @@ public class UserSignServiceImpl implements UserSignService {
                 .secretKey(cipherComponent.generateAESKey())
                 .build();
 
+        userRepository.save(user);
+
         // 기본앨범 생성
         albumService.addBasicAlbum(user);
-
-        userRepository.save(user);
     }
 
     @Override

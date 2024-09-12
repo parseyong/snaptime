@@ -23,11 +23,13 @@ public class FollowAlarm extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name="sender_id",nullable = false)
     // 행위(팔로우 요청)을 통해 receiver에게 알림을 보내는 유저
     private User sender;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name="receiver_id",nullable = false)
     // 알림을 받는 유저
     private User receiver;
 
