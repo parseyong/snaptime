@@ -6,9 +6,8 @@ import java.util.UUID;
 
 public class FileNameGenerator {
 
-    static String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMddHHmmssSSS"));
-
     public static String generatorName(String fileName) {
+        String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMddHHmmssSSS"));
         String uuId = UUID.randomUUID().toString();
         return currentTime + "_" + uuId + "_" + fileName;
     }

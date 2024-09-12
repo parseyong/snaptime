@@ -33,7 +33,7 @@ public class ParentReplyQdslRepositoryImpl implements ParentReplyQdslRepository 
                 .from(parentReply)
                 .join(user).on(parentReply.writer.userId.eq(user.userId))
                 .where(parentReply.snap.snapId.eq(snapId))
-                .orderBy(parentReply.createdDate.desc())
+                .orderBy(parentReply.createdDate.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize()+1) //페이지의 크기
                 .fetch();

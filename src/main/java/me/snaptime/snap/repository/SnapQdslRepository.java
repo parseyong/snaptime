@@ -20,12 +20,14 @@ public interface SnapQdslRepository {
 
     /*
         앨범의 썸네일Snap을 조회합니다.
-        썸네일은 공개스냅중 제일 최신스냅이 선택되며 공개스냅이 없을 시 빈 리스트를 반환합니다.
+        썸네일은 공개스냅중 제일 최신스냅이 선택됩니다. 자신의 앨범리스트조회 시 비공개 스냅이 썸네일이 될 수 있으며
+        다른사람의 리스트 조회 시 공개스냅만 썸네일로 지정됩니다. 공개스냅이 없을 시 빈 리스트를 반환합니다.
 
         Album       : 썸네일조회할 앨범
         thumnailCnt : 썸네일 개수
+        isMine      : 자신의 앨범을 조회하는 지 여부
     */
-    List<Snap> findThumnailSnaps(Album album, Long thumnailCnt);
+    List<Snap> findThumnailSnaps(Album album, Long thumnailCnt, boolean isMine);
 
     /*
         유저가 태그된 스냅리스트를 조회합니다.

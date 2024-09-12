@@ -1,5 +1,6 @@
 package me.snaptime.snap.repository.impl;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -68,14 +69,19 @@ public class SnapQdslRepositoryImpl implements SnapQdslRepository {
     }
 
     @Override
-    public List<Snap> findThumnailSnaps(Album album, Long thumnailCnt) {
+    public List<Snap> findThumnailSnaps(Album album, Long thumnailCnt, boolean isMine) {
 
         QAlbum qAlbum = new QAlbum("album");
+        BooleanBuilder whereBuilder = new BooleanBuilder();
+        if(isMine)
+            whereBuilder.and(snap.isPrivate.isFalse().or(snap.isPrivate.isTrue()));
+        else
+            whereBuilder.and(snap.isPrivate.isFalse());
 
         List<Snap> snaps = jpaQueryFactory.select(snap)
                 .from(snap)
                 .join(qAlbum).on(snap.album.albumId.eq(album.getAlbumId()))
-                .where(snap.isPrivate.isFalse())
+                .where(whereBuilder)
                 .orderBy(snap.createdDate.desc())
                 .limit(thumnailCnt)
                 .fetch();

@@ -30,7 +30,7 @@ public class ChildReplyQdslRepositoryImpl implements ChildReplyQdslRepository {
                 .from(childReply)
                 .join(parentReply).on(parentReply.parentReplyId.eq(childReply.parentReply.parentReplyId))
                 .where(parentReply.parentReplyId.eq(parentReplyId))
-                .orderBy(childReply.createdDate.desc())
+                .orderBy(childReply.createdDate.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize()+1) //페이지의 크기
                 .fetch();

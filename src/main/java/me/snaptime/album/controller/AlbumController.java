@@ -32,18 +32,20 @@ public class AlbumController {
     @GetMapping(path = "/albums/with-thumnail")
     @Operation(summary = "Album 목록(썸네일 포함) 조회", description = "사용자의 Album 목록(썸네일 포함)을 조회합니다.<br>" +
                                                                     "썸네일로 선택되는 앨범은 한개입니다.<br>" +
-                                                                    "썸네일은 공개스냅 중 최신스냅이 선택됩니다.")
+                                                                    "썸네일은 다른 유저의 앨범 조회 시 공개스냅 중 최신스냅이 선택됩니다.<br>" +
+                                                                    "자신의 앨범 조회 시 비공개 스냅이 썸네일이 될 수 있습니다.")
     @Parameters({
             @Parameter(name = "thumnailCnt" , description = "필요한 각 앨범의 썸네일 개수를 보내주세요."),
             @Parameter(name = "targetLoginId", description = "조회할 유저의 loginId를 입력해주세요.")
     })
     @Parameter(name = "targetLoginId", description = "앨범을 조회할 유저의 loginId를 입력해주세요.")
     public ResponseEntity<CommonResponseDto<List<AlbumFindResDto>>> findAllAlbumsWithThumnail(
+            final @AuthenticationPrincipal String reqLoginId,
             final @RequestParam("targetLoginId") @NotBlank(message = "조회할 유저의 loginId를 입력해주세요.") String targetLoginId,
             final @RequestParam("thumnailCnt") @NotNull(message = "필요한 각 앨범의 썸네일 개수를 보내주세요.")Long thumnailCnt) {
 
         return ResponseEntity.status(HttpStatus.OK).body
-                (CommonResponseDto.of("앨범목록(썸네일 포함) 조회성공", albumService.findAllAlbumsWithThumnail(targetLoginId, thumnailCnt)));
+                (CommonResponseDto.of("앨범목록(썸네일 포함) 조회성공", albumService.findAllAlbumsWithThumnail(reqLoginId, targetLoginId, thumnailCnt)));
     }
 
     @GetMapping("/albums")
@@ -53,7 +55,7 @@ public class AlbumController {
             final @AuthenticationPrincipal String reqLoginId) {
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(CommonResponseDto.of("앨범목록(썸네일 미포함) 조회성공", albumService.findAllAlbums(reqLoginId)));
+                .body(CommonResponseDto.of("앨범목록(썸네일 미포함) 조회성공", albumService.findAllMyAlbums(reqLoginId)));
     }
 
     @PostMapping("/albums")

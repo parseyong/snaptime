@@ -36,16 +36,19 @@ public class AlbumServiceImpl implements AlbumService {
     private String basicAlbumName;
 
     @Override
-    public List<AlbumFindResDto> findAllAlbumsWithThumnail(String targetLoginId, Long thumnailCnt) {
+    public List<AlbumFindResDto> findAllAlbumsWithThumnail(String reqLoginId, String targetLoginId, Long thumnailCnt) {
 
+        User reqUser = userRepository.findByLoginId(reqLoginId)
+                .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
         User targetUser = userRepository.findByLoginId(targetLoginId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
         List<Album> albums = albumRepository.findAllByUser(targetUser);
+        boolean isMine = targetUser.getUserId() == reqUser.getUserId();
 
         return albums.stream().map(album -> {
             // 각 앨범의 썸네일 스냅조회
-            List<Snap> thumnailSnaps = snapRepository.findThumnailSnaps(album, thumnailCnt);
+            List<Snap> thumnailSnaps = snapRepository.findThumnailSnaps(album, thumnailCnt, isMine);
 
             // 썸네일스냅의 사진URL생성
             List<String> thumbnailPhotoURLs = thumnailSnaps.stream().map(thumnailSnap -> {
@@ -57,7 +60,7 @@ public class AlbumServiceImpl implements AlbumService {
     }
 
     @Override
-    public List<AlbumFindResDto> findAllAlbums(String reqLoginId) {
+    public List<AlbumFindResDto> findAllMyAlbums(String reqLoginId) {
 
         User reqUser = userRepository.findByLoginId(reqLoginId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
@@ -118,7 +121,7 @@ public class AlbumServiceImpl implements AlbumService {
             throw new CustomException(ExceptionCode.CAN_NOT_BE_MODIFIED_OR_DELETED_BASIC_ALBUM);
         }
 
-        moveSnapToBasicAlbumForDelete(album, basicAlbum);
+        moveSnapToBasicAlbumForAlbumDelete(album, basicAlbum);
         albumRepository.delete(album);
     }
 
@@ -167,7 +170,7 @@ public class AlbumServiceImpl implements AlbumService {
         }
     }
 
-    private void moveSnapToBasicAlbumForDelete(Album deletedAlbum, Album basicAlbum){
+    private void moveSnapToBasicAlbumForAlbumDelete(Album deletedAlbum, Album basicAlbum){
 
         List<Snap> snaps = snapRepository.findAllByAlbum(deletedAlbum);
         snaps.forEach(snap -> snap.updateAlbum(basicAlbum));
