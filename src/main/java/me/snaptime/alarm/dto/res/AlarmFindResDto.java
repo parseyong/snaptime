@@ -19,6 +19,8 @@ public record AlarmFindResDto(
         String timeAgo,
         String previewText,
         AlarmType alarmType,
+        Long snapId,
+        String senderLoginId,
         @Getter
         LocalDateTime createdDate
 
@@ -34,6 +36,8 @@ public record AlarmFindResDto(
                 .previewText(null)
                 .alarmType(followAlarm.getAlarmType())
                 .createdDate(followAlarm.getCreatedDate())
+                .snapId(null)
+                .senderLoginId(followAlarm.getSender().getLoginId())
                 .build();
     }
 
@@ -49,6 +53,8 @@ public record AlarmFindResDto(
                 .previewText(null)
                 .alarmType(snapAlarm.getAlarmType())
                 .createdDate(snapAlarm.getCreatedDate())
+                .snapId(snapAlarm.getSnap().getSnapId())
+                .senderLoginId(snapAlarm.getSender().getLoginId())
                 .build();
     }
 
@@ -64,6 +70,8 @@ public record AlarmFindResDto(
                 .previewText(replyAlarm.getReplyMessage())
                 .alarmType(replyAlarm.getAlarmType())
                 .createdDate(replyAlarm.getCreatedDate())
+                .snapId(replyAlarm.getSnap().getSnapId())
+                .senderLoginId(replyAlarm.getSender().getLoginId())
                 .build();
     }
 }

@@ -2,10 +2,8 @@ package me.snaptime.alarm.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import me.snaptime.alarm.dto.req.AlarmDeleteReqDto;
 import me.snaptime.alarm.dto.res.AlarmFindAllResDto;
@@ -29,42 +27,38 @@ public class AlarmController {
     private final AlarmService alarmService;
 
     @GetMapping("/follow/{followAlarmId}")
-    @Operation(summary = "팔로우요청 알림에 대해 수락or거절을 합니다.", description = "수락 or 거절할 follow알림 id와 수락여부를 보내주세요.<br>" +
-                                                                "친구요청 수락(sender(수락자)의 팔로잉 +1, receiver의 팔로워 +1)<br>" +
-                                                                "친구요청 거절(sender(수락자)의 팔로워 -1, receiver의 팔로잉 -1) ")
-    @Parameters({
-            @Parameter(name = "followAlarmId" , description = "followAlarmId를 입력해주세요", required = true,example = "1"),
-            @Parameter(name = "isAccept", description = "수락여부를 입력해주세요", required = true, example = "true"),
-    })
+    @Operation(summary = "팔로우 알림 조회", description = "팔로우 알림을 읽음처리합니다.")
+    @Parameter(name = "followAlarmId" , description = "followAlarmId를 입력해주세요", required = true,example = "1")
     public ResponseEntity<CommonResponseDto<Void>> readFollowAlarm(
             final @AuthenticationPrincipal String reqLoginId,
-            final @PathVariable Long followAlarmId,
-            final @RequestParam @NotNull(message = "수락여부를 보내주세요.") boolean isAccept) {
+            final @PathVariable Long followAlarmId) {
 
-        String message = alarmService.readFollowAlarm(reqLoginId, followAlarmId,isAccept);
-        return ResponseEntity.status(HttpStatus.OK).body( CommonResponseDto.of(message, null) );
+        alarmService.readFollowAlarm(reqLoginId, followAlarmId);
+        return ResponseEntity.status(HttpStatus.OK).body( CommonResponseDto.of("팔로우알림 조회 성공", null) );
     }
 
     @GetMapping("/snaps/{snapAlarmId}")
-    @Operation(summary = "스냅알림 조회", description = "스냅알림을 읽음처리 후 해당스냅페이지로 이동합니다.")
+    @Operation(summary = "스냅알림 조회", description = "스냅알림을 읽음처리합니다.")
     @Parameter(name = "snapAlarmId" , description = "snapAlarmId를 입력해주세요", required = true,example = "1")
     public ResponseEntity<CommonResponseDto<SnapFindDetailResDto>> readSnapAlarm(
             final @AuthenticationPrincipal String reqLoginId,
             final @PathVariable Long snapAlarmId) {
 
+        alarmService.readSnapAlarm(reqLoginId, snapAlarmId);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(CommonResponseDto.of("스냅알림 조회 성공", alarmService.readSnapAlarm(reqLoginId, snapAlarmId)));
+                .body(CommonResponseDto.of("스냅알림 조회 성공", null));
     }
 
     @GetMapping("/replies/{replyAlarmId}")
-    @Operation(summary = "댓글알림 조회", description = "댓글알림을 읽음처리 후 해당 댓글페이지 1번으로 이동합니다.")
+    @Operation(summary = "댓글알림 조회", description = "댓글알림을 읽음처리합니다.")
     @Parameter(name = "replyAlarmId" , description = "replyAlarmId를 입력해주세요", required = true,example = "1")
     public ResponseEntity<CommonResponseDto<ParentReplyPagingResDto>> readReplyAlarm(
             final @AuthenticationPrincipal String reqLoginId,
             final @PathVariable Long replyAlarmId) {
 
+        alarmService.readReplyAlarm(reqLoginId, replyAlarmId);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(CommonResponseDto.of("댓글알림 조회 성공", alarmService.readReplyAlarm(reqLoginId, replyAlarmId)));
+                .body(CommonResponseDto.of("댓글알림 조회 성공", null));
     }
 
     @GetMapping("/count/not-read")
@@ -79,8 +73,7 @@ public class AlarmController {
     @GetMapping
     @Operation(summary = "알림리스트 조회", description = "자신에게 온 모든 알림리스트를 조회합니다.<br>"+
                                         "읽지않은 알림을 먼저 보여주며 시간순으로 정렬하여 반환합니다.<br>"+
-                                        "알림타입별로 반환되는 데이터가 다릅니다. 팔로우알림에는 snapUrl정보가 없으며 "+
-                                        "댓글알림에만 댓글내용을 보여주는 previewText값이 있습니다.<br>"+
+                                        "알림타입별로 반환되는 데이터가 다릅니다.<br>"+
                                         "각 알림타입별로 alarmId값이 부여되기 때문에 타입이 다른 알림의 경우 id값이 중복될 수 있습니다.")
     public ResponseEntity<CommonResponseDto<AlarmFindAllResDto>> findAllAlarms(
             final @AuthenticationPrincipal String reqLoginId) {
@@ -90,8 +83,7 @@ public class AlarmController {
     }
 
     @DeleteMapping ("/{alarmId}")
-    @Operation(summary = "알림을 삭제합니다.", description = "읽음 여부와 상관없이 알림을 삭제합니다.<br>" +
-                                            "팔로우알림의 경우 해당요청을 자동거절처리한 뒤 삭제합니다.")
+    @Operation(summary = "알림을 삭제합니다.", description = "읽음 여부와 상관없이 알림을 삭제합니다.")
     @Parameter(name = "alarmId" , description = "alarmId를 입력해주세요", required = true,example = "1")
     public ResponseEntity<CommonResponseDto<Void>> deleteAlarm(
             final @AuthenticationPrincipal String reqLoginId,
