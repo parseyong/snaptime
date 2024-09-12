@@ -35,10 +35,6 @@ public class SnapLikeServiceImpl implements SnapLikeService {
 
         Snap snap = snapRepository.findById(snapId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.SNAP_NOT_EXIST));
-        
-        // 자기자신의 스냅에 좋아요를 누르는지 체크
-        if(snap.getWriter().getUserId() == reqUser.getUserId())
-            throw new CustomException(ExceptionCode.CAN_NOT_SELF_LIKE);
 
         Optional<SnapLike> snapLikeOptional = snapLikeRepository.findBySnapAndUser(snap,reqUser);
 

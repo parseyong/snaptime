@@ -13,9 +13,6 @@ public enum ExceptionCode {
     PAGE_NOT_EXIST(HttpStatus.BAD_REQUEST,"존재하지 않는 페이지입니다."),
     FRIEND_REQ_NOT_EXIST(HttpStatus.BAD_REQUEST, "존재하지 않는 친구요청입니다."),
 
-    // SnapLike Exception
-    CAN_NOT_SELF_LIKE(HttpStatus.BAD_REQUEST, "자기 자신에게 좋아요를 누를 수 없습니다."),
-
     // SnapTag Exception
     CAN_NOT_SELF_TAG(HttpStatus.BAD_REQUEST, "자기 자신을 태그할 수 없습니다."),
 
