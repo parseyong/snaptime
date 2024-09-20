@@ -7,7 +7,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import me.snaptime.auth.redis.domain.RefreshToken;
 import me.snaptime.auth.redis.repository.RefreshTokenRepository;
+import me.snaptime.common.RedisPrefix;
 import me.snaptime.user.domain.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -78,7 +80,7 @@ public class JwtProvider {
                 .signWith(SignatureAlgorithm.HS256, refreshSecretKey)
                 .compact();
 
-        refreshTokenRepository.save(new RefreshToken(reqEmail,refreshToken));
+        refreshTokenRepository.save(new RefreshToken(RedisPrefix.REFRESH_TOKEN+reqEmail,refreshToken));
         return refreshToken;
     }
 
@@ -116,7 +118,7 @@ public class JwtProvider {
         try{
 
             String reqEmail = findEmailByRefreshToken(reqRefreshToken);
-            RefreshToken savedRefreshToken = refreshTokenRepository.findByEmail(reqEmail).orElseThrow();
+            RefreshToken savedRefreshToken = refreshTokenRepository.findRefreshTokenByEmail(RedisPrefix.REFRESH_TOKEN+reqEmail).orElseThrow();
 
             if(savedRefreshToken == null || !reqRefreshToken.equals(savedRefreshToken.getRefreshToken())){
                 return false;
@@ -129,13 +131,13 @@ public class JwtProvider {
         }
     }
 
-    // accessToken으로부터 loginId를 추출합니다.
+    // accessToken으로부터 이메일을 추출합니다.
     private String findEmailByAccessToken(String accessToken) {
 
         return Jwts.parser().setSigningKey(accessSecretKey).parseClaimsJws(accessToken).getBody().getSubject();
     }
 
-    // refreshToken으로부터 loginId를 추출합니다.
+    // refreshToken으로부터 이메일을 추출합니다.
     public String findEmailByRefreshToken(String refreshToken){
         return Jwts.parser().setSigningKey(refreshSecretKey).parseClaimsJws(refreshToken).getBody().getSubject();
     }

@@ -7,6 +7,7 @@ import me.snaptime.auth.JwtProvider;
 import me.snaptime.component.CipherComponent;
 import me.snaptime.exception.CustomException;
 import me.snaptime.exception.ExceptionCode;
+import me.snaptime.mail.service.MailService;
 import me.snaptime.user.domain.User;
 import me.snaptime.user.dto.req.SignInReqDto;
 import me.snaptime.user.dto.req.UserAddReqDto;
@@ -26,6 +27,7 @@ public class UserSignServiceImpl implements UserSignService {
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
     private final AlbumService albumService;
+    private final MailService mailService;
     private final CipherComponent cipherComponent;
 
     @Override
@@ -35,6 +37,8 @@ public class UserSignServiceImpl implements UserSignService {
         if(userRepository.findByEmail(userAddReqDto.email()).isPresent()){
             throw new CustomException(ExceptionCode.DUPLICATED_EMAIL);
         }
+
+        mailService.checkIsVerifiedEmail(userAddReqDto.email());
 
         //새로운 사용자 객체 생성
         User user = User.builder()

@@ -1,4 +1,4 @@
-package me.snaptime.auth;
+package me.snaptime.auth.redis.domain;
 
 import lombok.Getter;
 import org.springframework.data.annotation.Id;

@@ -83,7 +83,7 @@ public class PhotoComponent {
     public String addPhoto(String originalFileName, byte[] fileBytes) {
 
         // UUID를 통한 파일명 생성
-        String fileName = FileNameGenerator.generatorName(originalFileName);
+        String fileName = FileNameGenerator.generateName(originalFileName);
 
         // 파일이 저장될 경로 생성
         String filePath = FOLDER_PATH + fileName;

@@ -61,7 +61,12 @@ public enum ExceptionCode {
     TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "인증에 실패하였습니다. 다시 로그인해주세요."),
 
     // Jsoup Action
-    CRAWLING_FAIL(HttpStatus.BAD_REQUEST, "크롤링에 실패하였습니다.");
+    CRAWLING_FAIL(HttpStatus.BAD_REQUEST, "크롤링에 실패하였습니다."),
+
+    // Email
+    MAIL_SEND_FAIL(HttpStatus.INTERNAL_SERVER_ERROR,"메일 전송에 실패했습니다."),
+    MAIL_AUTH_FAIL(HttpStatus.BAD_REQUEST,"메일 인증번호가 올바르지 않습니다."),
+    MAIL_NOT_AUTH(HttpStatus.BAD_REQUEST,"인증되지 않은 메일입니다. 인증을 먼저 해주세요.");
 
     private final HttpStatus status;
     private final String message;

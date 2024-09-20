@@ -1,4 +1,4 @@
-package me.snaptime.config;
+package me.snaptime.user.service.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;

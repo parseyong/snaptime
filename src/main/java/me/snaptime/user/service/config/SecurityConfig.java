@@ -1,4 +1,4 @@
-package me.snaptime.config;
+package me.snaptime.user.service.config;
 
 import lombok.RequiredArgsConstructor;
 import me.snaptime.auth.JwtAuthFilter;
@@ -34,7 +34,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(requests ->
                         requests
                                 .requestMatchers("/swagger-resources/**", "/swagger-ui/index.html", "/webjars/**", "/swagger/**", "/users/exception", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
-                                .requestMatchers("/sign-in", "/sign-up", "reissue").permitAll()
+                                .requestMatchers("/sign-in", "/sign-up", "reissue","/mail/**").permitAll()
                                 .requestMatchers(HttpMethod.GET,"/photo").permitAll()
                                 .requestMatchers("/**").authenticated()
                                 .anyRequest().hasRole("USER")
