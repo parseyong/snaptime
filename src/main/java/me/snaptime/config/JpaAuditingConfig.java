@@ -1,4 +1,4 @@
-package me.snaptime.user.service.config;
+package me.snaptime.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;

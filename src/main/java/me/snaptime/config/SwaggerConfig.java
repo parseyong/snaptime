@@ -1,4 +1,4 @@
-package me.snaptime.user.service.config;
+package me.snaptime.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

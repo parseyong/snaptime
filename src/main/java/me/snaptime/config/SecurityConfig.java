@@ -1,4 +1,4 @@
-package me.snaptime.user.service.config;
+package me.snaptime.config;
 
 import lombok.RequiredArgsConstructor;
 import me.snaptime.auth.JwtAuthFilter;
