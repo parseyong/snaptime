@@ -8,7 +8,7 @@ import me.snaptime.user.dto.res.SignInResDto;
 public interface UserSignService {
 
     /*
-        회원가입을 진행합니다. loginId가 중복일경우 예외를 반환합니다.
+        회원가입을 진행합니다. 이메일이 중복일경우 예외를 반환합니다.
         회원가입 시 개인키와 기본앨범이 생성됩니다.
 
         userAddDto : 회원가입정보가 담긴 dto
@@ -18,7 +18,7 @@ public interface UserSignService {
     /*
         로그인을 진행합니다.
 
-        signInReqDto : loginId와 password가 담긴 로그인 요청dto
+        signInReqDto : 이메일과 password가 담긴 로그인 요청dto
     */
     SignInResDto signIn(SignInReqDto signInReqDto);
 

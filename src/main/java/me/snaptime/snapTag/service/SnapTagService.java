@@ -11,19 +11,19 @@ public interface SnapTagService {
         스냅에 유저태그를 추가합니다.
         자기 자신을 태그할 경우 예외를 반환합니다,
 
-        tagUserLoginIds : 태그될 유저의 loginId리스트
-        snap            : 태그를 등록할 snap의 id
+        tagUserEmails : 태그될 유저의 이메일 리스트
+        snap          : 태그를 등록할 snap의 id
     */
-    void addTagUser(List<String> tagUserLoginIds, Snap snap);
+    void addTagUser(List<String> tagUserEmails, Snap snap);
 
     /*
         스냅 수정 시 태그정보를 갱신합니다.
-        태그된 유저정보를 조회하여 tagUserLoginIds와 비교하여 태그유저를 추가하거나 삭제합니다.
+        태그된 유저정보를 조회하여 tagUserEmails와 비교하여 태그유저를 추가하거나 삭제합니다.
 
-        tagUserLoginIds : 태그될 유저의 loginId리스트
-        snap            : 태그를 등록할 snap의 id
+        tagUserEmails : 태그될 유저의 이메일 리스트
+        snap          : 태그를 등록할 snap의 id
     */
-    void updateTagUsers(List<String> tagUserLoginIds, Snap snap);
+    void updateTagUsers(List<String> tagUserEmails, Snap snap);
 
     /*
         스냅에 태그된 유저들의 정보를 가져옵니다.

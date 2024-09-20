@@ -6,7 +6,7 @@ import me.snaptime.friend.dto.res.FriendCntResDto;
 @Builder
 public record UserProfileResDto(
         Long userId,
-        String loginId,
+        String email,
         String nickName,
         String profilePhotoURL,
         FriendCntResDto friendCntResDto,

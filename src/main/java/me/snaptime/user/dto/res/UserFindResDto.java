@@ -9,7 +9,7 @@ import static me.snaptime.user.domain.QUser.user;
 public record UserFindResDto(
 
         Long userId,
-        String loginId,
+        String email,
         String profilePhotoURL,
         String nickName
 ){
@@ -17,7 +17,7 @@ public record UserFindResDto(
 
         return UserFindResDto.builder()
                 .userId(tuple.get(user.userId))
-                .loginId(tuple.get(user.loginId))
+                .email(tuple.get(user.email))
                 .profilePhotoURL(profilePhotoURL)
                 .nickName(tuple.get(user.nickname))
                 .build();

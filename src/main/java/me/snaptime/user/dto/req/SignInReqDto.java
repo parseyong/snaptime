@@ -5,17 +5,17 @@ import jakarta.validation.constraints.NotBlank;
 public record SignInReqDto(
 
         @Schema(
-                example = "kang4746",
-                description = "유저의 loginId를 입력해주세요"
+                example = "tester1@naver.com",
+                description = "유저의 email를 입력해주세요"
         )
-        @NotBlank(message = "유저 loginId 입력은 필수입니다.")
-        String loginId,
+        @NotBlank(message = "유저 email입력은 필수입니다.")
+        String email,
 
         @Schema(
-                example = "password",
+                example = "1234",
                 description = "유저의 password를 입력해주세요"
         )
-        @NotBlank(message = "유저 password 입력은 필수입니다.")
+        @NotBlank(message = "유저 password입력은 필수입니다.")
         String password
 
 ) {

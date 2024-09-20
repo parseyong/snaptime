@@ -7,9 +7,9 @@ public interface PhotoService {
         암호화된 사진인 경우 인증을 한 뒤 복호화하여 반환합니다.
         기본적으로는 인증토큰없이 사진조회가 가능하지만 암호화된 사진의 경우에는 인증토큰이 필요합니다.
 
-        reqLoginId  : 요청자의 loginId
+        reqEmail    : 요청자의 email
         fileName    : 조회할 사진의 이름
         isEncrypted : 암호화 여부
     */
-    byte[] findPhoto(String reqLoginId, String fileName, boolean isEncrypted);
+    byte[] findPhoto(String reqEmail, String fileName, boolean isEncrypted);
 }

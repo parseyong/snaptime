@@ -39,13 +39,13 @@ public class AlarmServiceImpl implements AlarmService {
 
     @Override
     @Transactional
-    public void readSnapAlarm(String reqLoginId, Long snapAlarmId) {
+    public void readSnapAlarm(String reqEmail, Long snapAlarmId) {
 
         SnapAlarm snapAlarm = snapAlarmRepository.findById(snapAlarmId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.ALARM_NOT_EXIST));
 
         // 자신한테 온 알림인지 여부체크
-        checkMyAlarm(reqLoginId, snapAlarm.getReceiver().getLoginId());
+        checkMyAlarm(reqEmail, snapAlarm.getReceiver().getEmail());
 
         snapAlarm.readAlarm();
         snapAlarmRepository.save(snapAlarm);
@@ -53,12 +53,12 @@ public class AlarmServiceImpl implements AlarmService {
 
     @Override
     @Transactional
-    public void readFollowAlarm(String reqLoginId, Long followAlarmId) {
+    public void readFollowAlarm(String reqEmail, Long followAlarmId) {
         FollowAlarm followAlarm = followAlarmRepository.findById(followAlarmId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.ALARM_NOT_EXIST));
 
         // 자신한테 온 알림인지 여부체크
-        checkMyAlarm(reqLoginId, followAlarm.getReceiver().getLoginId());
+        checkMyAlarm(reqEmail, followAlarm.getReceiver().getEmail());
 
         followAlarm.readAlarm();
         followAlarmRepository.save(followAlarm);
@@ -66,28 +66,28 @@ public class AlarmServiceImpl implements AlarmService {
 
     @Override
     @Transactional
-    public void readReplyAlarm(String reqLoginId, Long replyAlarmId) {
+    public void readReplyAlarm(String reqEmail, Long replyAlarmId) {
         ReplyAlarm replyAlarm = replyAlarmRepository.findById(replyAlarmId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.ALARM_NOT_EXIST));
 
         // 자신한테 온 알림인지 여부체크
-        checkMyAlarm(reqLoginId, replyAlarm.getReceiver().getLoginId());
+        checkMyAlarm(reqEmail, replyAlarm.getReceiver().getEmail());
 
         replyAlarm.readAlarm();
         replyAlarmRepository.save(replyAlarm);
     }
 
     @Override
-    public AlarmFindAllResDto findAllAlarms(String reqLoginId) {
-        User reqUser = userRepository.findByLoginId(reqLoginId)
+    public AlarmFindAllResDto findAllAlarms(String reqEmail) {
+        User reqUser = userRepository.findByEmail(reqEmail)
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
         return AlarmFindAllResDto.toDto(findSortedAlarms(reqUser,false), findSortedAlarms(reqUser,true));
     }
 
     @Override
-    public Long findNotReadAlarmCnt(String reqLoginId) {
-        User reqUser = userRepository.findByLoginId(reqLoginId)
+    public Long findNotReadAlarmCnt(String reqEmail) {
+        User reqUser = userRepository.findByEmail(reqEmail)
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
         return followAlarmRepository.countByReceiverAndIsRead(reqUser,false)+
@@ -97,7 +97,7 @@ public class AlarmServiceImpl implements AlarmService {
 
     @Override
     @Transactional
-    public void deleteAlarm(String reqLoginId, Long alarmId, AlarmDeleteReqDto alarmDeleteReqDto) {
+    public void deleteAlarm(String reqEmail, Long alarmId, AlarmDeleteReqDto alarmDeleteReqDto) {
 
         AlarmType alarmType = alarmDeleteReqDto.alarmType();
 
@@ -106,7 +106,7 @@ public class AlarmServiceImpl implements AlarmService {
             FollowAlarm followAlarm = followAlarmRepository.findById(alarmId)
                     .orElseThrow(() -> new CustomException(ExceptionCode.ALARM_NOT_EXIST));
 
-            checkMyAlarm(reqLoginId, followAlarm.getReceiver().getLoginId());
+            checkMyAlarm(reqEmail, followAlarm.getReceiver().getEmail());
             followAlarmRepository.delete(followAlarm);
         }
 
@@ -115,7 +115,7 @@ public class AlarmServiceImpl implements AlarmService {
             ReplyAlarm replyAlarm = replyAlarmRepository.findById(alarmId)
                     .orElseThrow(() -> new CustomException(ExceptionCode.ALARM_NOT_EXIST));
 
-            checkMyAlarm(reqLoginId, replyAlarm.getReceiver().getLoginId());
+            checkMyAlarm(reqEmail, replyAlarm.getReceiver().getEmail());
             replyAlarmRepository.delete(replyAlarm);
         }
 
@@ -124,15 +124,15 @@ public class AlarmServiceImpl implements AlarmService {
             SnapAlarm snapAlarm = snapAlarmRepository.findById(alarmId)
                     .orElseThrow(() -> new CustomException(ExceptionCode.ALARM_NOT_EXIST));
 
-            checkMyAlarm(reqLoginId, snapAlarm.getReceiver().getLoginId());
+            checkMyAlarm(reqEmail, snapAlarm.getReceiver().getEmail());
             snapAlarmRepository.delete(snapAlarm);
         }
     }
 
     // 자신한테 온 알림인지 여부체크
-    private void checkMyAlarm(String reqLoginId, String alarmReceiverLoginId){
+    private void checkMyAlarm(String reqEmail, String alarmReceiverEmail){
 
-        if(!reqLoginId.equals(alarmReceiverLoginId))
+        if(!reqEmail.equals(alarmReceiverEmail))
             throw new CustomException(ExceptionCode.ACCESS_FAIL_ALARM);
 
     }

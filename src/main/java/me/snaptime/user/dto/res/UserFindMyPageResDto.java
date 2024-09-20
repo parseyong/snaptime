@@ -8,7 +8,6 @@ import me.snaptime.user.domain.User;
 public record UserFindMyPageResDto(
     Long userId,
     String nickname,
-    String loginId,
     String email,
     String birthDay,
     String profilePhotoURL
@@ -18,7 +17,6 @@ public record UserFindMyPageResDto(
         return UserFindMyPageResDto.builder()
                 .userId(user.getUserId())
                 .nickname(user.getNickname())
-                .loginId(user.getLoginId())
                 .email(user.getEmail())
                 .birthDay(user.getBirthDay())
                 .profilePhotoURL(profilePhotoURL)

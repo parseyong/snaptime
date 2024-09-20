@@ -31,25 +31,25 @@ public class ReplyController {
     @Operation(summary = "댓글 등록요청", description = "댓글을 등록할 snap의 Id와 댓글내용을 보내주세요.")
     @Parameter(name = "snapId", description = "댓글을 등록할 snap의 id", required = true, example = "1")
     public ResponseEntity<CommonResponseDto<Void>> addParentReply(
-            final @AuthenticationPrincipal String reqLoginId,
+            final @AuthenticationPrincipal String reqEmail,
             final @PathVariable("snapId") Long snapId,
             @RequestBody @Valid ParentReplyAddReqDto parentReplyAddReqDto){
 
-        replyService.addParentReply(reqLoginId, snapId, parentReplyAddReqDto);
+        replyService.addParentReply(reqEmail, snapId, parentReplyAddReqDto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(CommonResponseDto.of("댓글등록이 성공했습니다.",null));
     }
 
     @PostMapping("/snaps/parent-replies/{parentReplyId}/child-replies")
-    @Operation(summary = "대댓글 등록요청", description = "대댓글을 등록할 부모댓글의 Id와 태그할 유저의 loginId,댓글내용을 입력해주세요" +
-                                        "<br>태그할 유저가 없다면 tagLoginId는 보내지 않아도 됩니다.")
+    @Operation(summary = "대댓글 등록요청", description = "대댓글을 등록할 부모댓글의 Id와 태그할 유저의 email,댓글내용을 입력해주세요" +
+                                        "<br>태그할 유저가 없다면 tagUserEmail은 보내지 않아도 됩니다.")
     @Parameter(name = "parentReplyId", description = "대댓글을 추가할 부모댓글의 id", required = true, example = "1")
     public ResponseEntity<CommonResponseDto<Void>> addChildReply(
-            final @AuthenticationPrincipal String reqLoginId,
+            final @AuthenticationPrincipal String reqEmail,
             final @PathVariable("parentReplyId") Long parentReplyId,
             @RequestBody @Valid ChildReplyAddReqDto childReplyAddReqDto){
 
-        replyService.addChildReply(reqLoginId, parentReplyId,childReplyAddReqDto);
+        replyService.addChildReply(reqEmail, parentReplyId,childReplyAddReqDto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(CommonResponseDto.of("대댓글등록이 성공했습니다.",null));
     }
@@ -88,11 +88,11 @@ public class ReplyController {
     @Operation(summary = "댓글 수정요청", description = "댓글 ID와 수정할 댓글내용을 입력해주세요")
     @Parameter(name = "parentReplyId", description = "댓글ID", required = true, example = "1")
     public ResponseEntity<CommonResponseDto<Void>> updateParentReply(
-            final @AuthenticationPrincipal String reqLoginId,
+            final @AuthenticationPrincipal String reqEmail,
             final @PathVariable("parentReplyId") Long parentReplyId,
             @RequestBody @Valid ReplyUpdateReqDto replyUpdateReqDto){
 
-        replyService.updateParentReply(reqLoginId, parentReplyId, replyUpdateReqDto);
+        replyService.updateParentReply(reqEmail, parentReplyId, replyUpdateReqDto);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(CommonResponseDto.of("댓글 수정을 완료했습니다",null));
     }
@@ -101,11 +101,11 @@ public class ReplyController {
     @Operation(summary = "대댓글 수정요청", description = "대댓글 ID와 수정할 댓글내용을 입력해주세요")
     @Parameter(name = "childReplyId", description = "대댓글ID", required = true, example = "1")
     public ResponseEntity<CommonResponseDto<Void>> updateChildReply(
-            final @AuthenticationPrincipal String reqLoginId,
+            final @AuthenticationPrincipal String reqEmail,
             final @PathVariable("childReplyId") Long childReplyId,
             final @RequestBody @Valid ReplyUpdateReqDto replyUpdateReqDto){
 
-        replyService.updateChildReply(reqLoginId,childReplyId,replyUpdateReqDto);
+        replyService.updateChildReply(reqEmail,childReplyId,replyUpdateReqDto);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(CommonResponseDto.of("대댓글 수정을 완료했습니다",null));
     }
@@ -114,10 +114,10 @@ public class ReplyController {
     @Operation(summary = "댓글 삭제요청", description = "삭제할 댓글 ID를 입력해주세요")
     @Parameter(name = "parentReplyId", description = "댓글ID", required = true, example = "1")
     public ResponseEntity<CommonResponseDto<Void>> deleteParentReply(
-            final @AuthenticationPrincipal String reqLoginId,
+            final @AuthenticationPrincipal String reqEmail,
             final @PathVariable Long parentReplyId){
 
-        replyService.deleteParentReply(reqLoginId,parentReplyId);
+        replyService.deleteParentReply(reqEmail,parentReplyId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(CommonResponseDto.of("댓글 삭제를 완료했습니다",null));
     }
@@ -126,10 +126,10 @@ public class ReplyController {
     @Operation(summary = "대댓글 삭제요청", description = "삭제할 대댓글 ID를 입력해주세요")
     @Parameter(name = "childReplyId", description = "대댓글ID", required = true, example = "1")
     public ResponseEntity<CommonResponseDto<Void>> deleteChildReply(
-            final @AuthenticationPrincipal String reqLoginId,
+            final @AuthenticationPrincipal String reqEmail,
             final @PathVariable Long childReplyId){
 
-        replyService.deleteChildReply(reqLoginId, childReplyId);
+        replyService.deleteChildReply(reqEmail, childReplyId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(CommonResponseDto.of("대댓글 삭제를 완료했습니다",null));
     }

@@ -25,10 +25,10 @@ public class UserQdslRepositoryImpl implements UserQdslRepository {
         Pageable pageable= PageRequest.of((int) (pageNum-1),20);
 
         List<Tuple> tuples =  jpaQueryFactory.select(
-                        user.userId, user.loginId, user.profilePhotoName, user.nickname
+                        user.userId, user.email, user.profilePhotoName, user.nickname
                 )
                 .from(user)
-                .where(user.nickname.startsWith(searchKeyword).or(user.loginId.startsWith(searchKeyword)))
+                .where(user.nickname.startsWith(searchKeyword).or(user.email.startsWith(searchKeyword)))
                 .orderBy(user.userId.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize()+1) //페이지의 크기

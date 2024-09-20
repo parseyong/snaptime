@@ -34,11 +34,11 @@ public class SnapController {
             "현재 @RequestPart로 파일데이터를 받는 기능이 스웨거에서 지원이 되지 않습니다. 포스트맨으로 요청테스트를 하시길 바랍니다.")
     @Parameter(name = "multipartFile", description = "크롤링API를 통해 얻은 사진을 MultipartFile형식으로 보내주세요.")
     public ResponseEntity<CommonResponseDto<Long>> createSnap(
-            final @AuthenticationPrincipal String reqLoginId,
+            final @AuthenticationPrincipal String reqEmail,
             @RequestPart @Valid SnapAddReqDto snapAddReqDto,
             final @RequestPart MultipartFile multipartFile) {
 
-        snapService.addSnap(reqLoginId, snapAddReqDto, multipartFile);
+        snapService.addSnap(reqEmail, snapAddReqDto, multipartFile);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(CommonResponseDto.of("스냅이 정상적으로 저장되었습니다.", null));
     }
@@ -48,11 +48,11 @@ public class SnapController {
                                                             "비공개 스냅의 경우 자신의 쓴 snap이여야만 조회가 가능합니다.")
     @Parameter(name = "snapId", description = "조회할 snap의 id")
     public ResponseEntity<CommonResponseDto<SnapFindDetailResDto>> findSnapDetail(
-            final @AuthenticationPrincipal String reqLoginId,
+            final @AuthenticationPrincipal String reqEmail,
             final @PathVariable("snapId") Long snapId) {
 
         return ResponseEntity.status(HttpStatus.OK).body(
-                CommonResponseDto.of("스냅이 정상적으로 불러와졌습니다.", snapService.findSnapDetail(reqLoginId, snapId)));
+                CommonResponseDto.of("스냅이 정상적으로 불러와졌습니다.", snapService.findSnapDetail(reqEmail, snapId)));
     }
 
     @PatchMapping(value = "/albums/snaps/{snapId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
@@ -66,12 +66,12 @@ public class SnapController {
                                                             "사진변경을 원하지 않는다면 파일데이터를 보내지 마세요.")
     })
     public ResponseEntity<CommonResponseDto<Void>> updateSnap(
-            final @AuthenticationPrincipal String reqLoginId,
+            final @AuthenticationPrincipal String reqEmail,
             @RequestPart @Valid SnapUpdateReqDto snapUpdateReqDto,
             final @RequestPart(required = false) MultipartFile multipartFile,
             final @PathVariable("snapId") Long snapId) {
 
-        snapService.updateSnap(reqLoginId, snapId, snapUpdateReqDto, multipartFile);
+        snapService.updateSnap(reqEmail, snapId, snapUpdateReqDto, multipartFile);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(CommonResponseDto.of("스냅이 정상적으로 수정되었습니다.", null));
     }
@@ -83,11 +83,11 @@ public class SnapController {
             @Parameter(name = "isPrivate", description = "변경할 상태를 입력해주세요.")
     })
     public ResponseEntity<CommonResponseDto<Void>> updateVisibility(
-            final @AuthenticationPrincipal String reqLoginId,
+            final @AuthenticationPrincipal String reqEmail,
             final @PathVariable("snapId") Long snapId,
             final @PathVariable("isPrivate") boolean isPrivate) {
 
-        snapService.updateSnapVisibility(reqLoginId, snapId, isPrivate);
+        snapService.updateSnapVisibility(reqEmail, snapId, isPrivate);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(CommonResponseDto.of("게시글의 상태가 성공적으로 변경되었습니다.", null));
     }
@@ -99,11 +99,11 @@ public class SnapController {
             @Parameter(name = "albumId", description = "이동할 Album Id")
     })
     ResponseEntity<CommonResponseDto<Void>> updateSnapPosition(
-            final @AuthenticationPrincipal String reqLoginId,
+            final @AuthenticationPrincipal String reqEmail,
             final @PathVariable("snapId") Long snapId,
             final @PathVariable("albumId") Long albumId) {
 
-        snapService.updateSnapPosition(reqLoginId,snapId,albumId);
+        snapService.updateSnapPosition(reqEmail,snapId,albumId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(CommonResponseDto.of("스냅위치 변경이 완료되었습니다.",null));
     }
@@ -112,10 +112,10 @@ public class SnapController {
     @Operation(summary = "Snap 삭제", description = "스냅을 삭제합니다.")
     @Parameter(name = "snapId", description = "삭제할 Snap ID")
     ResponseEntity<CommonResponseDto<Void>> deleteSnap(
-            final @AuthenticationPrincipal String reqLoginId,
+            final @AuthenticationPrincipal String reqEmail,
             final @PathVariable("snapId") Long snapId) {
 
-        snapService.deleteSnap(reqLoginId, snapId);
+        snapService.deleteSnap(reqEmail, snapId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(CommonResponseDto.of("스냅이 삭제되었습니다.", null));
     }
@@ -127,10 +127,10 @@ public class SnapController {
     @Parameter(name = "albumId", description = "모든 스냅을 조회할 앨범의 id")
     public ResponseEntity<CommonResponseDto<SnapFindAllInAlbumResDto>> findAllSnapInAlbum(
             final @PathVariable("albumId") Long albumId,
-            final @AuthenticationPrincipal String reqLoginId) {
+            final @AuthenticationPrincipal String reqEmail) {
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(CommonResponseDto.of("앨범 내 snap조회 성공", snapService.findAllSnapInAlbum(reqLoginId, albumId)));
+                .body(CommonResponseDto.of("앨범 내 snap조회 성공", snapService.findAllSnapInAlbum(reqEmail, albumId)));
     }
 
 }

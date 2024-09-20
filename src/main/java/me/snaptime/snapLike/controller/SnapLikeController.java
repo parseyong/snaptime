@@ -26,10 +26,10 @@ public class SnapLikeController {
                                         "좋아요를 누르지 않았다면 좋아요가 추가됩니다.<br>")
     @Parameter(name = "snapId", description = "좋아요를 누를 snap의 id를 입력해주세요.")
     public ResponseEntity<CommonResponseDto<Void>> toggleSnapLike(
-            final @AuthenticationPrincipal String reqLoginId,
+            final @AuthenticationPrincipal String reqEmail,
             final @PathVariable Long snapId){
 
-        String message = snapLikeService.toggleSnapLike(reqLoginId, snapId);
+        String message = snapLikeService.toggleSnapLike(reqEmail, snapId);
         return ResponseEntity.status(HttpStatus.OK).body(CommonResponseDto.of(message,null));
     }
 }

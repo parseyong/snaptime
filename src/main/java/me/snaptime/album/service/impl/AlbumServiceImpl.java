@@ -36,11 +36,11 @@ public class AlbumServiceImpl implements AlbumService {
     private String basicAlbumName;
 
     @Override
-    public List<AlbumFindResDto> findAllAlbumsWithThumnail(String reqLoginId, String targetLoginId, Long thumnailCnt) {
+    public List<AlbumFindResDto> findAllAlbumsWithThumnail(String reqEmail, String targetUserEmail, Long thumnailCnt) {
 
-        User reqUser = userRepository.findByLoginId(reqLoginId)
+        User reqUser = userRepository.findByEmail(reqEmail)
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
-        User targetUser = userRepository.findByLoginId(targetLoginId)
+        User targetUser = userRepository.findByEmail(targetUserEmail)
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
         List<Album> albums = albumRepository.findAllByUser(targetUser);
@@ -60,9 +60,9 @@ public class AlbumServiceImpl implements AlbumService {
     }
 
     @Override
-    public List<AlbumFindResDto> findAllMyAlbums(String reqLoginId) {
+    public List<AlbumFindResDto> findAllMyAlbums(String reqEmail) {
 
-        User reqUser = userRepository.findByLoginId(reqLoginId)
+        User reqUser = userRepository.findByEmail(reqEmail)
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
         return albumRepository.findAllByUser(reqUser).stream().map(album ->
@@ -71,9 +71,9 @@ public class AlbumServiceImpl implements AlbumService {
 
     @Override
     @Transactional
-    public void addAlbum(String reqLoginId, AlbumAddReqDto albumAddReqDto) {
+    public void addAlbum(String reqEmail, AlbumAddReqDto albumAddReqDto) {
 
-        User reqUser = userRepository.findByLoginId(reqLoginId)
+        User reqUser = userRepository.findByEmail(reqEmail)
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
         albumRepository.save(
@@ -85,9 +85,9 @@ public class AlbumServiceImpl implements AlbumService {
 
     @Override
     @Transactional
-    public void updateAlbumName(String reqLoginId, Long albumId, AlbumUpdateReqDto albumUpdateReqDto) {
+    public void updateAlbumName(String reqEmail, Long albumId, AlbumUpdateReqDto albumUpdateReqDto) {
 
-        User reqUser = userRepository.findByLoginId(reqLoginId)
+        User reqUser = userRepository.findByEmail(reqEmail)
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
         Album album = albumRepository.findById(albumId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.ALBUM_NOT_EXIST));
@@ -105,9 +105,9 @@ public class AlbumServiceImpl implements AlbumService {
 
     @Override
     @Transactional
-    public void deleteAlbum(String reqLoginId, Long albumId) {
+    public void deleteAlbum(String reqEmail, Long albumId) {
 
-        User reqUser = userRepository.findByLoginId(reqLoginId)
+        User reqUser = userRepository.findByEmail(reqEmail)
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
         Album album = albumRepository.findById(albumId)

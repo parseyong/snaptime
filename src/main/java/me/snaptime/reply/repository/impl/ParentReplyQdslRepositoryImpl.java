@@ -27,7 +27,7 @@ public class ParentReplyQdslRepositoryImpl implements ParentReplyQdslRepository 
         Pageable pageable= PageRequest.of((int) (pageNum-1),20);
 
         List<Tuple> tuples =  jpaQueryFactory.select(
-                        user.loginId, user.profilePhotoName,user.nickname,
+                        user.email, user.profilePhotoName,user.nickname,
                         parentReply.content,parentReply.parentReplyId,parentReply.lastModifiedDate
                 )
                 .from(parentReply)

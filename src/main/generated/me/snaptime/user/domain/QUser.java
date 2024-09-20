@@ -31,8 +31,6 @@ public class QUser extends EntityPathBase<User> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> lastModifiedDate = _super.lastModifiedDate;
 
-    public final StringPath loginId = createString("loginId");
-
     public final StringPath nickname = createString("nickname");
 
     public final StringPath password = createString("password");

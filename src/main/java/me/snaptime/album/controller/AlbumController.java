@@ -36,35 +36,35 @@ public class AlbumController {
                                                                     "자신의 앨범 조회 시 비공개 스냅이 썸네일이 될 수 있습니다.")
     @Parameters({
             @Parameter(name = "thumnailCnt" , description = "필요한 각 앨범의 썸네일 개수를 보내주세요."),
-            @Parameter(name = "targetLoginId", description = "조회할 유저의 loginId를 입력해주세요.")
+            @Parameter(name = "targetUserEmail", description = "조회할 유저의 email을 입력해주세요.")
     })
-    @Parameter(name = "targetLoginId", description = "앨범을 조회할 유저의 loginId를 입력해주세요.")
+    @Parameter(name = "targetUserEmail", description = "앨범을 조회할 유저의 email을 입력해주세요.")
     public ResponseEntity<CommonResponseDto<List<AlbumFindResDto>>> findAllAlbumsWithThumnail(
-            final @AuthenticationPrincipal String reqLoginId,
-            final @RequestParam("targetLoginId") @NotBlank(message = "조회할 유저의 loginId를 입력해주세요.") String targetLoginId,
+            final @AuthenticationPrincipal String reqEmail,
+            final @RequestParam("targetUserEmail") @NotBlank(message = "조회할 유저의 email을 입력해주세요.") String targetUserEmail,
             final @RequestParam("thumnailCnt") @NotNull(message = "필요한 각 앨범의 썸네일 개수를 보내주세요.")Long thumnailCnt) {
 
         return ResponseEntity.status(HttpStatus.OK).body
-                (CommonResponseDto.of("앨범목록(썸네일 포함) 조회성공", albumService.findAllAlbumsWithThumnail(reqLoginId, targetLoginId, thumnailCnt)));
+                (CommonResponseDto.of("앨범목록(썸네일 포함) 조회성공", albumService.findAllAlbumsWithThumnail(reqEmail, targetUserEmail, thumnailCnt)));
     }
 
     @GetMapping("/albums")
     @Operation(summary = "Album 목록 조회", description = "자신의 Album 목록(썸네일 미포함)을 조회합니다.<br>" +
                                                         "다른유저의 Album목록(썸네일 미포함)을 조회하는 요청은 없습니다.")
     public ResponseEntity<CommonResponseDto<List<AlbumFindResDto>>> findAllAlbums(
-            final @AuthenticationPrincipal String reqLoginId) {
+            final @AuthenticationPrincipal String reqEmail) {
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(CommonResponseDto.of("앨범목록(썸네일 미포함) 조회성공", albumService.findAllMyAlbums(reqLoginId)));
+                .body(CommonResponseDto.of("앨범목록(썸네일 미포함) 조회성공", albumService.findAllMyAlbums(reqEmail)));
     }
 
     @PostMapping("/albums")
     @Operation(summary = "Album 생성", description = "사용자의 Album을 생성합니다.")
     public ResponseEntity<CommonResponseDto<Void>> addAlbum(
-            final @AuthenticationPrincipal String reqLoginId,
+            final @AuthenticationPrincipal String reqEmail,
             @RequestBody @Valid AlbumAddReqDto albumAddReqDto) {
 
-        albumService.addAlbum(reqLoginId, albumAddReqDto);
+        albumService.addAlbum(reqEmail, albumAddReqDto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(CommonResponseDto.of("사용자의 앨범을 정상적으로 생성했습니다.", null));
     }
@@ -73,11 +73,11 @@ public class AlbumController {
     @Operation(summary = "Album 이름 변경", description = "Album의 이름을 변경합니다.")
     @Parameter(name = "albumId", description = "변경할 앨범의 Id를 입력해주세요.", required = true, example = "1")
     public ResponseEntity<CommonResponseDto<Void>> updateAlbumName(
-            final @AuthenticationPrincipal String reqLoginId,
+            final @AuthenticationPrincipal String reqEmail,
             @RequestBody @Valid AlbumUpdateReqDto albumUpdateReqDto,
             final @PathVariable Long albumId) {
 
-        albumService.updateAlbumName(reqLoginId, albumId, albumUpdateReqDto);
+        albumService.updateAlbumName(reqEmail, albumId, albumUpdateReqDto);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(CommonResponseDto.of("앨범 수정완료", null));
     }
@@ -87,10 +87,10 @@ public class AlbumController {
                                             "삭제된 앨범 안에 있는 Snap은 기본앨범으로 이동됩니다.")
     @Parameter(name = "albumId", description = "삭제될 앨범의 ID를 입력해주세요")
     ResponseEntity<CommonResponseDto<Void>> deleteAlbum(
-            final @AuthenticationPrincipal String reqLoginId,
+            final @AuthenticationPrincipal String reqEmail,
             final @PathVariable Long albumId) {
 
-        albumService.deleteAlbum(reqLoginId, albumId);
+        albumService.deleteAlbum(reqEmail, albumId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(CommonResponseDto.of("앨범 삭제성공", null));
     }

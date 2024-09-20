@@ -33,17 +33,17 @@ public class SnapTagServiceImpl implements SnapTagService {
 
     @Override
     @Transactional
-    public void addTagUser(List<String> tagUserLoginIds, Snap snap){
+    public void addTagUser(List<String> tagUserEmails, Snap snap){
 
-        if(tagUserLoginIds == null)
-            tagUserLoginIds = new ArrayList<>();
+        if(tagUserEmails == null)
+            tagUserEmails = new ArrayList<>();
 
-        List<SnapTag> snapTags = tagUserLoginIds.stream().map( tagUserloginId -> {
+        List<SnapTag> snapTags = tagUserEmails.stream().map( tagUserEmail -> {
 
             // 셀프태그인지 체크
-            checkSelfTag(snap,tagUserloginId);
+            checkSelfTag(snap,tagUserEmail);
 
-            User tagUser = userRepository.findByLoginId(tagUserloginId)
+            User tagUser = userRepository.findByEmail(tagUserEmail)
                     .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
             alarmAddService.addSnapAlarm(snap.getWriter(), tagUser,snap, AlarmType.SNAPTAG);
@@ -58,18 +58,18 @@ public class SnapTagServiceImpl implements SnapTagService {
 
     @Override
     @Transactional
-    public void updateTagUsers(List<String> tagUserLoginIds, Snap snap){
+    public void updateTagUsers(List<String> tagUserEmails, Snap snap){
 
-        if(tagUserLoginIds == null)
-            tagUserLoginIds = new ArrayList<>();
+        if(tagUserEmails == null)
+            tagUserEmails = new ArrayList<>();
 
         List<SnapTag> snapTags = snapTagRepository.findBySnap(snap);
 
         // 태그유저 삭제
-        snapTagRepository.deleteAll( findDeletedTagUsers(snapTags,tagUserLoginIds) );
+        snapTagRepository.deleteAll( findDeletedTagUsers(snapTags,tagUserEmails) );
 
         // 태그유저 추가
-        snapTagRepository.saveAll( findNewTagUsers(tagUserLoginIds, snap) );
+        snapTagRepository.saveAll( findNewTagUsers(tagUserEmails, snap) );
     }
 
     @Override
@@ -82,24 +82,24 @@ public class SnapTagServiceImpl implements SnapTagService {
     }
 
     // 삭제된 태그유저 추출
-    private List<SnapTag> findDeletedTagUsers(List<SnapTag> snapTags, List<String> tagUserLoginIds){
+    private List<SnapTag> findDeletedTagUsers(List<SnapTag> snapTags, List<String> tagUserEmails){
 
         return snapTags.stream()
-                .filter(snapTag -> !tagUserLoginIds.contains(snapTag.getTagUser().getLoginId()))
+                .filter(snapTag -> !tagUserEmails.contains(snapTag.getTagUser().getEmail()))
                 .collect(Collectors.toList());
     }
 
     // 새롭게 추가된 태그유저 추출
-    private List<SnapTag> findNewTagUsers(List<String> tagUserLoginIds, Snap snap){
+    private List<SnapTag> findNewTagUsers(List<String> tagUserEmails, Snap snap){
 
-        return tagUserLoginIds.stream().map( tagUserloginId-> {
+        return tagUserEmails.stream().map( tagUserEmail-> {
 
-            User tagUser = userRepository.findByLoginId(tagUserloginId)
+            User tagUser = userRepository.findByEmail(tagUserEmail)
                     .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
             if(!snapTagRepository.existsBySnapAndTagUser(snap,tagUser)){
                 // 셀프태그인지 체크
-                checkSelfTag(snap,tagUserloginId);
+                checkSelfTag(snap,tagUserEmail);
 
                 alarmAddService.addSnapAlarm(snap.getWriter(), tagUser, snap, AlarmType.SNAPTAG);
                 return SnapTag.builder()
@@ -112,9 +112,9 @@ public class SnapTagServiceImpl implements SnapTagService {
         }).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
-    private void checkSelfTag(Snap snap, String tagUserLoginId){
+    private void checkSelfTag(Snap snap, String tagUserEmail){
 
-        if(snap.getWriter().getLoginId().equals(tagUserLoginId))
+        if(snap.getWriter().getEmail().equals(tagUserEmail))
             throw new CustomException(ExceptionCode.CAN_NOT_SELF_TAG);
     }
 }

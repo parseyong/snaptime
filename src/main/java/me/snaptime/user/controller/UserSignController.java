@@ -47,7 +47,8 @@ public class UserSignController {
 
     @PostMapping("/reissue")
     @Operation(summary = "엑세스 토큰 재발급", description = "RefreshToken 을 통해 AccessToken과 "+
-                                            "RefreshToken을 재발급받습니다.")
+                                            "RefreshToken을 재발급받습니다.<br>" +
+                                            "기존 AccessToken자리에 refreshToken을 넣어서 보내주세요.")
     public ResponseEntity<CommonResponseDto<SignInResDto>> reissue(HttpServletRequest request){
 
         return ResponseEntity.status(HttpStatus.OK)

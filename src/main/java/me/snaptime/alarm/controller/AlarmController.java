@@ -30,10 +30,10 @@ public class AlarmController {
     @Operation(summary = "팔로우 알림 조회", description = "팔로우 알림을 읽음처리합니다.")
     @Parameter(name = "followAlarmId" , description = "followAlarmId를 입력해주세요", required = true,example = "1")
     public ResponseEntity<CommonResponseDto<Void>> readFollowAlarm(
-            final @AuthenticationPrincipal String reqLoginId,
+            final @AuthenticationPrincipal String reqEmail,
             final @PathVariable Long followAlarmId) {
 
-        alarmService.readFollowAlarm(reqLoginId, followAlarmId);
+        alarmService.readFollowAlarm(reqEmail, followAlarmId);
         return ResponseEntity.status(HttpStatus.OK).body( CommonResponseDto.of("팔로우알림 조회 성공", null) );
     }
 
@@ -41,10 +41,10 @@ public class AlarmController {
     @Operation(summary = "스냅알림 조회", description = "스냅알림을 읽음처리합니다.")
     @Parameter(name = "snapAlarmId" , description = "snapAlarmId를 입력해주세요", required = true,example = "1")
     public ResponseEntity<CommonResponseDto<SnapFindDetailResDto>> readSnapAlarm(
-            final @AuthenticationPrincipal String reqLoginId,
+            final @AuthenticationPrincipal String reqEmail,
             final @PathVariable Long snapAlarmId) {
 
-        alarmService.readSnapAlarm(reqLoginId, snapAlarmId);
+        alarmService.readSnapAlarm(reqEmail, snapAlarmId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(CommonResponseDto.of("스냅알림 조회 성공", null));
     }
@@ -53,10 +53,10 @@ public class AlarmController {
     @Operation(summary = "댓글알림 조회", description = "댓글알림을 읽음처리합니다.")
     @Parameter(name = "replyAlarmId" , description = "replyAlarmId를 입력해주세요", required = true,example = "1")
     public ResponseEntity<CommonResponseDto<ParentReplyPagingResDto>> readReplyAlarm(
-            final @AuthenticationPrincipal String reqLoginId,
+            final @AuthenticationPrincipal String reqEmail,
             final @PathVariable Long replyAlarmId) {
 
-        alarmService.readReplyAlarm(reqLoginId, replyAlarmId);
+        alarmService.readReplyAlarm(reqEmail, replyAlarmId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(CommonResponseDto.of("댓글알림 조회 성공", null));
     }
@@ -64,10 +64,10 @@ public class AlarmController {
     @GetMapping("/count/not-read")
     @Operation(summary = "미확인알림개수 조회", description = "확인되지 않은 알림개수를 조회합니다.")
     public ResponseEntity<CommonResponseDto<Long>> findNotReadAlarmCnt(
-            final @AuthenticationPrincipal String reqLoginId) {
+            final @AuthenticationPrincipal String reqEmail) {
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(CommonResponseDto.of("미확인 알림개수 조회성공", alarmService.findNotReadAlarmCnt(reqLoginId)));
+                .body(CommonResponseDto.of("미확인 알림개수 조회성공", alarmService.findNotReadAlarmCnt(reqEmail)));
     }
 
     @GetMapping
@@ -76,21 +76,21 @@ public class AlarmController {
                                         "알림타입별로 반환되는 데이터가 다릅니다.<br>"+
                                         "각 알림타입별로 alarmId값이 부여되기 때문에 타입이 다른 알림의 경우 id값이 중복될 수 있습니다.")
     public ResponseEntity<CommonResponseDto<AlarmFindAllResDto>> findAllAlarms(
-            final @AuthenticationPrincipal String reqLoginId) {
+            final @AuthenticationPrincipal String reqEmail) {
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(CommonResponseDto.of("알림리스트 조회성공", alarmService.findAllAlarms(reqLoginId)));
+                .body(CommonResponseDto.of("알림리스트 조회성공", alarmService.findAllAlarms(reqEmail)));
     }
 
     @DeleteMapping ("/{alarmId}")
     @Operation(summary = "알림을 삭제합니다.", description = "읽음 여부와 상관없이 알림을 삭제합니다.")
     @Parameter(name = "alarmId" , description = "alarmId를 입력해주세요", required = true,example = "1")
     public ResponseEntity<CommonResponseDto<Void>> deleteAlarm(
-            final @AuthenticationPrincipal String reqLoginId,
+            final @AuthenticationPrincipal String reqEmail,
             final @PathVariable Long alarmId,
             @RequestBody @Valid AlarmDeleteReqDto alarmDeleteReqDto) {
 
-        alarmService.deleteAlarm(reqLoginId, alarmId, alarmDeleteReqDto);
+        alarmService.deleteAlarm(reqEmail, alarmId, alarmDeleteReqDto);
         return ResponseEntity.status(HttpStatus.OK).body(CommonResponseDto.of("알림 삭제 성공", null));
     }
 }

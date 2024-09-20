@@ -48,8 +48,8 @@ public class JwtProvider {
 
     // accessToken을 생성합니다.
     @Transactional
-    public String addAccessToken(String reqLoginId, Long userId, Collection<? extends GrantedAuthority> roles) {
-        Claims claims = Jwts.claims().setSubject(String.valueOf(reqLoginId));
+    public String addAccessToken(String reqEmail, Long userId, Collection<? extends GrantedAuthority> roles) {
+        Claims claims = Jwts.claims().setSubject(String.valueOf(reqEmail));
         claims.put("roleList", roles);
         claims.put("userId", userId);
         Date now = new Date();
@@ -64,9 +64,9 @@ public class JwtProvider {
 
     // refreshToken을 생성합니다.
     @Transactional
-    public String addRefreshToken(String reqLoginId, Long userId, Collection<? extends GrantedAuthority> roles){
+    public String addRefreshToken(String reqEmail, Long userId, Collection<? extends GrantedAuthority> roles){
 
-        Claims claims = Jwts.claims().setSubject(String.valueOf(reqLoginId));
+        Claims claims = Jwts.claims().setSubject(String.valueOf(reqEmail));
         claims.put("roleList", roles);
         claims.put("userId", userId);
         Date now = new Date();
@@ -78,14 +78,14 @@ public class JwtProvider {
                 .signWith(SignatureAlgorithm.HS256, refreshSecretKey)
                 .compact();
 
-        refreshTokenRepository.save(new RefreshToken(reqLoginId,refreshToken));
+        refreshTokenRepository.save(new RefreshToken(reqEmail,refreshToken));
         return refreshToken;
     }
 
     // accessToken으로부터 인증객체를 반환합니다.
     public Authentication findAuthenticationByAccessToken(String accessToken){
-        User user = customUserDetailsService.loadUserByUsername(this.findLoginIdByAccessToken(accessToken));
-        return new UsernamePasswordAuthenticationToken(user.getLoginId(),"",user.getAuthorities());
+        User user = customUserDetailsService.loadUserByUsername(this.findEmailByAccessToken(accessToken));
+        return new UsernamePasswordAuthenticationToken(user.getEmail(),"",user.getAuthorities());
     }
 
     // 헤더에서 토큰을 가져옵니다.
@@ -115,8 +115,8 @@ public class JwtProvider {
     public boolean isValidRefreshToken(String reqRefreshToken){
         try{
 
-            String reqLoginId = findLoginIdByRefreshToken(reqRefreshToken);
-            RefreshToken savedRefreshToken = refreshTokenRepository.findByLoginId(reqLoginId).orElseThrow();
+            String reqEmail = findEmailByRefreshToken(reqRefreshToken);
+            RefreshToken savedRefreshToken = refreshTokenRepository.findByEmail(reqEmail).orElseThrow();
 
             if(savedRefreshToken == null || !reqRefreshToken.equals(savedRefreshToken.getRefreshToken())){
                 return false;
@@ -130,13 +130,13 @@ public class JwtProvider {
     }
 
     // accessToken으로부터 loginId를 추출합니다.
-    private String findLoginIdByAccessToken(String accessToken) {
+    private String findEmailByAccessToken(String accessToken) {
 
         return Jwts.parser().setSigningKey(accessSecretKey).parseClaimsJws(accessToken).getBody().getSubject();
     }
 
     // refreshToken으로부터 loginId를 추출합니다.
-    public String findLoginIdByRefreshToken(String refreshToken){
+    public String findEmailByRefreshToken(String refreshToken){
         return Jwts.parser().setSigningKey(refreshSecretKey).parseClaimsJws(refreshToken).getBody().getSubject();
     }
 }

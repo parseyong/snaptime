@@ -51,7 +51,7 @@ public class SnapQdslRepositoryImpl implements SnapQdslRepository {
 
         // 팔로우유저의 스냅을 최신순으로 조회
         List<Tuple> tuples =  jpaQueryFactory.select(
-                        user.loginId, user.profilePhotoName, user.nickname,
+                        user.email, user.profilePhotoName, user.nickname,
                         snap.snapId, snap.createdDate, snap.lastModifiedDate, snap.oneLineJournal, snap.fileName
                 ).distinct()
                 .from(user)

@@ -33,11 +33,11 @@ public class PhotoController {
             @Parameter(name = "isEncrypted", description = "암호화여부를 입력해주세요.")
     })
     public ResponseEntity<byte[]> findPhoto(
-            final @AuthenticationPrincipal String reqLoginId,
+            final @AuthenticationPrincipal String reqEmail,
             final @RequestParam("fileName") String fileName,
             final @RequestParam("isEncrypted") boolean isEncrypted) {
 
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_PNG)
-                .body(photoService.findPhoto(reqLoginId, fileName, isEncrypted));
+                .body(photoService.findPhoto(reqEmail, fileName, isEncrypted));
     }
 }

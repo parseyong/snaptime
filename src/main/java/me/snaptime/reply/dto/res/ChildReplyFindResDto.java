@@ -7,11 +7,11 @@ import me.snaptime.reply.domain.ChildReply;
 @Builder
 public record ChildReplyFindResDto(
 
-        String writerLoginId,
+        String writerEmail,
         String writerUserName,
         String writerProfilePhotoURL,
         String content,
-        String tagUserLoginId,
+        String tagUserEmail,
         String tagUserName,
         Long parentReplyId,
         Long childReplyId,
@@ -21,7 +21,7 @@ public record ChildReplyFindResDto(
     public static ChildReplyFindResDto toDto(ChildReply childReply, String profilePhotoURL, String timeAgo){
         if(childReply.getReplyTagUser() == null){
             return ChildReplyFindResDto.builder()
-                    .writerLoginId(childReply.getWriter().getLoginId())
+                    .writerEmail(childReply.getWriter().getEmail())
                     .writerProfilePhotoURL(profilePhotoURL)
                     .writerUserName(childReply.getWriter().getNickname())
                     .content(childReply.getContent())
@@ -32,11 +32,11 @@ public record ChildReplyFindResDto(
         }
 
         return ChildReplyFindResDto.builder()
-                .writerLoginId(childReply.getWriter().getLoginId())
+                .writerEmail(childReply.getWriter().getEmail())
                 .writerProfilePhotoURL(profilePhotoURL)
                 .writerUserName(childReply.getWriter().getNickname())
                 .content(childReply.getContent())
-                .tagUserLoginId(childReply.getReplyTagUser().getLoginId())
+                .tagUserEmail(childReply.getReplyTagUser().getEmail())
                 .tagUserName(childReply.getReplyTagUser().getNickname())
                 .parentReplyId(childReply.getParentReply().getParentReplyId())
                 .childReplyId(childReply.getChildReplyId())

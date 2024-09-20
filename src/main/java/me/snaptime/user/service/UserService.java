@@ -12,13 +12,13 @@ public interface UserService {
     /*
         나의 유저정보를 조회합니다.
 
-        reqLoginId : 요청자의 id
+        reqEmail : 요청자의 이메일
     */
-    UserFindMyPageResDto findUserMyPage(String reqLoginId);
+    UserFindMyPageResDto findUserMyPage(String reqEmail);
 
     /*
         키워드로 유저를 검색합니다.
-        유저의 닉네임 또는 loginId중 키워드로 시작하는 유저를 페이징처리 후 조회합니다.
+        유저의 닉네임 또는 이메일중 키워드로 시작하는 유저를 페이징처리 후 조회합니다.
 
         searchKeyword : 검색 키워드
         pageNum       : 페이지 번호
@@ -28,36 +28,36 @@ public interface UserService {
     /*
         유저정보(비밀번호 제외)를 수정합니다.
 
-        reqLoginId       : 요청자의 loginId
+        reqEmail         : 요청자의 email
         userUpdateReqDto : 유저정보 수정정보가 담긴 요청dto
     */
-    void updateUser(String reqLoginId, UserUpdateReqDto userUpdateReqDto);
+    void updateUser(String reqEmail, UserUpdateReqDto userUpdateReqDto);
 
     /*
         유저의 비밀번호를 변경합니다.
         이전과 같은 비밀번호로 변경할 수 없습니다.
 
-        reqLoginId               : 요청자의 loginId
+        reqEmail                 : 요청자의 email
         userUpdatePasswordReqDto : 새로운 비밀번호가 담긴 dto
     */
-    void updatePassword(String reqLoginId, UserUpdatePasswordReqDto userUpdatePasswordReqDto);
+    void updatePassword(String reqEmail, UserUpdatePasswordReqDto userUpdatePasswordReqDto);
 
     /*
         유저의 프로필사진을 수정합니다.
 
-        reqLoginId    : 요청자의 loginId
+        reqEmail      : 요청자의 email
         multipartFile : 수정할 사진
     */
-    void updateProfilePhoto(String reqLoginId, MultipartFile multipartFile);
+    void updateProfilePhoto(String reqEmail, MultipartFile multipartFile);
 
     /*
         유저를 탈퇴합니다.
         비밀번호가 틀리면 예외를 반환합니다.
 
-        reqLoginId         : 요청자의 loginId
+        reqEmail           : 요청자의 email
         userDeleteReqDto   : 유저의 비밀번호가 담긴 dto
     */
-    void deleteUser(String reqLoginId, UserDeleteReqDto userDeleteReqDto);
+    void deleteUser(String reqEmail, UserDeleteReqDto userDeleteReqDto);
 
 
 }

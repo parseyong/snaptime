@@ -20,7 +20,7 @@ public record SnapFindDetailResDto(
         String snapPhotoURL,
         LocalDateTime snapCreatedDate,
         LocalDateTime snapModifiedDate,
-        String writerLoginId,
+        String writerEmail,
         String profilePhotoURL,
         String writerUserName,
         List<TagUserFindResDto> tagUserFindResDtos,
@@ -37,7 +37,7 @@ public record SnapFindDetailResDto(
                 .snapPhotoURL(snapPhotoURL)
                 .snapCreatedDate(tuple.get(snap.createdDate))
                 .snapModifiedDate(tuple.get(snap.lastModifiedDate))
-                .writerLoginId(tuple.get(user.loginId))
+                .writerEmail(tuple.get(user.email))
                 .profilePhotoURL(profilePhotoURL)
                 .writerUserName(tuple.get(user.nickname))
                 .tagUserFindResDtos(tagUserFindResDtos)
@@ -56,7 +56,7 @@ public record SnapFindDetailResDto(
                 .snapPhotoURL(snapPhotoURL)
                 .snapCreatedDate(snap.getCreatedDate())
                 .snapModifiedDate(snap.getLastModifiedDate())
-                .writerLoginId(snap.getWriter().getLoginId())
+                .writerEmail(snap.getWriter().getEmail())
                 .profilePhotoURL(profilePhotoURL)
                 .writerUserName(snap.getWriter().getNickname())
                 .tagUserFindResDtos(tagUserFindResDtos)

@@ -28,11 +28,11 @@ public class ProfileServiceImpl implements ProfileService {
     private final FriendService friendService;
 
     @Override
-    public UserProfileResDto findUserProfile(String reqLoginId, String targetLoginId) {
+    public UserProfileResDto findUserProfile(String reqEmail, String targetUserEmail) {
 
-        User reqUser = userRepository.findByLoginId(reqLoginId)
+        User reqUser = userRepository.findByEmail(reqEmail)
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
-        User targetUser = userRepository.findByLoginId(targetLoginId)
+        User targetUser = userRepository.findByEmail(targetUserEmail)
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
 
@@ -41,7 +41,7 @@ public class ProfileServiceImpl implements ProfileService {
 
         return UserProfileResDto.builder()
                 .userId(targetUser.getUserId())
-                .loginId(targetUser.getLoginId())
+                .email(targetUser.getEmail())
                 .nickName(targetUser.getNickname())
                 .profilePhotoURL(profilePhotoURL)
                 .friendCntResDto( friendService.findFriendCnt(targetUser) )
@@ -51,9 +51,9 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public List<SnapFindResDto> findTagSnap(String targetLoginId) {
+    public List<SnapFindResDto> findTagSnap(String targetUserEmail) {
 
-        User targetUser = userRepository.findByLoginId(targetLoginId)
+        User targetUser = userRepository.findByEmail(targetUserEmail)
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
         return snapRepository.findTagedSnaps(targetUser).stream().map(snap -> {

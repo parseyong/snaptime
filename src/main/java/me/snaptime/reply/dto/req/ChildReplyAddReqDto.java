@@ -12,9 +12,9 @@ public record ChildReplyAddReqDto(
         String replyMessage,
 
         @Schema(
-                example = "홍길동",
-                description = "태그할 유저의 loginId를 입력해주세요. 없으면 입력하지 않아도 됩니다."
+                example = "tester1@naver.com",
+                description = "태그할 유저의 email을 입력해주세요. 없으면 입력하지 않아도 됩니다."
         )
-        String tagLoginId
+        String tagUserEmail
 ) {
 }

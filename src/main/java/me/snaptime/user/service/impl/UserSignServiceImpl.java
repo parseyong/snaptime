@@ -31,17 +31,16 @@ public class UserSignServiceImpl implements UserSignService {
     @Override
     public void signUp(UserAddReqDto userAddReqDto) {
 
-        //로그인 id가 이미 존재하는지 확인
-        if(userRepository.findByLoginId(userAddReqDto.loginId()).isPresent()){
-            throw new CustomException(ExceptionCode.DUPLICATED_LOGIN_ID);
+        //이메일이 이미 존재하는지 확인
+        if(userRepository.findByEmail(userAddReqDto.email()).isPresent()){
+            throw new CustomException(ExceptionCode.DUPLICATED_EMAIL);
         }
 
         //새로운 사용자 객체 생성
         User user = User.builder()
                 .nickname(userAddReqDto.nickName())
-                .loginId(userAddReqDto.loginId())
-                .password(passwordEncoder.encode(userAddReqDto.password()))
                 .email(userAddReqDto.email())
+                .password(passwordEncoder.encode(userAddReqDto.password()))
                 .birthDay(userAddReqDto.birthDay())
                 .profilePhotoName("default.png")
                 .secretKey(cipherComponent.generateAESKey())
@@ -56,7 +55,7 @@ public class UserSignServiceImpl implements UserSignService {
     @Override
     public SignInResDto signIn(SignInReqDto signInReqDto) {
 
-        User user = userRepository.findByLoginId(signInReqDto.loginId())
+        User user = userRepository.findByEmail(signInReqDto.email())
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
         if (!passwordEncoder.matches(signInReqDto.password(), user.getPassword())) {
@@ -64,8 +63,8 @@ public class UserSignServiceImpl implements UserSignService {
         }
 
         return SignInResDto.builder()
-                .accessToken(jwtProvider.addAccessToken(user.getLoginId(), user.getUserId(), user.getAuthorities()))
-                .refreshToken(jwtProvider.addRefreshToken(user.getLoginId(), user.getUserId(), user.getAuthorities()))
+                .accessToken(jwtProvider.addAccessToken(user.getEmail(), user.getUserId(), user.getAuthorities()))
+                .refreshToken(jwtProvider.addRefreshToken(user.getEmail(), user.getUserId(), user.getAuthorities()))
                 .build();
     }
 
@@ -75,7 +74,7 @@ public class UserSignServiceImpl implements UserSignService {
 
         String refreshToken = jwtProvider.findTokenByHeader(request);
 
-        User user = userRepository.findByLoginId(jwtProvider.findLoginIdByRefreshToken(refreshToken))
+        User user = userRepository.findByEmail(jwtProvider.findEmailByRefreshToken(refreshToken))
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
         // refreshToken의 유효성 검사
@@ -84,8 +83,8 @@ public class UserSignServiceImpl implements UserSignService {
 
         // refreshToken과 accessToken 재발급
         return SignInResDto.builder()
-                .accessToken(jwtProvider.addAccessToken(user.getLoginId(), user.getUserId(), user.getAuthorities()))
-                .refreshToken(jwtProvider.addRefreshToken(user.getLoginId(), user.getUserId(), user.getAuthorities()))
+                .accessToken(jwtProvider.addAccessToken(user.getEmail(), user.getUserId(), user.getAuthorities()))
+                .refreshToken(jwtProvider.addRefreshToken(user.getEmail(), user.getUserId(), user.getAuthorities()))
                 .build();
     }
 }

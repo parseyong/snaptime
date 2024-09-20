@@ -30,9 +30,9 @@ public record SnapAddReqDto(
         Long albumId,
 
         @Schema(
-                description = "스냅에 태그할 유저의 loginId를 입력해주세요. " +
+                description = "스냅에 태그할 유저의 email을 입력해주세요. " +
                                 "없으면 입력하지 않아도 됩니다."
         )
-        List<String> tagUserLoginIds
+        List<String> tagUserEmails
 ) {
 }

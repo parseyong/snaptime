@@ -11,7 +11,6 @@ public enum ExceptionCode {
     ALREADY_FOLLOW(HttpStatus.BAD_REQUEST,"이미 팔로우관계입니다."),
     FRIEND_NOT_EXIST(HttpStatus.BAD_REQUEST, "존재하지 않는 친구입니다."),
     PAGE_NOT_EXIST(HttpStatus.BAD_REQUEST,"존재하지 않는 페이지입니다."),
-    FRIEND_REQ_NOT_EXIST(HttpStatus.BAD_REQUEST, "존재하지 않는 친구요청입니다."),
 
     // SnapTag Exception
     CAN_NOT_SELF_TAG(HttpStatus.BAD_REQUEST, "자기 자신을 태그할 수 없습니다."),
@@ -38,7 +37,7 @@ public enum ExceptionCode {
     // User Exception
     USER_NOT_EXIST(HttpStatus.BAD_REQUEST, "사용자가 존재하지 않습니다."),
     CAN_NOT_UPDATE_SAME_PASSWORD(HttpStatus.BAD_REQUEST,"같은 비밀번호로 수정 할 수 없습니다."),
-    DUPLICATED_LOGIN_ID(HttpStatus.BAD_REQUEST, "이미 존재하는 loginId 입니다."),
+    DUPLICATED_EMAIL(HttpStatus.BAD_REQUEST, "이미 존재하는 email 입니다."),
     USER_DELETE_FAIL(HttpStatus.BAD_REQUEST,"비밀번호가 올바르지 않습니다."),
 
     // Snap Exception

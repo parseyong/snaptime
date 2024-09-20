@@ -31,7 +31,7 @@ public class FriendQdslRepositoryImpl implements FriendQdslRepository {
         Pageable pageable= PageRequest.of((int) (pageNum-1),20);
 
         List<Tuple> tuples =  jpaQueryFactory.select(
-                        user.loginId, user.profilePhotoName, user.nickname, friend.friendId
+                        user.email, user.profilePhotoName, user.nickname, friend.friendId
                 )
                 .from(friend)
                 .join(user).on( getJoinBuilder(searchType) )
@@ -62,7 +62,7 @@ public class FriendQdslRepositoryImpl implements FriendQdslRepository {
 
             builder.and(
                             user.nickname.startsWith(searchKeyword)
-                            .or(user.loginId.startsWith(searchKeyword))
+                            .or(user.email.startsWith(searchKeyword))
             );
         }
 

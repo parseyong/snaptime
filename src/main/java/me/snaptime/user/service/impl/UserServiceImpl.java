@@ -40,9 +40,9 @@ public class UserServiceImpl implements UserService {
     private final PhotoComponent photoComponent;
 
     @Override
-    public UserFindMyPageResDto findUserMyPage(String reqLoginId) {
+    public UserFindMyPageResDto findUserMyPage(String reqEmail) {
 
-        User reqUser = userRepository.findByLoginId(reqLoginId)
+        User reqUser = userRepository.findByEmail(reqEmail)
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
         String profilePhotoURL = urlComponent.makePhotoURL(reqUser.getProfilePhotoName(), false);
@@ -67,13 +67,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void updateUser(String reqLoginId, UserUpdateReqDto userUpdateReqDto) {
+    public void updateUser(String reqEmail, UserUpdateReqDto userUpdateReqDto) {
 
-        User reqUser = userRepository.findByLoginId(reqLoginId)
+        User reqUser = userRepository.findByEmail(reqEmail)
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
         reqUser.updateNickName(userUpdateReqDto.nickName());
-        reqUser.updateEmail(userUpdateReqDto.email());
         reqUser.updateBirthDay(userUpdateReqDto.birthDay());
 
         userRepository.save(reqUser);
@@ -81,8 +80,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void updatePassword(String reqLoginId, UserUpdatePasswordReqDto userUpdatePasswordReqDto){
-        User reqUser = userRepository.findByLoginId(reqLoginId)
+    public void updatePassword(String reqEmail, UserUpdatePasswordReqDto userUpdatePasswordReqDto){
+        User reqUser = userRepository.findByEmail(reqEmail)
                 .orElseThrow(()-> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
         if (passwordEncoder.matches(userUpdatePasswordReqDto.newPassword(), reqUser.getPassword())) {
@@ -95,8 +94,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void updateProfilePhoto(String reqLoginId, MultipartFile multipartFile){
-        User reqUser = userRepository.findByLoginId(reqLoginId)
+    public void updateProfilePhoto(String reqEmail, MultipartFile multipartFile){
+        User reqUser = userRepository.findByEmail(reqEmail)
                 .orElseThrow(()-> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
         try {
@@ -116,9 +115,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void deleteUser(String reqLoginId, UserDeleteReqDto userDeleteReqDto) {
+    public void deleteUser(String reqEmail, UserDeleteReqDto userDeleteReqDto) {
 
-        User reqUser = userRepository.findByLoginId(reqLoginId)
+        User reqUser = userRepository.findByEmail(reqEmail)
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
         if (!passwordEncoder.matches(userDeleteReqDto.password(), reqUser.getPassword())) {

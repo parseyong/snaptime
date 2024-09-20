@@ -48,9 +48,9 @@ public class SnapServiceImpl implements SnapService {
 
     @Override
     @Transactional
-    public void addSnap(String reqLoginId, SnapAddReqDto snapAddReqDto, MultipartFile multipartFile) {
+    public void addSnap(String reqEmail, SnapAddReqDto snapAddReqDto, MultipartFile multipartFile) {
 
-        User reqUser = userRepository.findByLoginId(reqLoginId)
+        User reqUser = userRepository.findByEmail(reqEmail)
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
 
         String fileName = addPhoto(reqUser, multipartFile, snapAddReqDto.isPrivate());
@@ -67,15 +67,15 @@ public class SnapServiceImpl implements SnapService {
         snapRepository.save(snap);
 
         // tagUserLoginIds가 파라미터로 주어졌을 경우 태그에 추가
-        if (snapAddReqDto.tagUserLoginIds() != null) {
-            snapTagService.addTagUser(snapAddReqDto.tagUserLoginIds(), snap);
+        if (snapAddReqDto.tagUserEmails() != null) {
+            snapTagService.addTagUser(snapAddReqDto.tagUserEmails(), snap);
         }
     }
 
     @Override
-    public SnapFindDetailResDto findSnapDetail(String reqLoginId, Long snapId) {
+    public SnapFindDetailResDto findSnapDetail(String reqEmail, Long snapId) {
 
-        User reqUser = userRepository.findByLoginId(reqLoginId)
+        User reqUser = userRepository.findByEmail(reqEmail)
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
         Snap snap = snapRepository.findById(snapId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.SNAP_NOT_EXIST));
@@ -92,15 +92,15 @@ public class SnapServiceImpl implements SnapService {
                 snapPhotoURL,
                 snapTagService.findTagUsers(snap.getSnapId()),
                 snapLikeService.findSnapLikeCnt(snap.getSnapId()),
-                snapLikeService.isLikedSnap(snap.getSnapId(), reqLoginId)
+                snapLikeService.isLikedSnap(snap.getSnapId(), reqEmail)
         );
     }
 
     @Override
     @Transactional
-    public void updateSnap(String reqLoginId, Long snapId, SnapUpdateReqDto snapUpdateReqDto, MultipartFile multipartFile) {
+    public void updateSnap(String reqEmail, Long snapId, SnapUpdateReqDto snapUpdateReqDto, MultipartFile multipartFile) {
 
-        User reqUser = userRepository.findByLoginId(reqLoginId)
+        User reqUser = userRepository.findByEmail(reqEmail)
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
         Snap snap = snapRepository.findById(snapId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.SNAP_NOT_EXIST));
@@ -122,14 +122,14 @@ public class SnapServiceImpl implements SnapService {
         snapRepository.save(snap);
 
         // 태그정보 수정
-        snapTagService.updateTagUsers(snapUpdateReqDto.tagUserLoginIds(), snap);
+        snapTagService.updateTagUsers(snapUpdateReqDto.tagUserEmails(), snap);
     }
 
     @Override
     @Transactional
-    public void updateSnapVisibility(String reqLoginId, Long snapId, boolean isPrivate) {
+    public void updateSnapVisibility(String reqEmail, Long snapId, boolean isPrivate) {
 
-        User reqUser = userRepository.findByLoginId(reqLoginId)
+        User reqUser = userRepository.findByEmail(reqEmail)
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
         Snap snap = snapRepository.findById(snapId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.SNAP_NOT_EXIST));
@@ -165,9 +165,9 @@ public class SnapServiceImpl implements SnapService {
 
     @Override
     @Transactional
-    public void updateSnapPosition(String reqLoginId, Long snapId, Long albumId) {
+    public void updateSnapPosition(String reqEmail, Long snapId, Long albumId) {
 
-        User reqUser = userRepository.findByLoginId(reqLoginId)
+        User reqUser = userRepository.findByEmail(reqEmail)
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
         Snap snap = snapRepository.findById(snapId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.SNAP_NOT_EXIST));
@@ -184,9 +184,9 @@ public class SnapServiceImpl implements SnapService {
 
     @Override
     @Transactional
-    public void deleteSnap(String reqLoginId, Long snapId) {
+    public void deleteSnap(String reqEmail, Long snapId) {
 
-        User reqUser = userRepository.findByLoginId(reqLoginId)
+        User reqUser = userRepository.findByEmail(reqEmail)
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
         Snap snap = snapRepository.findById(snapId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.SNAP_NOT_EXIST));
@@ -200,9 +200,9 @@ public class SnapServiceImpl implements SnapService {
 
     @Override
     @Transactional(readOnly = true)
-    public SnapFindAllInAlbumResDto findAllSnapInAlbum(String reqLoginId, Long albumId) {
+    public SnapFindAllInAlbumResDto findAllSnapInAlbum(String reqEmail, Long albumId) {
 
-        User reqUser = userRepository.findByLoginId(reqLoginId)
+        User reqUser = userRepository.findByEmail(reqEmail)
                 .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
         Album album = albumRepository.findById(albumId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.ALBUM_NOT_EXIST));

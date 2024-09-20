@@ -21,11 +21,11 @@ public class PhotoServiceImpl implements PhotoService {
     private final CipherComponent cipherComponent;
 
     @Override
-    public byte[] findPhoto(String reqLoginId, String fileName, boolean isEncrypted) {
+    public byte[] findPhoto(String reqEmail, String fileName, boolean isEncrypted) {
         
         // 암호화된 사진인 경우 복호화를 거친 후 반환
         if (isEncrypted) {
-            User reqUser = userRepository.findByLoginId(reqLoginId)
+            User reqUser = userRepository.findByEmail(reqEmail)
                     .orElseThrow(() -> new CustomException(ExceptionCode.USER_NOT_EXIST));
             return cipherComponent.decryptData(reqUser.getSecretKey(), photoComponent.findPhoto(fileName));
         }

@@ -28,12 +28,10 @@ public class User extends BaseTimeEntity implements UserDetails{
 
     private String nickname;
 
-    @Column(name = "login_id",nullable = false, unique = true)
-    private String loginId;
+    @Column(nullable = false, unique = true)
+    private String email;
 
     private String password;
-
-    private String email;
 
     @Column(name = "birth_day")
     private String birthDay;
@@ -48,12 +46,11 @@ public class User extends BaseTimeEntity implements UserDetails{
     private SecretKey secretKey;
 
     @Builder
-    protected User(String nickname, String loginId, String password,
-                   String email, String birthDay, SecretKey secretKey, String profilePhotoName){
+    protected User(String nickname, String email, String password,
+                   String birthDay, SecretKey secretKey, String profilePhotoName){
         this.nickname = nickname;
-        this.loginId = loginId;
-        this.password =password;
         this.email = email;
+        this.password =password;
         this.birthDay = birthDay;
         this.roleName = "ROLE_USER";
         this.secretKey = secretKey;
@@ -62,10 +59,6 @@ public class User extends BaseTimeEntity implements UserDetails{
 
     public void updateNickName(String nickName) {
         this.nickname = nickName;
-    }
-
-    public void updateEmail(String email) {
-        this.email = email;
     }
 
     public void updateBirthDay(String birthDay) {

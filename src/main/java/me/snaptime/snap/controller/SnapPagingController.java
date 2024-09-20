@@ -26,11 +26,11 @@ public class SnapPagingController {
                                                     "자신의 공개스냅또한 같이 조회됩니다.")
     @Parameter(name = "pageNum", description = "Snap페이지 번호를 보내주세요")
     public ResponseEntity<CommonResponseDto<SnapFindPagingResDto>> findSnapPage(
-            final @AuthenticationPrincipal String reqLoginId,
+            final @AuthenticationPrincipal String reqEmail,
             final @PathVariable Long pageNum) {
 
         return ResponseEntity.status(HttpStatus.OK).body(CommonResponseDto.of(
-                "스냅 페이징조회가 완료되었습니다.", snapPagingService.findSnapPage(reqLoginId,pageNum)));
+                "스냅 페이징조회가 완료되었습니다.", snapPagingService.findSnapPage(reqEmail,pageNum)));
     }
 
 }

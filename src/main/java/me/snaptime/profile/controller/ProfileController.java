@@ -27,26 +27,26 @@ public class ProfileController {
 
     private final ProfileService profileService;
 
-    @GetMapping("/users/{targetLoginId}/profile/info")
+    @GetMapping("/users/{targetUserEmail}/profile/info")
     @Operation(summary = "유저 프로필정보 조회", description = "유저의 프로필정보(스냅 수, 친구 수, 이름, 프로필사진)를 조회합니다.")
-    @Parameter(name = "targetLoginId", description = "프로필조회할 유저의 loginId", required = true)
+    @Parameter(name = "targetUserEmail", description = "프로필조회할 유저의 email", required = true)
     public ResponseEntity<CommonResponseDto<UserProfileResDto>> findUserProfile(
-            final @AuthenticationPrincipal String reqLoginId,
-            final @PathVariable("targetLoginId") String targetLoginId){
+            final @AuthenticationPrincipal String reqEmail,
+            final @PathVariable("targetUserEmail") String targetUserEmail){
 
-        UserProfileResDto userProfileResDto = profileService.findUserProfile(reqLoginId, targetLoginId);
+        UserProfileResDto userProfileResDto = profileService.findUserProfile(reqEmail, targetUserEmail);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(CommonResponseDto.of("유저의 프로필정보 조회 성공", userProfileResDto));
     }
 
-    @GetMapping("/users/{targetLoginId}/profile/tag-snap")
+    @GetMapping("/users/{targetUserEmail}/profile/tag-snap")
     @Operation(summary = "유저가 태그된 스냅조회", description = "targetUser가 태그된 스냅을 조회합니다.<br>" +
                                                 "비공개로 전환된 스냅은 조회가 안되며 스냅은 최신순으로 정렬됩니다.")
-    @Parameter(name = "targetLoginId", description = "조회할 유저의 loginId", required = true)
+    @Parameter(name = "targetUserEmail", description = "조회할 유저의 email", required = true)
     public ResponseEntity<CommonResponseDto<List<SnapFindResDto>>> findTagSnap(
-            final @PathVariable("targetLoginId") String targetLoginId){
+            final @PathVariable("targetUserEmail") String targetUserEmail){
 
         return ResponseEntity.status(HttpStatus.OK).body(
-                CommonResponseDto.of("유저가 태그된 Snap조회 성공", profileService.findTagSnap(targetLoginId)));
+                CommonResponseDto.of("유저가 태그된 Snap조회 성공", profileService.findTagSnap(targetUserEmail)));
     }
 }
