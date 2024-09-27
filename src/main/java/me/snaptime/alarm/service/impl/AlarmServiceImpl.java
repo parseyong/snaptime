@@ -4,10 +4,8 @@ import lombok.RequiredArgsConstructor;
 import me.snaptime.alarm.domain.FollowAlarm;
 import me.snaptime.alarm.domain.ReplyAlarm;
 import me.snaptime.alarm.domain.SnapAlarm;
-import me.snaptime.alarm.dto.req.AlarmDeleteReqDto;
 import me.snaptime.alarm.dto.res.AlarmFindAllResDto;
 import me.snaptime.alarm.dto.res.AlarmFindResDto;
-import me.snaptime.alarm.enums.AlarmType;
 import me.snaptime.alarm.repository.FollowAlarmRepository;
 import me.snaptime.alarm.repository.ReplyAlarmRepository;
 import me.snaptime.alarm.repository.SnapAlarmRepository;
@@ -35,7 +33,6 @@ public class AlarmServiceImpl implements AlarmService {
     private final ReplyAlarmRepository replyAlarmRepository;
     private final UserRepository userRepository;
     private final UrlComponent urlComponent;
-
 
     @Override
     @Transactional
@@ -97,36 +94,35 @@ public class AlarmServiceImpl implements AlarmService {
 
     @Override
     @Transactional
-    public void deleteAlarm(String reqEmail, Long alarmId, AlarmDeleteReqDto alarmDeleteReqDto) {
+    public void deleteFollowAlarm(String reqEmail, Long followAlarmId){
 
-        AlarmType alarmType = alarmDeleteReqDto.alarmType();
+        FollowAlarm followAlarm = followAlarmRepository.findById(followAlarmId)
+                .orElseThrow(() -> new CustomException(ExceptionCode.ALARM_NOT_EXIST));
 
-        // 팔로우 알림일 경우
-        if(alarmType == AlarmType.FOLLOW){
-            FollowAlarm followAlarm = followAlarmRepository.findById(alarmId)
+        checkMyAlarm(reqEmail, followAlarm.getReceiver().getEmail());
+        followAlarmRepository.delete(followAlarm);
+    }
+
+    @Override
+    @Transactional
+    public void deleteSnapAlarm(String reqEmail, Long snapAlarmId){
+
+        SnapAlarm snapAlarm = snapAlarmRepository.findById(snapAlarmId)
+                .orElseThrow(() -> new CustomException(ExceptionCode.ALARM_NOT_EXIST));
+
+        checkMyAlarm(reqEmail, snapAlarm.getReceiver().getEmail());
+        snapAlarmRepository.delete(snapAlarm);
+    }
+
+    @Override
+    @Transactional
+    public void deleteReplyAlarm(String reqEmail, Long replyAlarmId){
+
+        ReplyAlarm replyAlarm = replyAlarmRepository.findById(replyAlarmId)
                     .orElseThrow(() -> new CustomException(ExceptionCode.ALARM_NOT_EXIST));
 
-            checkMyAlarm(reqEmail, followAlarm.getReceiver().getEmail());
-            followAlarmRepository.delete(followAlarm);
-        }
-
-        // 댓글알림일 경우
-        else if(alarmType == AlarmType.REPLY){
-            ReplyAlarm replyAlarm = replyAlarmRepository.findById(alarmId)
-                    .orElseThrow(() -> new CustomException(ExceptionCode.ALARM_NOT_EXIST));
-
-            checkMyAlarm(reqEmail, replyAlarm.getReceiver().getEmail());
-            replyAlarmRepository.delete(replyAlarm);
-        }
-
-        // 스냅(스냅태그, 좋아요)에 대한 알림일 경우
-        else{
-            SnapAlarm snapAlarm = snapAlarmRepository.findById(alarmId)
-                    .orElseThrow(() -> new CustomException(ExceptionCode.ALARM_NOT_EXIST));
-
-            checkMyAlarm(reqEmail, snapAlarm.getReceiver().getEmail());
-            snapAlarmRepository.delete(snapAlarm);
-        }
+        checkMyAlarm(reqEmail, replyAlarm.getReceiver().getEmail());
+        replyAlarmRepository.delete(replyAlarm);
     }
 
     // 자신한테 온 알림인지 여부체크

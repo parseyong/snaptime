@@ -3,14 +3,10 @@ package me.snaptime.alarm.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import me.snaptime.alarm.dto.req.AlarmDeleteReqDto;
 import me.snaptime.alarm.dto.res.AlarmFindAllResDto;
 import me.snaptime.alarm.service.AlarmService;
 import me.snaptime.common.CommonResponseDto;
-import me.snaptime.reply.dto.res.ParentReplyPagingResDto;
-import me.snaptime.snap.dto.res.SnapFindDetailResDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -40,7 +36,7 @@ public class AlarmController {
     @GetMapping("/snaps/{snapAlarmId}")
     @Operation(summary = "스냅알림 조회", description = "스냅알림을 읽음처리합니다.")
     @Parameter(name = "snapAlarmId" , description = "snapAlarmId를 입력해주세요", required = true,example = "1")
-    public ResponseEntity<CommonResponseDto<SnapFindDetailResDto>> readSnapAlarm(
+    public ResponseEntity<CommonResponseDto<Void>> readSnapAlarm(
             final @AuthenticationPrincipal String reqEmail,
             final @PathVariable Long snapAlarmId) {
 
@@ -52,7 +48,7 @@ public class AlarmController {
     @GetMapping("/replies/{replyAlarmId}")
     @Operation(summary = "댓글알림 조회", description = "댓글알림을 읽음처리합니다.")
     @Parameter(name = "replyAlarmId" , description = "replyAlarmId를 입력해주세요", required = true,example = "1")
-    public ResponseEntity<CommonResponseDto<ParentReplyPagingResDto>> readReplyAlarm(
+    public ResponseEntity<CommonResponseDto<Void>> readReplyAlarm(
             final @AuthenticationPrincipal String reqEmail,
             final @PathVariable Long replyAlarmId) {
 
@@ -82,15 +78,36 @@ public class AlarmController {
                 .body(CommonResponseDto.of("알림리스트 조회성공", alarmService.findAllAlarms(reqEmail)));
     }
 
-    @DeleteMapping ("/{alarmId}")
-    @Operation(summary = "알림을 삭제합니다.", description = "읽음 여부와 상관없이 알림을 삭제합니다.")
-    @Parameter(name = "alarmId" , description = "alarmId를 입력해주세요", required = true,example = "1")
-    public ResponseEntity<CommonResponseDto<Void>> deleteAlarm(
+    @DeleteMapping ("/snaps/{snapAlarmId}")
+    @Operation(summary = "스냅알림을 삭제합니다.", description = "읽음 여부와 상관없이 알림을 삭제합니다.")
+    @Parameter(name = "snapAlarmId" , description = "삭제할 스냅알림의 id를 입력해주세요.", required = true,example = "1")
+    public ResponseEntity<CommonResponseDto<Void>> deleteSnapAlarm(
             final @AuthenticationPrincipal String reqEmail,
-            final @PathVariable Long alarmId,
-            @RequestBody @Valid AlarmDeleteReqDto alarmDeleteReqDto) {
+            final @PathVariable Long snapAlarmId) {
 
-        alarmService.deleteAlarm(reqEmail, alarmId, alarmDeleteReqDto);
-        return ResponseEntity.status(HttpStatus.OK).body(CommonResponseDto.of("알림 삭제 성공", null));
+        alarmService.deleteSnapAlarm(reqEmail, snapAlarmId);
+        return ResponseEntity.status(HttpStatus.OK).body(CommonResponseDto.of("스냅 알림 삭제 성공", null));
+    }
+
+    @DeleteMapping ("/follow/{followAlarmId}")
+    @Operation(summary = "팔로우 알림을 삭제합니다.", description = "읽음 여부와 상관없이 알림을 삭제합니다.")
+    @Parameter(name = "followAlarmId" , description = "삭제할 팔로우알림의 id를 입력해주세요.", required = true,example = "1")
+    public ResponseEntity<CommonResponseDto<Void>> deleteFollowAlarm(
+            final @AuthenticationPrincipal String reqEmail,
+            final @PathVariable Long followAlarmId) {
+
+        alarmService.deleteFollowAlarm(reqEmail, followAlarmId);
+        return ResponseEntity.status(HttpStatus.OK).body(CommonResponseDto.of("팔로우 알림 삭제 성공", null));
+    }
+
+    @DeleteMapping ("/replies/{replyAlarmId}")
+    @Operation(summary = "알림을 삭제합니다.", description = "읽음 여부와 상관없이 알림을 삭제합니다.")
+    @Parameter(name = "replyAlarmId" , description = "삭제할 댓글알림의 id를 입력해주세요.", required = true,example = "1")
+    public ResponseEntity<CommonResponseDto<Void>> deleteReplyAlarm(
+            final @AuthenticationPrincipal String reqEmail,
+            final @PathVariable Long replyAlarmId) {
+
+        alarmService.deleteReplyAlarm(reqEmail, replyAlarmId);
+        return ResponseEntity.status(HttpStatus.OK).body(CommonResponseDto.of("댓글 알림 삭제 성공", null));
     }
 }

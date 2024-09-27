@@ -1,6 +1,5 @@
 package me.snaptime.alarm.service;
 
-import me.snaptime.alarm.dto.req.AlarmDeleteReqDto;
 import me.snaptime.alarm.dto.res.AlarmFindAllResDto;
 
 
@@ -47,12 +46,27 @@ public interface AlarmService {
     Long findNotReadAlarmCnt(String reqEmail);
 
     /*
-        알림을 삭제합니다. 읽지않은 알림도 삭제가 가능합니다.
+        팔로우 알림을 삭제합니다. 읽지않은 알림도 삭제가 가능합니다.
 
-        reqEmail          : 요청자의 email
-        alarmId           : 삭제하려는 알림의 albumId
-        alarmDeleteReqDto : 알림타입이 담긴 dto
+        reqEmail      : 요청자의 email
+        followAlarmId : 삭제할 팔로우알림의 id
     */
-    void deleteAlarm(String reqEmail, Long alarmId, AlarmDeleteReqDto alarmDeleteReqDto);
+    void deleteFollowAlarm(String reqEmail, Long followAlarmId);
+
+    /*
+        스냅 알림을 삭제합니다. 읽지않은 알림도 삭제가 가능합니다.
+
+        reqEmail    : 요청자의 email
+        snapAlarmId : 삭제할 스냅알림의 id
+    */
+    void deleteSnapAlarm(String reqEmail, Long snapAlarmId);
+
+    /*
+        댓글 알림을 삭제합니다. 읽지않은 알림도 삭제가 가능합니다.
+
+        reqEmail     : 요청자의 email
+        replyAlarmId : 삭제할 댓글알림의 id
+    */
+    void deleteReplyAlarm(String reqEmail, Long replyAlarmId);
 
 }
