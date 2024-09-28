@@ -88,9 +88,9 @@ public class FriendServiceImpl implements FriendService {
 
         List<FriendInfoResDto> friendInfoResDtos = tuples.stream().map(tuple -> {
 
-            boolean isMyFriend = isFollow(reqUser , findUserByEmail(tuple.get(user.email)));
+            boolean isFollow = isFollow(reqUser , findUserByEmail(tuple.get(user.email)));
             String profilePhotoURL = urlComponent.makePhotoURL(tuple.get(user.profilePhotoName),false);
-            return FriendInfoResDto.toDto(tuple,profilePhotoURL,isMyFriend);
+            return FriendInfoResDto.toDto(tuple,profilePhotoURL,isFollow);
         }).collect(Collectors.toList());
 
         return FriendFindPagingResDto.toDto(friendInfoResDtos, hasNextPage);

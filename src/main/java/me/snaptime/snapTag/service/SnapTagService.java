@@ -28,7 +28,8 @@ public interface SnapTagService {
     /*
         스냅에 태그된 유저들의 정보를 가져옵니다.
 
-        snapId : 태그된 유저를 조회할 snap의 id
+        snapId   : 태그된 유저를 조회할 snap의 id
+        reqEmail : 요청자의 이메일
     */
-    List<TagUserFindResDto> findTagUsers(Long snapId);
+    List<TagUserFindResDto> findTagUsers(Long snapId, String reqEmail);
 }

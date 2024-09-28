@@ -90,7 +90,7 @@ public class SnapServiceImpl implements SnapService {
         return SnapFindDetailResDto.toDto(snap,
                 profilePhotoURL,
                 snapPhotoURL,
-                snapTagService.findTagUsers(snap.getSnapId()),
+                snapTagService.findTagUsers(snap.getSnapId(), reqEmail),
                 snapLikeService.findSnapLikeCnt(snap.getSnapId()),
                 snapLikeService.isLikedSnap(snap.getSnapId(), reqEmail)
         );
