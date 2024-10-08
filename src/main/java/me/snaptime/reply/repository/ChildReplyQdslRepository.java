@@ -13,4 +13,11 @@ public interface ChildReplyQdslRepository {
         pageNum        : 페이지번호
     */
     List<ChildReply> findReplyPage(Long parentReplyId, Long pageNum);
+
+    /*
+        부모댓글에 달린 대댓글의 개수를 반환합니다.
+
+        parentReplyId  : 대댓글 개수를 조회할 부모댓글의 id
+    */
+    Long countByParentReplyId(Long parentReplyId);
 }

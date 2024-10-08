@@ -111,7 +111,9 @@ public class ReplyServiceImpl implements ReplyService {
         {
             String profilePhotoURL = urlComponent.makePhotoURL(tuple.get(user.profilePhotoName),false);
             String timeAgo = TimeAgoCalculator.findTimeAgo(tuple.get(parentReply.lastModifiedDate));
-            return ParentReplyFindResDto.toDto(tuple,profilePhotoURL,timeAgo);
+            Long childReplyCnt = childReplyRepository.countByParentReplyId(tuple.get(parentReply.parentReplyId));
+
+            return ParentReplyFindResDto.toDto(tuple,profilePhotoURL,timeAgo,childReplyCnt);
         }).collect(Collectors.toList());
 
         return ParentReplyPagingResDto.toDto(parentReplyFindResDtos, hasNextPage);

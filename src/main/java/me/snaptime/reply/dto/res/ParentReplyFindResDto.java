@@ -15,9 +15,10 @@ public record ParentReplyFindResDto(
         String writerUserName,
         String content,
         Long replyId,
-        String timeAgo
+        String timeAgo,
+        Long childReplyCnt
 ) {
-    public static ParentReplyFindResDto toDto(Tuple tuple, String profilePhotoURL, String timeAgo){
+    public static ParentReplyFindResDto toDto(Tuple tuple, String profilePhotoURL, String timeAgo, Long childReplyCnt){
         return ParentReplyFindResDto.builder()
                 .writerEmail(tuple.get(user.email))
                 .writerProfilePhotoURL(profilePhotoURL)
@@ -25,6 +26,7 @@ public record ParentReplyFindResDto(
                 .content(tuple.get(parentReply.content))
                 .replyId(tuple.get(parentReply.parentReplyId))
                 .timeAgo(timeAgo)
+                .childReplyCnt(childReplyCnt)
                 .build();
     }
 }
