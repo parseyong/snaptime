@@ -58,7 +58,8 @@ Chore: 빌드 업무 수정, 패키지 매니저 수정<br>
 7. <strong>Restful</strong>한 API<br>
 8. <strong>N+1 쿼리</strong> 지양<br>
 9. Service 로직의 <strong>Interface</strong>를 통한 명세기능<br>
-10.<strong>Swagger</strong>를 통한 API명세서 자동화
+10. <strong>Swagger</strong>를 통한 API명세서 자동화
+
 <br>
 
 ## 📷트러블 슈팅
