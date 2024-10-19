@@ -40,7 +40,7 @@ public class Snap extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "writer_id", nullable = false)
     private User writer;
 
     @Builder
