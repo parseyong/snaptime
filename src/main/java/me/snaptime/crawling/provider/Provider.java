@@ -12,11 +12,6 @@ public interface Provider {
     String findCrawlingImageURL(String crawlingURL);
 
     /*
-        crawlingImagePath : 이미지를 가져올 경로
-    */
-    byte[] findCrawlingPhotoBytes(String crawlingImagePath);
-
-    /*
         이미지를 가져오기 위해 Provider의 호스트명을 가져옵니다.
     */
     String getHostname();

@@ -3,6 +3,7 @@ package me.snaptime.crawling.service.impl;
 import me.snaptime.crawling.enums.ProviderBrand;
 import me.snaptime.crawling.provider.Provider;
 import me.snaptime.crawling.service.CrawlingService;
+import me.snaptime.util.JsoupAction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,6 @@ public class CrawlingServiceImpl implements CrawlingService {
 
         Provider provider = providers.get(providerBrand);
         String crawlingImagePath = provider.findCrawlingImageURL(crawlingURL);
-        return provider.findCrawlingPhotoBytes(crawlingImagePath);
+        return JsoupAction.crawlingPhoto(provider.getHostname(), crawlingImagePath);
     }
 }

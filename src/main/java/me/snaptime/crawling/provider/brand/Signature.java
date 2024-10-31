@@ -1,13 +1,13 @@
 package me.snaptime.crawling.provider.brand;
 
 import me.snaptime.crawling.enums.ProviderBrand;
-import me.snaptime.crawling.provider.AbstractProvider;
+import me.snaptime.crawling.provider.Provider;
 import me.snaptime.util.JsoupAction;
 import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Signature extends AbstractProvider {
+public class Signature implements Provider {
 
     @Override
     public String findCrawlingImageURL(String crawlingURL) {
