@@ -1,5 +1,6 @@
 package me.snaptime.alarm.dto.res;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import me.snaptime.alarm.domain.FollowAlarm;
@@ -9,7 +10,7 @@ import me.snaptime.alarm.enums.AlarmType;
 
 import java.time.LocalDateTime;
 
-@Builder
+@Builder(access = AccessLevel.PRIVATE)
 public record AlarmFindResDto(
 
         Long alarmId,

@@ -1,9 +1,10 @@
 package me.snaptime.snapTag.dto.res;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import me.snaptime.snapTag.domain.SnapTag;
 
-@Builder
+@Builder(access = AccessLevel.PRIVATE)
 public record TagUserFindResDto(
 
         String tagUserEmail,

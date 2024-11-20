@@ -1,8 +1,9 @@
 package me.snaptime.friend.dto.res;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 
-@Builder
+@Builder(access = AccessLevel.PRIVATE)
 public record FriendCntResDto(
 
         Long followerCnt,

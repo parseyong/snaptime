@@ -1,13 +1,14 @@
 package me.snaptime.reply.dto.res;
 
 import com.querydsl.core.Tuple;
+import lombok.AccessLevel;
 import lombok.Builder;
 
 import static me.snaptime.reply.domain.QParentReply.parentReply;
 import static me.snaptime.user.domain.QUser.user;
 
 
-@Builder
+@Builder(access = AccessLevel.PRIVATE)
 public record ParentReplyFindResDto(
 
         String writerEmail,

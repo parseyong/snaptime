@@ -1,11 +1,12 @@
 package me.snaptime.snap.dto.res;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import me.snaptime.snap.domain.Snap;
 
 import java.time.LocalDateTime;
 
-@Builder
+@Builder(access = AccessLevel.PRIVATE)
 public record SnapFindResDto(
         Long snapId,
         String oneLineJournal,

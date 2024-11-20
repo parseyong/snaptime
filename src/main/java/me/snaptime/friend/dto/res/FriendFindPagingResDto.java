@@ -1,10 +1,11 @@
 package me.snaptime.friend.dto.res;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 
 import java.util.List;
 
-@Builder
+@Builder(access = AccessLevel.PRIVATE)
 public record FriendFindPagingResDto(
 
         List<FriendInfoResDto> friendInfoResDtos,

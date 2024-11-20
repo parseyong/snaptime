@@ -1,11 +1,11 @@
 package me.snaptime.component;
 
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.snaptime.exception.CustomException;
 import me.snaptime.exception.ExceptionCode;
 import me.snaptime.util.FileNameGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -15,12 +15,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class PhotoComponent {
 
-    @Value("${fileSystemPath}")
-    private String FOLDER_PATH;
+    private final String folderPath;
+
+    @Autowired
+    public PhotoComponent(@Value("${fileSystemPath}") String folderPath){
+        this.folderPath = folderPath;
+    }
 
     /*
         사진을 가져옵니다.
@@ -30,7 +33,7 @@ public class PhotoComponent {
     */
     public byte[] findPhoto(String fileName) {
 
-        String filePath = FOLDER_PATH + fileName;
+        String filePath = folderPath + fileName;
         try {
             return Files.readAllBytes(new File(filePath).toPath());
         } catch (Exception e) {
@@ -46,7 +49,7 @@ public class PhotoComponent {
     */
     public void deletePhoto(String fileName) {
 
-        String filePath = FOLDER_PATH + fileName;
+        String filePath = folderPath + fileName;
         try {
             Path path = Paths.get(filePath);
             Files.delete(path);
@@ -64,7 +67,7 @@ public class PhotoComponent {
     */
     public void updatePhotoVisibility(String fileName, byte[] fileBytes) {
 
-        String filePath = FOLDER_PATH + fileName;
+        String filePath = folderPath + fileName;
         try {
             Files.write(Paths.get(filePath), fileBytes);
         } catch (Exception e) {
@@ -86,7 +89,7 @@ public class PhotoComponent {
         String fileName = FileNameGenerator.generateName(originalFileName);
 
         // 파일이 저장될 경로 생성
-        String filePath = FOLDER_PATH + fileName;
+        String filePath = folderPath + fileName;
 
         try {
             Files.write(Paths.get(filePath), fileBytes);

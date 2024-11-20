@@ -39,15 +39,12 @@ public class ProfileServiceImpl implements ProfileService {
         String profilePhotoURL = urlComponent.makePhotoURL(targetUser.getProfilePhotoName(), false);
         Long snapCnt = snapRepository.countByWriter(targetUser);
 
-        return UserProfileResDto.builder()
-                .userId(targetUser.getUserId())
-                .email(targetUser.getEmail())
-                .nickName(targetUser.getNickname())
-                .profilePhotoURL(profilePhotoURL)
-                .friendCntResDto( friendService.findFriendCnt(targetUser) )
-                .snapCnt(snapCnt)
-                .isFollow(friendService.isFollow(reqUser, targetUser))
-                .build();
+        return UserProfileResDto.toDto(
+                targetUser,
+                friendService.findFriendCnt(targetUser),
+                friendService.isFollow(reqUser, targetUser),
+                snapCnt,
+                profilePhotoURL);
     }
 
     @Override

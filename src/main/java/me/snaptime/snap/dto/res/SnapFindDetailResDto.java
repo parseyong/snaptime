@@ -1,6 +1,7 @@
 package me.snaptime.snap.dto.res;
 
 import com.querydsl.core.Tuple;
+import lombok.AccessLevel;
 import lombok.Builder;
 import me.snaptime.snap.domain.Snap;
 import me.snaptime.snapTag.dto.res.TagUserFindResDto;
@@ -12,7 +13,7 @@ import static me.snaptime.snap.domain.QSnap.snap;
 import static me.snaptime.user.domain.QUser.user;
 
 
-@Builder
+@Builder(access = AccessLevel.PRIVATE)
 public record SnapFindDetailResDto(
 
         Long snapId,

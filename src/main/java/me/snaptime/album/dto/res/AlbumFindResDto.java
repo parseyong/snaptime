@@ -1,11 +1,12 @@
 package me.snaptime.album.dto.res;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import me.snaptime.album.domain.Album;
 
 import java.util.List;
 
-@Builder
+@Builder(access = AccessLevel.PRIVATE)
 public record AlbumFindResDto(
         Long albumId,
         String albumName,

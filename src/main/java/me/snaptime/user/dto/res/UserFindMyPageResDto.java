@@ -1,10 +1,11 @@
 package me.snaptime.user.dto.res;
 
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import me.snaptime.user.domain.User;
 
-@Builder
+@Builder(access = AccessLevel.PRIVATE)
 public record UserFindMyPageResDto(
     Long userId,
     String nickname,

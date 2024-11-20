@@ -4,13 +4,12 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
 import me.snaptime.auth.redis.domain.RefreshToken;
 import me.snaptime.auth.redis.repository.RefreshTokenRepository;
 import me.snaptime.common.RedisPrefix;
 import me.snaptime.user.domain.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -24,28 +23,28 @@ import java.util.Collection;
 import java.util.Date;
 
 @Component
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class JwtProvider {
 
     private final CustomUserDetailsService customUserDetailsService;
     private final RefreshTokenRepository refreshTokenRepository;
-
-    @Value("${JWT.Access.SecretKey}")
-    private String accessSecretKey;
-
-    @Value("${JWT.Refresh.SecretKey}")
-    private String refreshSecretKey;
+    private final String accessSecretKey;
+    private final String refreshSecretKey;
 
     // 30분
-    public Long accessTokenValidTime = 30 * 60 * 1000L;
+    public final Long accessTokenValidTime = 30 * 60 * 1000L;
     // 1달
-    private Long refreshTokenValidTime = 30 * 24 * 60 * 60L;
+    private final Long refreshTokenValidTime = 30 * 24 * 60 * 60L;
 
-    @PostConstruct
-    protected void init() {
-        accessSecretKey = Base64.getEncoder().encodeToString(accessSecretKey.getBytes(StandardCharsets.UTF_8));
-        refreshSecretKey = Base64.getEncoder().encodeToString(refreshSecretKey.getBytes(StandardCharsets.UTF_8));
+    @Autowired
+    public JwtProvider(CustomUserDetailsService customUserDetailsService, RefreshTokenRepository refreshTokenRepository,
+                       @Value("${JWT.Access.SecretKey}") String accessSecretKey,
+                       @Value("${JWT.Refresh.SecretKey}") String refreshSecretKey){
+        this.customUserDetailsService=customUserDetailsService;
+        this.refreshTokenRepository=refreshTokenRepository;
+        this.accessSecretKey = Base64.getEncoder().encodeToString(accessSecretKey.getBytes(StandardCharsets.UTF_8));
+        this.refreshSecretKey =Base64.getEncoder().encodeToString(refreshSecretKey.getBytes(StandardCharsets.UTF_8));
+
     }
 
     // accessToken을 생성합니다.

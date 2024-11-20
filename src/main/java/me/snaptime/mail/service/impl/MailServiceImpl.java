@@ -2,7 +2,6 @@ package me.snaptime.mail.service.impl;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import lombok.RequiredArgsConstructor;
 import me.snaptime.common.RedisPrefix;
 import me.snaptime.exception.CustomException;
 import me.snaptime.exception.ExceptionCode;
@@ -10,6 +9,7 @@ import me.snaptime.mail.domain.MailAuthInfo;
 import me.snaptime.mail.repository.MailAuthRepository;
 import me.snaptime.mail.service.MailService;
 import me.snaptime.util.AuthMessageGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -19,15 +19,21 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class MailServiceImpl implements MailService {
 
     private final MailAuthRepository mailAuthRepository;
     private final JavaMailSender javaMailSender;
 
-    @Value("${spring.naver.email}")
-    private String naverEmail;
+    private final String naverEmail;
+
+    // naverEmail값을 불변으로 선언하기 위한 생성자 주입로직
+    @Autowired
+    public MailServiceImpl(MailAuthRepository mailAuthRepository, JavaMailSender javaMailSender, @Value("${spring.naver.email}") String naverEmail) {
+        this.mailAuthRepository = mailAuthRepository;
+        this.javaMailSender = javaMailSender;
+        this.naverEmail = naverEmail;
+    }
 
     @Override
     @Transactional

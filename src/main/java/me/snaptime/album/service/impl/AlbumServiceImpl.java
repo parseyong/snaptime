@@ -1,6 +1,5 @@
 package me.snaptime.album.service.impl;
 
-import lombok.RequiredArgsConstructor;
 import me.snaptime.album.domain.Album;
 import me.snaptime.album.dto.req.AlbumAddReqDto;
 import me.snaptime.album.dto.req.AlbumUpdateReqDto;
@@ -14,6 +13,7 @@ import me.snaptime.snap.domain.Snap;
 import me.snaptime.snap.repository.SnapRepository;
 import me.snaptime.user.domain.User;
 import me.snaptime.user.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +23,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AlbumServiceImpl implements AlbumService {
 
@@ -31,9 +30,17 @@ public class AlbumServiceImpl implements AlbumService {
     private final AlbumRepository albumRepository;
     private final UrlComponent urlComponent;
     private final SnapRepository snapRepository;
+    private final String basicAlbumName;
 
-    @Value(value = "${basicAlbumName}")
-    private String basicAlbumName;
+    @Autowired
+    public AlbumServiceImpl( UserRepository userRepository, AlbumRepository albumRepository, SnapRepository snapRepository,
+                             UrlComponent urlComponent, @Value(value = "${basicAlbumName}") String basicAlbumName){
+        this.urlComponent = urlComponent;
+        this.snapRepository = snapRepository;
+        this.userRepository = userRepository;
+        this.albumRepository = albumRepository;
+        this.basicAlbumName = basicAlbumName;
+    }
 
     @Override
     public List<AlbumFindResDto> findAllAlbumsWithThumnail(String reqEmail, String targetUserEmail, Long thumnailCnt) {

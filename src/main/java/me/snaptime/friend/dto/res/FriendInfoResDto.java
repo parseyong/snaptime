@@ -1,12 +1,13 @@
 package me.snaptime.friend.dto.res;
 
 import com.querydsl.core.Tuple;
+import lombok.AccessLevel;
 import lombok.Builder;
 
 import static me.snaptime.friend.domain.QFriend.friend;
 import static me.snaptime.user.domain.QUser.user;
 
-@Builder
+@Builder(access = AccessLevel.PRIVATE)
 public record FriendInfoResDto(
 
         String friendEmail,

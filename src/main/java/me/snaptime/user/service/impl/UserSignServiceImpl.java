@@ -66,10 +66,10 @@ public class UserSignServiceImpl implements UserSignService {
             throw new CustomException(ExceptionCode.LOGIN_FAIL);
         }
 
-        return SignInResDto.builder()
-                .accessToken(jwtProvider.addAccessToken(user.getEmail(), user.getUserId(), user.getAuthorities()))
-                .refreshToken(jwtProvider.addRefreshToken(user.getEmail(), user.getUserId(), user.getAuthorities()))
-                .build();
+        return SignInResDto.toDto(
+                jwtProvider.addAccessToken(user.getEmail(), user.getUserId(), user.getAuthorities()),
+                jwtProvider.addRefreshToken(user.getEmail(), user.getUserId(), user.getAuthorities()));
+
     }
 
     @Override
@@ -86,9 +86,8 @@ public class UserSignServiceImpl implements UserSignService {
             throw new CustomException(ExceptionCode.TOKEN_INVALID);
 
         // refreshToken과 accessToken 재발급
-        return SignInResDto.builder()
-                .accessToken(jwtProvider.addAccessToken(user.getEmail(), user.getUserId(), user.getAuthorities()))
-                .refreshToken(jwtProvider.addRefreshToken(user.getEmail(), user.getUserId(), user.getAuthorities()))
-                .build();
+        return SignInResDto.toDto(
+                jwtProvider.addAccessToken(user.getEmail(), user.getUserId(), user.getAuthorities()),
+                jwtProvider.addRefreshToken(user.getEmail(), user.getUserId(), user.getAuthorities()));
     }
 }

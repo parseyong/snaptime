@@ -1,10 +1,11 @@
 package me.snaptime.reply.dto.res;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import me.snaptime.reply.domain.ChildReply;
 
 
-@Builder
+@Builder(access = AccessLevel.PRIVATE)
 public record ChildReplyFindResDto(
 
         String writerEmail,
