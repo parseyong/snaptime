@@ -73,10 +73,10 @@ Chore: 빌드 업무 수정, 패키지 매니저 수정<br>
 
 ## 📷트러블 슈팅
 
-1. [SnapTime #1] 비공개 사진을 어떻게 저장하고 관리할까?<br>
+- [SnapTime #1] 비공개 사진을 어떻게 저장하고 관리할까?<br>
    https://psy217300.tistory.com/210
-<br>
-2. [SnapTime #2] OCP 위배를 피한 전략 패턴 도입<br>
+  <br>
+- [SnapTime #2] OCP 위배를 피한 전략 패턴 도입<br>
    https://psy217300.tistory.com/211
    
 ## 📷Snaptime 구조도
