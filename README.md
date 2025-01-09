@@ -49,16 +49,14 @@ Chore: 빌드 업무 수정, 패키지 매니저 수정<br>
 
 ## 📷SnapTime 관심사
 
-1. <strong>SOLID원칙</strong>을 통한 객체지향적인 개발<br>
-2. 안전한 <strong>사진 암호화</strong><br>
-3. <strong>전략패턴</strong> 도입<br>
-4. 일관성있는 <strong>코드 컨벤션</strong><br>
-5. <strong>양방향 연관관계 mapping</strong> 지양<br>
-6. How가 아닌 <strong>Why</strong><br>
-7. <strong>Restful</strong>한 API<br>
-8. <strong>N+1 쿼리</strong> 지양<br>
-9. Service 로직의 <strong>Interface</strong>를 통한 명세기능<br>
-10. <strong>Swagger</strong>를 통한 API명세서 자동화
+- SOLID원칙을 통한 객체지향적인 개발
+- 안전한 사진 암호화방법
+- OCP위배를 막기위한 전략패턴 도입
+- 일관성있는 코드 컨벤션
+- Restful한 API
+- N+1쿼리 지양
+- Service 로직의 Interface를 통한 명세기능
+- Swagger를 통한 API명세서 자동화
 
 <br>
 
@@ -73,6 +71,14 @@ Chore: 빌드 업무 수정, 패키지 매니저 수정<br>
 - Gradle<br>
 <br>
 
+## 📷트러블 슈팅
+
+1. [SnapTime #1] 비공개 사진을 어떻게 저장하고 관리할까?
+   https://psy217300.tistory.com/210
+
+2. [SnapTime #2] OCP 위배를 피한 전략 패턴 도입
+   https://psy217300.tistory.com/211
+   
 ## 📷Snaptime 구조도
 - 프로젝트 아키텍쳐 구조는 인천대학교 전산원 서버에 배포를 했기때문에 공개할 수 없는 점 양해바랍니다.
 <br>
